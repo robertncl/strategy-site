@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Strategic investment proposal for a secure Cloud Development Environment (CDE) enabling safe agentic AI development at enterprise scale." />
+  <title>Secure CDE for Agentic AI — Strategic Investment Proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Sticky navigation -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#home" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5l-8-3Z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </span>
+      <span class="brand-text">Secure&nbsp;CDE<small>for Agentic AI</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Section navigation">
+      <a href="#imperative">Imperative</a>
+      <a href="#current">Current State</a>
+      <a href="#solution">Solution</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#security">Security</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#business-case">Business Case</a>
+      <a href="#metrics">KPIs</a>
+    </nav>
+    <a href="#ask" class="nav-cta">The Ask</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="eyebrow reveal">Strategic Investment Proposal &nbsp;·&nbsp; Platform Engineering &amp; Security</p>
+        <h1 class="hero-title reveal">Securing the Development Environment<br /><span class="grad-text">for the Age of Agentic AI</span></h1>
+        <p class="hero-sub reveal">A unified, governed <strong>Cloud Development Environment (CDE)</strong> that lets thousands of engineers — and the AI agents working alongside them — build at speed without expanding our attack surface.</p>
+        <div class="hero-actions reveal">
+          <a href="#ask" class="btn btn-primary">See the Investment Ask</a>
+          <a href="#imperative" class="btn btn-ghost">Why Now &rarr;</a>
+        </div>
+        <dl class="hero-stats reveal">
+          <div>
+            <dt>Developers in scope</dt>
+            <dd><span class="counter" data-target="5000">0</span>+</dd>
+          </div>
+          <div>
+            <dt>Core tech stacks</dt>
+            <dd><span class="counter" data-target="4">0</span></dd>
+          </div>
+          <div>
+            <dt>Target onboarding</dt>
+            <dd>&lt; <span class="counter" data-target="15">0</span> min</dd>
+          </div>
+          <div>
+            <dt>3-yr net benefit</dt>
+            <dd>$<span class="counter" data-target="46">0</span>M</dd>
+          </div>
+        </dl>
+      </div>
+      <a href="#imperative" class="scroll-hint" aria-label="Scroll to next section">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- THE IMPERATIVE -->
+    <section class="section" id="imperative">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">01 — The Imperative</span>
+          <h2>Agentic AI rewrites the threat model of the developer inner loop</h2>
+          <p class="lede">AI coding agents now read source, execute commands, install packages, call internal APIs, and open pull requests autonomously. Run on unmanaged laptops and ad-hoc VMs, they multiply both our velocity <em>and</em> our blast radius. The environment is now a control plane — and it is not yet under control.</p>
+        </div>
+
+        <div class="card-grid">
+          <article class="card reveal">
+            <div class="card-icon" data-variant="amber" aria-hidden="true">⚠</div>
+            <h3>Autonomy without containment</h3>
+            <p>An agent that can run arbitrary code and reach the internet is an insider with super-human speed. Without a sandbox, prompt injection becomes remote code execution and data exfiltration.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="violet" aria-hidden="true">⌘</div>
+            <h3>Secrets sprawl on endpoints</h3>
+            <p>Long-lived tokens, cloud keys and source live on thousands of laptops and one-off VMs. Each is an unmanaged copy of our crown jewels and an audit blind spot.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="cyan" aria-hidden="true">⟳</div>
+            <h3>"Works on my machine" at scale</h3>
+            <p>Four major stacks (Java, .NET, Python, JavaScript) × thousands of devs = unbounded environment drift, slow onboarding, and irreproducible builds that frustrate audits and incident response.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="rose" aria-hidden="true">◎</div>
+            <h3>No identity for non-humans</h3>
+            <p>AI agents and automation act with borrowed human credentials. We cannot attribute, scope, throttle, or revoke their access — a governance and compliance gap regulators increasingly probe.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="cyan" aria-hidden="true">◷</div>
+            <h3>Speed pressure is real</h3>
+            <p>Competitors are shipping agent-assisted delivery today. Banning the tools cedes the advantage; allowing them ungoverned courts the next headline breach. We need a third path.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="violet" aria-hidden="true">§</div>
+            <h3>Regulatory gravity</h3>
+            <p>SBOM mandates, supply-chain integrity (SLSA), EU AI Act and sector rules expect provenance and control over how — and by what — code is produced. Our inner loop must become evidence-grade.</p>
+          </article>
+        </div>
+
+        <div class="pull-quote reveal">
+          <p>“The most privileged actor in our software supply chain is no longer a person. It’s an agent running on a machine we don’t manage.”</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CURRENT STATE -->
+    <section class="section section-alt" id="current">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">02 — Current State</span>
+          <h2>A strong foundation — with structural gaps for AI</h2>
+          <p class="lede">We already operate enterprise-grade platforms. The opportunity is to compose them into a single governed environment rather than leaving the inner loop on uncontrolled endpoints.</p>
+        </div>
+
+        <div class="split">
+          <div class="reveal">
+            <h3 class="mini-head">Today's estate</h3>
+            <ul class="stack-list">
+              <li><span class="stack-tag">SCM</span> GitHub Enterprise — source, CI/CD, Copilot</li>
+              <li><span class="stack-tag">Cloud</span> Azure — landing zones, Entra ID, hosting</li>
+              <li><span class="stack-tag">Access</span> Citrix VDI — managed remote workspaces</li>
+              <li><span class="stack-tag">Java</span> Spring / Jakarta services &amp; libraries</li>
+              <li><span class="stack-tag">.NET</span> C# services and internal tooling</li>
+              <li><span class="stack-tag">Python</span> Data, automation, AI/ML workloads</li>
+              <li><span class="stack-tag">JS/TS</span> Web front-ends &amp; Node services</li>
+            </ul>
+          </div>
+          <div class="reveal">
+            <h3 class="mini-head">Where it breaks for agentic AI</h3>
+            <ul class="gap-list">
+              <li><strong>Compute is fragmented.</strong> Laptops, personal VMs and inconsistent VDI images — no common, policy-enforced runtime for code or agents.</li>
+              <li><strong>Egress is open.</strong> Dev machines reach the internet freely; an agent can pull a malicious package or post data anywhere.</li>
+              <li><strong>Credentials are static.</strong> PATs and keys live on disk instead of short-lived, federated tokens minted per session.</li>
+              <li><strong>Telemetry is thin.</strong> We can't reconstruct what an agent did, with what data, against which systems.</li>
+              <li><strong>Onboarding is slow.</strong> Days of setup per stack per engineer; even longer for contractors and acquisitions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="maturity reveal" aria-label="Capability maturity, current vs target">
+          <h3 class="mini-head center">Capability maturity — today vs. target</h3>
+          <div class="maturity-rows" id="maturityRows">
+            <div class="maturity-row" data-now="35" data-target="90">
+              <span class="m-label">Environment standardization</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="25" data-target="92">
+              <span class="m-label">Agent / non-human identity</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="30" data-target="88">
+              <span class="m-label">Egress &amp; data-loss control</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="40" data-target="95">
+              <span class="m-label">Secrets management</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="20" data-target="90">
+              <span class="m-label">Audit &amp; provenance</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+          </div>
+          <div class="m-legend">
+            <span><i class="dot dot-now"></i> Today</span>
+            <span><i class="dot dot-target"></i> Target (Year 2)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="section" id="solution">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">03 — The Solution</span>
+          <h2>One governed Cloud Development Environment</h2>
+          <p class="lede">Move the inner loop off the endpoint and into ephemeral, policy-enforced workspaces in Azure — accessed through Citrix and the browser, wired into GitHub Enterprise, and built for AI agents from day one. Code and credentials never rest on a laptop again.</p>
+        </div>
+
+        <div class="pillars">
+          <article class="pillar reveal">
+            <span class="pillar-no">P1</span>
+            <h3>Ephemeral by default</h3>
+            <p>Workspaces are created on demand from versioned <em>golden images</em> and destroyed after use. No persistent state, no drift, no forensic ambiguity.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P2</span>
+            <h3>Secure by design</h3>
+            <p>Zero-trust access, default-deny egress, secrets injected just-in-time from Key Vault, full session telemetry to the SIEM. Security is the path of least resistance.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P3</span>
+            <h3>Agent-ready</h3>
+            <p>Every agent runs in a contained workspace with its own scoped, short-lived identity, an egress allowlist, and a model gateway that logs and filters every call.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P4</span>
+            <h3>Golden-path productive</h3>
+            <p>Pre-built, compliant stacks for Java, .NET, Python and JavaScript. A developer is coding in minutes — the secure way is the fast way.</p>
+          </article>
+        </div>
+
+        <div class="before-after reveal">
+          <div class="ba-col ba-before">
+            <h3>Before — endpoint inner loop</h3>
+            <ul>
+              <li>Source &amp; secrets cloned to laptops</li>
+              <li>Unmanaged, drifting environments</li>
+              <li>Open internet egress</li>
+              <li>Agents run with human credentials</li>
+              <li>Little to no session audit</li>
+              <li>Days to onboard a new engineer</li>
+            </ul>
+          </div>
+          <div class="ba-arrow" aria-hidden="true">→</div>
+          <div class="ba-col ba-after">
+            <h3>After — governed CDE</h3>
+            <ul>
+              <li>Code stays in Azure; nothing on the device</li>
+              <li>Identical, versioned golden images</li>
+              <li>Default-deny egress via inspecting proxy</li>
+              <li>Per-agent scoped, short-lived identity</li>
+              <li>Every action streamed to Sentinel</li>
+              <li>Minutes to a fully compliant workspace</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section class="section section-alt" id="architecture">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">04 — Reference Architecture</span>
+          <h2>Built on what we already run</h2>
+          <p class="lede">No rip-and-replace. The CDE composes GitHub Enterprise, Azure and Citrix into layered controls, with a dedicated governance plane for AI agents.</p>
+        </div>
+
+        <div class="arch reveal" aria-label="Layered reference architecture">
+          <div class="arch-layer">
+            <span class="arch-tag">Access</span>
+            <div class="arch-nodes">
+              <div class="node">Citrix VDI / secure browser</div>
+              <div class="node">Entra ID + Conditional Access</div>
+              <div class="node">Device posture &amp; MFA</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Workspace</span>
+            <div class="arch-nodes">
+              <div class="node">Ephemeral dev workspaces (Azure)</div>
+              <div class="node">Golden images · Java / .NET / Python / JS</div>
+              <div class="node">GitHub Enterprise + Advanced Security</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer arch-agent">
+            <span class="arch-tag">Agent governance</span>
+            <div class="arch-nodes">
+              <div class="node">Model gateway (prompt/response logging)</div>
+              <div class="node">Policy engine &amp; guardrails</div>
+              <div class="node">Per-agent identity &amp; scoped tokens</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Controls</span>
+            <div class="arch-nodes">
+              <div class="node">Egress proxy — default-deny allowlist</div>
+              <div class="node">Azure Key Vault — JIT secrets, OIDC</div>
+              <div class="node">Private endpoints · no public ingress</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Assurance</span>
+            <div class="arch-nodes">
+              <div class="node">Microsoft Sentinel (SIEM)</div>
+              <div class="node">Full session &amp; agent action audit</div>
+              <div class="node">SBOM · SLSA provenance</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-notes card-grid">
+          <article class="card compact reveal">
+            <h3>Identity first</h3>
+            <p>Entra ID issues identities for <strong>both humans and agents</strong>. Conditional Access gates every session; workload identity federation removes static keys entirely.</p>
+          </article>
+          <article class="card compact reveal">
+            <h3>GitHub Enterprise, governed</h3>
+            <p>Advanced Security (secret scanning, code scanning, dependency review) and Copilot policies run inside the CDE perimeter — not on the open endpoint.</p>
+          </article>
+          <article class="card compact reveal">
+            <h3>Citrix as the front door</h3>
+            <p>Existing VDI investment becomes the hardened, low-friction access layer to browser-based workspaces — protecting the screen, not storing the code.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECURITY MODEL -->
+    <section class="section" id="security">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">05 — Security Model</span>
+          <h2>Containing the agent's blast radius</h2>
+          <p class="lede">Every agentic workflow is wrapped in five enforced controls. Even a fully compromised or hijacked agent stays inside a small, observable box.</p>
+        </div>
+
+        <div class="controls">
+          <article class="control reveal">
+            <span class="control-num">01</span>
+            <h3>Identity &amp; least privilege</h3>
+            <p>Each agent gets its own non-human identity with narrowly scoped, time-boxed tokens. No standing access, no shared service accounts, full attribution.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">02</span>
+            <h3>Isolation</h3>
+            <p>Agents execute in sandboxed, ephemeral workspaces with no lateral path to other tenants, production, or the corporate network.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">03</span>
+            <h3>Egress control</h3>
+            <p>Default-deny networking. Package registries and approved APIs are allowlisted through an inspecting proxy; everything else is blocked and logged.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">04</span>
+            <h3>Guardrails &amp; gateway</h3>
+            <p>A model gateway mediates every LLM call — logging prompts/responses, redacting secrets, and enforcing policy on tools the agent may invoke.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">05</span>
+            <h3>Observability &amp; provenance</h3>
+            <p>Every command, file touch and API call streams to Sentinel. Builds carry SBOM and SLSA provenance — we can prove what produced any artifact.</p>
+          </article>
+          <article class="control reveal control-accent">
+            <span class="control-num">∑</span>
+            <h3>Defense in depth</h3>
+            <p>No single control is trusted alone. Identity, isolation, egress, guardrails and audit compound so a failure in one layer is caught by the next.</p>
+          </article>
+        </div>
+
+        <div class="compliance reveal">
+          <h3 class="mini-head center">Maps directly to the controls auditors ask for</h3>
+          <div class="chips">
+            <span class="chip">NIST SSDF</span>
+            <span class="chip">SLSA provenance</span>
+            <span class="chip">ISO 27001</span>
+            <span class="chip">SOC 2</span>
+            <span class="chip">SBOM mandates</span>
+            <span class="chip">EU AI Act readiness</span>
+            <span class="chip">Zero Trust (NIST 800-207)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="section section-alt" id="roadmap">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">06 — Delivery Roadmap</span>
+          <h2>A phased, de-risked rollout</h2>
+          <p class="lede">Value lands early and compounds. Each phase is independently useful and gated on adoption and security sign-off before the next begins.</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>0–3<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 0 — Foundation &amp; pilot</h3>
+              <p>Stand up the landing zone, identity model, and one golden image. Onboard a 50-developer pilot across two stacks. Establish baseline security telemetry.</p>
+              <div class="tl-tags"><span>Landing zone</span><span>Pilot cohort</span><span>Java + Python images</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>3–9<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 1 — Secure core</h3>
+              <p>All four stacks as golden images. Default-deny egress, JIT secrets, and full session audit in production. Scale to ~1,000 developers.</p>
+              <div class="tl-tags"><span>All stacks</span><span>Egress + secrets</span><span>1k devs</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>9–18<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 2 — Agent governance</h3>
+              <p>Per-agent identity, model gateway, and policy guardrails go live. Sanctioned agentic workflows for code, test and review. Scale to ~3,500 developers.</p>
+              <div class="tl-tags"><span>Agent identity</span><span>Model gateway</span><span>3.5k devs</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>18–30<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 3 — Scale &amp; optimize</h3>
+              <p>Full rollout to 5,000+ developers and contractors. Decommission legacy local-dev paths. Continuous cost &amp; control optimization; provenance everywhere.</p>
+              <div class="tl-tags"><span>5k+ devs</span><span>Legacy retired</span><span>Full provenance</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BUSINESS CASE -->
+    <section class="section" id="business-case">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">07 — Business Case</span>
+          <h2>The economics work — and the risk math is decisive</h2>
+          <p class="lede">A three-year program with payback inside year two. Figures below are illustrative planning estimates for a 5,000-developer organization and should be calibrated with Finance.</p>
+        </div>
+
+        <div class="kpi-band">
+          <div class="kpi reveal">
+            <span class="kpi-value">$<span class="counter" data-target="24">0</span>M</span>
+            <span class="kpi-label">3-year total investment</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value">$<span class="counter" data-target="70">0</span>M</span>
+            <span class="kpi-label">3-year gross benefit</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value"><span class="counter" data-target="18">0</span> mo</span>
+            <span class="kpi-label">Payback period</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value"><span class="counter" data-target="190">0</span>%</span>
+            <span class="kpi-label">3-year ROI</span>
+          </div>
+        </div>
+
+        <div class="charts">
+          <figure class="chart-card reveal">
+            <figcaption>Cumulative net cash flow ($M)</figcaption>
+            <!-- Bar chart: investment (neg early) vs cumulative net benefit -->
+            <svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Cumulative net cash flow turning positive in year two, reaching roughly 46 million dollars by year three">
+              <!-- baseline -->
+              <line x1="50" y1="210" x2="500" y2="210" class="axis" />
+              <!-- zero label -->
+              <text x="40" y="214" class="ax-text" text-anchor="end">0</text>
+              <text x="40" y="120" class="ax-text" text-anchor="end">+30</text>
+              <text x="40" y="64" class="ax-text" text-anchor="end">+50</text>
+              <text x="40" y="270" class="ax-text" text-anchor="end">-20</text>
+              <!-- bars: value is cumulative net; baseline at y=210, scale ~3px/$M -->
+              <g class="bars">
+                <rect class="bar bar-neg" x="90"  y="210" width="70" height="0" data-h="33" data-dir="down"></rect>
+                <rect class="bar bar-pos" x="230" y="210" width="70" height="0" data-h="36" data-dir="up"></rect>
+                <rect class="bar bar-pos bar-hi" x="370" y="210" width="70" height="0" data-h="138" data-dir="up"></rect>
+              </g>
+              <g class="bar-labels">
+                <text x="125" y="232" text-anchor="middle" class="ax-text">Yr 1</text>
+                <text x="265" y="232" text-anchor="middle" class="ax-text">Yr 2</text>
+                <text x="405" y="232" text-anchor="middle" class="ax-text">Yr 3</text>
+                <text x="125" y="258" text-anchor="middle" class="bar-val">-$11M</text>
+                <text x="265" y="160" text-anchor="middle" class="bar-val">+$12M</text>
+                <text x="405" y="58"  text-anchor="middle" class="bar-val">+$46M</text>
+              </g>
+            </svg>
+          </figure>
+
+          <figure class="chart-card reveal">
+            <figcaption>Where the benefit comes from</figcaption>
+            <div class="donut-wrap">
+              <svg class="donut" viewBox="0 0 200 200" role="img" aria-label="Benefit composition: developer productivity 45 percent, risk and incident avoidance 30 percent, infrastructure rationalization 15 percent, compliance efficiency 10 percent">
+                <circle class="donut-ring" cx="100" cy="100" r="80" />
+                <circle class="donut-seg seg1" cx="100" cy="100" r="80" data-dash="45" data-offset="0" />
+                <circle class="donut-seg seg2" cx="100" cy="100" r="80" data-dash="30" data-offset="45" />
+                <circle class="donut-seg seg3" cx="100" cy="100" r="80" data-dash="15" data-offset="75" />
+                <circle class="donut-seg seg4" cx="100" cy="100" r="80" data-dash="10" data-offset="90" />
+              </svg>
+              <div class="donut-center"><strong>$70M</strong><span>3-yr benefit</span></div>
+            </div>
+            <ul class="legend">
+              <li><i class="dot seg1"></i> Developer productivity &amp; faster onboarding <b>45%</b></li>
+              <li><i class="dot seg2"></i> Breach / incident risk avoidance <b>30%</b></li>
+              <li><i class="dot seg3"></i> Infrastructure &amp; license rationalization <b>15%</b></li>
+              <li><i class="dot seg4"></i> Audit &amp; compliance efficiency <b>10%</b></li>
+            </ul>
+          </figure>
+        </div>
+
+        <div class="value-grid">
+          <article class="value reveal">
+            <h3>Productivity</h3>
+            <p>Onboarding from days to minutes; near-zero environment troubleshooting; governed agents that actually get adopted. A conservative <strong>3–5% effective capacity uplift</strong> across 5,000 engineers dwarfs the program cost.</p>
+          </article>
+          <article class="value reveal">
+            <h3>Risk avoidance</h3>
+            <p>Containing one material breach or supply-chain incident — average cost in the tens of millions — can pay for the entire program. Insurance and audit posture improve materially.</p>
+          </article>
+          <article class="value reveal">
+            <h3>Rationalization</h3>
+            <p>Consolidating sprawling local tooling, one-off VMs and inconsistent VDI images reduces licensing and support cost while shrinking the attack surface.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section class="section section-alt" id="risks">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">08 — Risks &amp; Mitigations</span>
+          <h2>What could go wrong — and how we de-risk it</h2>
+        </div>
+        <div class="risk-table reveal">
+          <div class="risk-row risk-head">
+            <span>Risk</span><span>Impact</span><span>Mitigation</span>
+          </div>
+          <div class="risk-row">
+            <span>Developer adoption / friction</span>
+            <span class="sev sev-high">High</span>
+            <span>Co-design golden paths with engineers; make the CDE faster than local; phased opt-in before mandate.</span>
+          </div>
+          <div class="risk-row">
+            <span>Latency / developer experience</span>
+            <span class="sev sev-med">Medium</span>
+            <span>Region-local workspaces, warm pools for instant start, performance SLOs measured from day one.</span>
+          </div>
+          <div class="risk-row">
+            <span>Cost overrun at scale</span>
+            <span class="sev sev-med">Medium</span>
+            <span>Ephemeral auto-shutdown, right-sized images, FinOps guardrails and per-team showback.</span>
+          </div>
+          <div class="risk-row">
+            <span>Agent guardrail bypass</span>
+            <span class="sev sev-high">High</span>
+            <span>Defense in depth — isolation + egress + identity mean no single bypass is sufficient; continuous red-teaming.</span>
+          </div>
+          <div class="risk-row">
+            <span>Vendor / platform lock-in</span>
+            <span class="sev sev-low">Low</span>
+            <span>Open standards (OCI dev containers, OIDC, SLSA, SBOM); portable golden-image definitions.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="section" id="metrics">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">09 — Success Metrics</span>
+          <h2>How we'll know it's working</h2>
+          <p class="lede">Outcome-based KPIs reported quarterly to the steering committee — balancing security, productivity and cost.</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric reveal"><span class="metric-num">&lt;15<small>min</small></span><span class="metric-desc">Time to first commit for a new engineer</span></div>
+          <div class="metric reveal"><span class="metric-num">100<small>%</small></span><span class="metric-desc">Agent actions captured in the audit trail</span></div>
+          <div class="metric reveal"><span class="metric-num">0</span><span class="metric-desc">Secrets or source persisted on endpoints</span></div>
+          <div class="metric reveal"><span class="metric-num">90<small>%</small></span><span class="metric-desc">Developers on the CDE by end of year 2</span></div>
+          <div class="metric reveal"><span class="metric-num">&lt;5<small>min</small></span><span class="metric-desc">Mean time to revoke a compromised agent</span></div>
+          <div class="metric reveal"><span class="metric-num">100<small>%</small></span><span class="metric-desc">Builds with SBOM &amp; provenance attestation</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE ASK -->
+    <section class="section ask" id="ask">
+      <div class="container">
+        <div class="ask-card reveal">
+          <span class="kicker">10 — The Ask</span>
+          <h2>Approve a funded, three-year program to make our developer environment secure by default — and ready for agentic AI.</h2>
+          <div class="ask-points">
+            <div>
+              <span class="ask-figure">$24M</span>
+              <p>Three-year program funding across platform, licensing, engineering and change management.</p>
+            </div>
+            <div>
+              <span class="ask-figure">2 FTE</span>
+              <p>Executive sponsor and a dedicated platform team to own the CDE as a product.</p>
+            </div>
+            <div>
+              <span class="ask-figure">90 days</span>
+              <p>To stand up the foundation and prove value with a 50-developer pilot.</p>
+            </div>
+          </div>
+          <p class="ask-close">The question is no longer <em>whether</em> our engineers will work with AI agents — it's whether they'll do it inside our control plane or outside it. This investment puts us inside.</p>
+          <div class="hero-actions">
+            <a href="#home" class="btn btn-primary">Back to top</a>
+            <a href="#business-case" class="btn btn-ghost">Review the numbers</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p><strong>Secure CDE for Agentic AI</strong> — Strategic Investment Proposal</p>
+      <p class="muted">Confidential · Illustrative figures for planning · Prepared for executive review</p>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
