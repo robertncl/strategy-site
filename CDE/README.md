@@ -63,14 +63,31 @@ CDE/
 - **Responsive** via CSS grid with `auto-fit`/`minmax`; collapses to a mobile
   menu under 900px.
 
-## Calibrating the numbers
+## The numbers (and how they're grounded)
 
-All financial figures (investment, ROI, benefit mix, developer count) are
-**illustrative planning estimates** intended as a starting point. Before
-presenting, calibrate them with Finance and Platform Engineering. The easiest
-places to edit:
+The business case is sized for **~3,000 developers and contractors**. Headline
+planning figures: **$18M** 3-year investment, **$48M** gross benefit, **~$30M**
+net, payback inside ~18 months, ~165% 3-year ROI.
+
+These are **illustrative planning estimates**, but the cost side is built
+bottom-up and benchmarked against real CDE tooling (see the *Cost basis* table
+in the Business Case section). The key insight: the dominant cost is **Azure
+compute for ephemeral, auto-stopped workspaces**, not platform licensing — a
+tool like **Coder** (or GitHub Codespaces / Microsoft Dev Box) is a small
+per-seat layer on top. Reference list pricing used (June 2026):
+
+- **GitHub Codespaces** — compute from ~$0.18/core-hr, storage ~$0.07/GB-month
+- **Microsoft Dev Box** — ~$138–629/mo compute + ~$19–152/mo storage per box
+- **Coder** — Premium licensed via sales (no public per-seat price); runs on
+  your own Azure compute, so budget the VM cost separately
+
+Blended run-rate lands around **~$165/developer/month (≈ $6M/yr)** plus a
+platform team (~$2M/yr). Calibrate with Finance and a **paid pilot** before
+committing.
+
+The easiest places to edit:
 
 - Headline stats: the `.hero-stats` block in `index.html`
-- KPI band & charts: the `#business-case` section (bar `data-h` values and
-  donut `data-dash`/`data-offset` values control the visuals)
+- KPI band, charts & cost basis: the `#business-case` section (bar `data-h`
+  values and donut `data-dash`/`data-offset` values control the visuals)
 - The funding ask: the `#ask` section
