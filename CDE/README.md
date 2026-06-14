@@ -13,9 +13,12 @@ supporting **Java · .NET · Python · JavaScript**.
 The page walks an executive audience through a complete investment narrative:
 
 1. **The Imperative** — why agentic AI rewrites the threat model of the dev inner loop
-2. **Current State** — today's estate and where it breaks for AI (with a maturity chart)
-3. **The Solution** — one governed CDE; four strategic pillars; before/after
-4. **Reference Architecture** — layered controls composed from GitHub, Azure & Citrix
+2. **Current State** — where today's setup breaks for agentic AI (with a capability-maturity chart)
+3. **The Solution** — one governed CDE; four strategic pillars; before/after; and what it
+   **replaces** (Citrix VDI farm → cloud workspaces, Docker Desktop licences → golden
+   images, powerful laptops → low-cost thin clients)
+4. **Reference Architecture** — layered controls built on GitHub Enterprise and Azure,
+   with thin-client/browser access replacing the VDI farm
 5. **Security Model** — the five controls that contain an agent's blast radius
 6. **Roadmap** — a phased, de-risked 30-month rollout
 7. **Business Case** — investment, ROI, cash-flow and benefit-mix charts

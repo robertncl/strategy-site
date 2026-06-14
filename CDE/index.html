@@ -129,32 +129,19 @@
         <div class="section-head reveal">
           <span class="kicker">02 — Current State</span>
           <h2>A strong foundation — with structural gaps for AI</h2>
-          <p class="lede">We already operate enterprise-grade platforms. The opportunity is to compose them into a single governed environment rather than leaving the inner loop on uncontrolled endpoints.</p>
+          <p class="lede">We already run GitHub Enterprise, Azure and a Citrix VDI estate. The opportunity is to consolidate the inner loop into one governed environment — and retire the cost and risk of running it across laptops, VDI desktops and per-seat tooling.</p>
         </div>
 
-        <div class="split">
-          <div class="reveal">
-            <h3 class="mini-head">Today's estate</h3>
-            <ul class="stack-list">
-              <li><span class="stack-tag">SCM</span> GitHub Enterprise — source, CI/CD, Copilot</li>
-              <li><span class="stack-tag">Cloud</span> Azure — landing zones, Entra ID, hosting</li>
-              <li><span class="stack-tag">Access</span> Citrix VDI — managed remote workspaces</li>
-              <li><span class="stack-tag">Java</span> Spring / Jakarta services &amp; libraries</li>
-              <li><span class="stack-tag">.NET</span> C# services and internal tooling</li>
-              <li><span class="stack-tag">Python</span> Data, automation, AI/ML workloads</li>
-              <li><span class="stack-tag">JS/TS</span> Web front-ends &amp; Node services</li>
-            </ul>
-          </div>
-          <div class="reveal">
-            <h3 class="mini-head">Where it breaks for agentic AI</h3>
-            <ul class="gap-list">
-              <li><strong>Compute is fragmented.</strong> Laptops, personal VMs and inconsistent VDI images — no common, policy-enforced runtime for code or agents.</li>
-              <li><strong>Egress is open.</strong> Dev machines reach the internet freely; an agent can pull a malicious package or post data anywhere.</li>
-              <li><strong>Credentials are static.</strong> PATs and keys live on disk instead of short-lived, federated tokens minted per session.</li>
-              <li><strong>Telemetry is thin.</strong> We can't reconstruct what an agent did, with what data, against which systems.</li>
-              <li><strong>Onboarding is slow.</strong> Days of setup per stack per engineer; even longer for contractors and acquisitions.</li>
-            </ul>
-          </div>
+        <div class="gaps reveal">
+          <h3 class="mini-head">Where today's setup breaks for agentic AI</h3>
+          <ul class="gap-list gap-list-2">
+            <li><strong>Compute is fragmented.</strong> Laptops, personal VMs and inconsistent VDI images — no common, policy-enforced runtime for code or agents.</li>
+            <li><strong>Egress is open.</strong> Dev machines reach the internet freely; an agent can pull a malicious package or post data anywhere.</li>
+            <li><strong>Credentials are static.</strong> PATs and keys live on disk instead of short-lived, federated tokens minted per session.</li>
+            <li><strong>Telemetry is thin.</strong> We can't reconstruct what an agent did, with what data, against which systems.</li>
+            <li><strong>Onboarding is slow.</strong> Days of setup per stack per engineer; even longer for contractors and acquisitions.</li>
+            <li><strong>The estate is expensive.</strong> Powerful laptops, a VDI farm and per-seat tooling licences scale linearly with every new developer.</li>
+          </ul>
         </div>
 
         <div class="maturity reveal" aria-label="Capability maturity, current vs target">
@@ -226,10 +213,10 @@
             <h3>Before — endpoint inner loop</h3>
             <ul>
               <li>Source &amp; secrets cloned to laptops</li>
+              <li>VDI farm + per-seat Docker Desktop licences</li>
               <li>Unmanaged, drifting environments</li>
               <li>Open internet egress</li>
               <li>Agents run with human credentials</li>
-              <li>Little to no session audit</li>
               <li>Days to onboard a new engineer</li>
             </ul>
           </div>
@@ -237,13 +224,37 @@
           <div class="ba-col ba-after">
             <h3>After — governed CDE</h3>
             <ul>
-              <li>Code stays in Azure; nothing on the device</li>
-              <li>Identical, versioned golden images</li>
+              <li>Thin-client / browser access — code stays in Azure</li>
+              <li>Golden images replace Docker Desktop seats</li>
+              <li>Identical, versioned environments</li>
               <li>Default-deny egress via inspecting proxy</li>
               <li>Per-agent scoped, short-lived identity</li>
-              <li>Every action streamed to Sentinel</li>
               <li>Minutes to a fully compliant workspace</li>
             </ul>
+          </div>
+        </div>
+
+        <div class="replaces reveal">
+          <h3 class="mini-head center">One platform that retires three recurring line items</h3>
+          <div class="replaces-grid">
+            <article class="replace">
+              <span class="replace-from">Citrix VDI farm</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Ephemeral cloud workspaces</span>
+              <p>Retire general-purpose engineering VDI. Access goes straight to governed, on-demand workspaces — no persistent desktop estate to license, patch and scale.</p>
+            </article>
+            <article class="replace">
+              <span class="replace-from">Docker Desktop licences</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Managed golden images</span>
+              <p>Container builds run inside the CDE on curated, compliant images — eliminating per-seat Docker Desktop licensing across thousands of developers.</p>
+            </article>
+            <article class="replace">
+              <span class="replace-from">Powerful dev laptops</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Low-cost thin clients</span>
+              <p>Compute moves to Azure. Engineers connect from inexpensive, locked-down thin clients — lower hardware capex, smaller attack surface, nothing sensitive on the device.</p>
+            </article>
           </div>
         </div>
       </div>
@@ -262,7 +273,7 @@
           <div class="arch-layer">
             <span class="arch-tag">Access</span>
             <div class="arch-nodes">
-              <div class="node">Citrix VDI / secure browser</div>
+              <div class="node">Thin client / secure browser</div>
               <div class="node">Entra ID + Conditional Access</div>
               <div class="node">Device posture &amp; MFA</div>
             </div>
@@ -315,8 +326,8 @@
             <p>Advanced Security (secret scanning, code scanning, dependency review) and Copilot policies run inside the CDE perimeter — not on the open endpoint.</p>
           </article>
           <article class="card compact reveal">
-            <h3>Citrix as the front door</h3>
-            <p>Existing VDI investment becomes the hardened, low-friction access layer to browser-based workspaces — protecting the screen, not storing the code.</p>
+            <h3>Thin client, not laptop</h3>
+            <p>Engineering compute moves to Azure, so developers connect from low-cost, hardened thin clients through the browser — retiring both the VDI farm and powerful laptops, with nothing sensitive stored on the endpoint.</p>
           </article>
         </div>
       </div>
@@ -514,7 +525,7 @@
           </article>
           <article class="value reveal">
             <h3>Rationalization</h3>
-            <p>Consolidating sprawling local tooling, one-off VMs and inconsistent VDI images reduces licensing and support cost while shrinking the attack surface.</p>
+            <p>Retiring the engineering <strong>VDI farm</strong>, eliminating per-seat <strong>Docker Desktop</strong> licences, and swapping powerful laptops for <strong>low-cost thin clients</strong> cuts hardware capex and licensing spend while shrinking the attack surface.</p>
           </article>
         </div>
       </div>
