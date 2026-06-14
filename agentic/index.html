@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Declare support for both light and dark themes (FOUC mitigation) -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="DevSecOps Agentic Automation — a coordinated team of governed AI agents that triage findings, review code, secure the supply chain, watch cloud posture and assemble compliance evidence across Azure, GitHub, Veracode, SonarQube, Nexus, Prisma Cloud, Jira and Confluence. Sequenced by autonomy: Advise → Propose → Act-with-approval.">
+  <meta name="robots" content="noindex">
+  <title>DevSecOps Agentic Automation — Programme Plan</title>
+
+  <!-- Pin user-chosen theme + flag JS before first paint (avoids theme flash & reveal-flash) -->
+  <script>
+    {
+      document.documentElement.classList.add("js");
+      const stored = localStorage.getItem("color-scheme");
+      if (stored === "light" || stored === "dark") {
+        document.documentElement.classList.add("theme-" + stored);
+        document.querySelector('meta[name="color-scheme"]').content = stored;
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="#content" class="skip-link">Skip to main content</a>
+
+  <!-- ============================ HEADER / NAV ============================ -->
+  <header class="site-header" id="top">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="DevSecOps Agentic — back to top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 3 5 7v8c0 6.1 4.4 10.7 11 13 6.6-2.3 11-6.9 11-13V7Z"/>
+            <circle cx="16" cy="14" r="3"/>
+            <path d="M16 17v4M11 21h10"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>DevSecOps</strong><span class="brand-sub">Agentic Automation</span>
+        </span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary">
+        <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list">
+          <span class="visually-hidden">Toggle navigation menu</span>
+          <span class="menu-bars" aria-hidden="true"></span>
+        </button>
+        <ul id="nav-list" class="nav-list">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#model">Operating model</a></li>
+          <li><a href="#agents">Agents</a></li>
+          <li><a href="#integrations">Integrations</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#governance">Governance</a></li>
+        </ul>
+      </nav>
+
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle light / dark theme">
+        <span class="visually-hidden">Toggle light or dark theme</span>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="scroll-progress" aria-hidden="true"><span id="scroll-bar"></span></div>
+  </header>
+
+  <main id="content" tabindex="-1">
+
+    <!-- ================================ HERO ================================ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+      </div>
+      <div class="shell hero-inner">
+        <p class="eyebrow reveal">
+          <span class="dot" aria-hidden="true"></span>
+          Internal — Restricted · Draft v1.0 · June 2026
+        </p>
+        <h1 id="hero-title" class="hero-title reveal">
+          A governed team of <span class="grad-text">agentic AI</span> across the DevSecOps lifecycle
+        </h1>
+        <p class="hero-lede reveal">
+          A single orchestrator delegating to specialist agents that triage findings, review code,
+          manage the software supply chain, watch cloud posture, and assemble compliance evidence —
+          <strong>sequenced by autonomy, governed by design.</strong>
+        </p>
+
+        <div class="hero-cta reveal">
+          <a class="btn btn-primary" href="#agents">Explore the 21 agents
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#roadmap">View the roadmap</a>
+        </div>
+
+        <dl class="hero-stats reveal">
+          <div class="stat"><dt>Specialist agents</dt><dd><span class="count" data-to="21">0</span></dd></div>
+          <div class="stat"><dt>Autonomy levels</dt><dd><span class="count" data-to="3">0</span></dd></div>
+          <div class="stat"><dt>Lifecycle groups</dt><dd><span class="count" data-to="9">0</span></dd></div>
+          <div class="stat"><dt>Delivery waves</dt><dd><span class="count" data-to="4">0</span></dd></div>
+        </dl>
+
+        <div class="stack-strip reveal" aria-label="Toolchain">
+          <span class="stack-label">Stack</span>
+          <ul class="stack-chips">
+            <li>Azure</li><li>GitHub Enterprise</li><li>Veracode</li><li>SonarQube</li>
+            <li>Sonatype Nexus</li><li>Prisma Cloud</li><li>Jira</li><li>Confluence</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== OVERVIEW ============================== -->
+    <section id="overview" class="section" aria-labelledby="overview-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">01 — Executive overview</p>
+          <h2 id="overview-title">Scale by autonomy, not by tool</h2>
+          <p class="section-intro">
+            Every agent is built on approved platforms and governed through one shared identity,
+            data-protection and audit fabric. The programme is sequenced by autonomy — the safest,
+            most defensible way to scale in a regulated environment. Each wave has an explicit
+            <strong>promotion gate</strong>; nothing advances until the prior wave is stable,
+            accurate and incident-free.
+          </p>
+        </header>
+
+        <ol class="autonomy-flow" aria-label="Autonomy progression">
+          <li class="flow-card reveal" data-level="l1">
+            <span class="flow-tag">Wave 1</span>
+            <h3><span class="lvl-badge lvl-l1">L1</span> Advise</h3>
+            <p>Read-only agents that summarise, explain and report. Immediate value, no change risk.</p>
+            <span class="flow-foot">Read-only</span>
+          </li>
+          <li class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </li>
+          <li class="flow-card reveal" data-level="l2">
+            <span class="flow-tag">Wave 2</span>
+            <h3><span class="lvl-badge lvl-l2">L2</span> Propose</h3>
+            <p>Agents draft tickets, PRs and pages for human approval. They create proposals but never make them effective.</p>
+            <span class="flow-foot">Create-only drafts</span>
+          </li>
+          <li class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </li>
+          <li class="flow-card reveal" data-level="l3">
+            <span class="flow-tag">Wave 3</span>
+            <h3><span class="lvl-badge lvl-l3">L3</span> Act-with-approval</h3>
+            <p>Agents execute reversible changes — merge, deploy, quarantine, rotate, contain — only after explicit human approval.</p>
+            <span class="flow-foot">Execute reversible change</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =========================== OPERATING MODEL =========================== -->
+    <section id="model" class="section section-alt" aria-labelledby="model-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">02 — Operating model</p>
+          <h2 id="model-title">Built once, reused by every agent</h2>
+          <p class="section-intro">
+            A central orchestrator receives an event, decomposes it, delegates to the right specialist,
+            maintains run state, and returns one consolidated result. Specialists are single-purpose and
+            independently governed. <strong>The orchestrator can never escalate autonomy</strong> — it only
+            invokes the autonomy each specialist already holds.
+          </p>
+        </header>
+
+        <!-- Orchestrator pattern diagram -->
+        <div class="pattern reveal" aria-label="Orchestrator and specialists pattern">
+          <div class="pattern-node node-event">
+            <span class="node-label">Event / request</span>
+            <span class="node-sub">webhook · schedule · chat</span>
+          </div>
+          <div class="pattern-link" aria-hidden="true"></div>
+          <div class="pattern-node node-orch">
+            <span class="node-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+            </span>
+            <span class="node-label">Orchestrator</span>
+            <span class="node-sub">routes · maintains state · consolidates</span>
+          </div>
+          <div class="pattern-fan" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <ul class="pattern-specialists">
+            <li>Code &amp; PRs</li>
+            <li>Supply chain</li>
+            <li>Cloud &amp; IaC</li>
+            <li>Release</li>
+            <li>Vuln &amp; reporting</li>
+            <li>Incident response</li>
+          </ul>
+          <div class="pattern-link" aria-hidden="true"></div>
+          <div class="pattern-node node-result">
+            <span class="node-label">One consolidated result</span>
+            <span class="node-sub">cited · attributed · audited</span>
+          </div>
+        </div>
+
+        <!-- Autonomy spine -->
+        <h3 class="subhead reveal">The autonomy spine</h3>
+        <div class="levels-grid">
+          <article class="level-card reveal" data-level="l1">
+            <header>
+              <span class="lvl-badge lvl-l1">L1</span>
+              <div><h4>Advise</h4><p class="level-def">Read-only</p></div>
+            </header>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick ok" aria-hidden="true">✓</span> Allowed</p>
+              <p>Query (read), summarise, explain, prioritise, report, read-only dashboards, advisory notifications.</p>
+            </div>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick no" aria-hidden="true">✕</span> Not allowed</p>
+              <p>Any write to a system of record.</p>
+            </div>
+            <footer class="level-gate"><span class="gate-pin" aria-hidden="true"></span> Gate: none needed — read-only</footer>
+          </article>
+
+          <article class="level-card reveal" data-level="l2">
+            <header>
+              <span class="lvl-badge lvl-l2">L2</span>
+              <div><h4>Propose</h4><p class="level-def">Create-only drafts</p></div>
+            </header>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick ok" aria-hidden="true">✓</span> Allowed</p>
+              <p>Everything in L1 + open <strong>draft</strong> PRs, file <strong>triage</strong> tickets, post PR comments, create <strong>draft/staging</strong> pages.</p>
+            </div>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick no" aria-hidden="true">✕</span> Not allowed</p>
+              <p>Merge, deploy, publish controlled pages, close/approve, waive, rotate, quarantine, delete, config change.</p>
+            </div>
+            <footer class="level-gate"><span class="gate-pin" aria-hidden="true"></span> Gate: human approves each proposal</footer>
+          </article>
+
+          <article class="level-card reveal" data-level="l3">
+            <header>
+              <span class="lvl-badge lvl-l3">L3</span>
+              <div><h4>Act-with-approval</h4><p class="level-def">Execute reversible change</p></div>
+            </header>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick ok" aria-hidden="true">✓</span> Allowed</p>
+              <p>Everything in L2 + execute an action (merge, deploy, quarantine, rotate, contain).</p>
+            </div>
+            <div class="level-row">
+              <p class="level-row-h"><span class="tick no" aria-hidden="true">✕</span> Not allowed</p>
+              <p>Unattended / irreversible action without approval.</p>
+            </div>
+            <footer class="level-gate"><span class="gate-pin" aria-hidden="true"></span> Gate: per-action approval + full audit &amp; rollback</footer>
+          </article>
+        </div>
+
+        <!-- Guardrails -->
+        <h3 class="subhead reveal">Cross-cutting guardrails — every agent, every wave</h3>
+        <ul class="guardrails">
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">🆔</span>
+            <h4>One Entra Agent ID per agent</h4>
+            <p>Least-privilege, short-lived scoped tokens. Read-only by default; write/act scopes added only at L2/L3.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">📇</span>
+            <h4>Registered in Agent 365</h4>
+            <p>Accountable human owner; visible in the registry and Agent Map.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">🛡️</span>
+            <h4>Purview DLP on I/O</h4>
+            <p>Sensitivity labels honoured; no secrets, PII or MNPI in inputs or outputs.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">✅</span>
+            <h4>Allow-listed tools</h4>
+            <p>Connectors verified; untrusted tools sandboxed.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">📡</span>
+            <h4>All activity to Sentinel</h4>
+            <p>Full logging; shadow-agent discovery on.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">🧱</span>
+            <h4>Instruction / data separation</h4>
+            <p>Retrieved code, tickets and pages are treated as data, not instructions — embedded "instructions" are ignored.</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">🙋</span>
+            <h4>Human-in-the-loop</h4>
+            <p>For every write (L2) and every act (L3).</p>
+          </li>
+          <li class="guard reveal">
+            <span class="guard-ico" aria-hidden="true">⚖️</span>
+            <h4>Governance gate before build</h4>
+            <p>Sponsor sign-off, security &amp; privacy review, owner + Agent ID, monitoring rule, quarterly review — in the AI Risk register.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =========================== AGENT CATALOGUE =========================== -->
+    <section id="agents" class="section" aria-labelledby="agents-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">03 — The agent catalogue</p>
+          <h2 id="agents-title">21 agents across 9 lifecycle functions</h2>
+          <p class="section-intro">
+            Filter by autonomy level, build platform or lifecycle group. Each agent runs on one
+            Entra Agent ID with least-privilege scopes that grow only as autonomy is promoted.
+          </p>
+        </header>
+
+        <div class="catalogue-controls reveal">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <label for="agent-search" class="visually-hidden">Search agents</label>
+            <input type="search" id="agent-search" placeholder="Search agents, tools, functions…" autocomplete="off">
+          </div>
+
+          <div class="filter-group" role="group" aria-label="Filter by autonomy level">
+            <span class="filter-label">Autonomy</span>
+            <div class="chips">
+              <button class="chip is-active" data-filter="auto" data-value="all" aria-pressed="true">All</button>
+              <button class="chip" data-filter="auto" data-value="L1" aria-pressed="false"><span class="swatch sw-l1" aria-hidden="true"></span>L1</button>
+              <button class="chip" data-filter="auto" data-value="L2" aria-pressed="false"><span class="swatch sw-l2" aria-hidden="true"></span>L2</button>
+              <button class="chip" data-filter="auto" data-value="L3" aria-pressed="false"><span class="swatch sw-l3" aria-hidden="true"></span>L3</button>
+            </div>
+          </div>
+
+          <div class="filter-group" role="group" aria-label="Filter by build platform">
+            <span class="filter-label">Build</span>
+            <div class="chips">
+              <button class="chip is-active" data-filter="build" data-value="all" aria-pressed="true">All</button>
+              <button class="chip" data-filter="build" data-value="CS" aria-pressed="false">Copilot Studio</button>
+              <button class="chip" data-filter="build" data-value="AF" aria-pressed="false">Azure AI Foundry</button>
+              <button class="chip" data-filter="build" data-value="GH" aria-pressed="false">GitHub Copilot</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="result-count" aria-live="polite"><span id="result-n">21</span> of 21 agents</p>
+
+        <ul class="agent-grid" id="agent-grid"><!-- rendered by app.js --></ul>
+        <p class="empty-state" id="empty-state" hidden>No agents match these filters. <button class="link-btn" id="clear-filters" type="button">Clear filters</button></p>
+        <noscript><p class="section-intro">Enable JavaScript to browse and filter the interactive agent catalogue.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ============================ INTEGRATIONS ============================ -->
+    <section id="integrations" class="section section-alt" aria-labelledby="integrations-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">04 — Integration map</p>
+          <h2 id="integrations-title">How agents reach each tool</h2>
+          <p class="section-intro">
+            Official MCP servers where they exist; wrapped REST APIs where they don't. The scope of an
+            agent is always the scope of its credential.
+          </p>
+        </header>
+
+        <div class="table-wrap reveal">
+          <table class="data-table">
+            <caption class="visually-hidden">Primary integration per tool</caption>
+            <thead>
+              <tr><th scope="col">Tool</th><th scope="col">Primary integration</th><th scope="col">Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Jira &amp; Confluence</th>
+                <td><span class="pill pill-mcp">MCP</span> Atlassian Rovo MCP Server <span class="muted">(GA Feb 2026 · OAuth 2.1)</span></td>
+                <td>Honours account permissions — scope of agent = scope of its credential.</td>
+              </tr>
+              <tr>
+                <th scope="row">SonarQube</th>
+                <td><span class="pill pill-mcp">MCP</span> Official SonarQube MCP Server</td>
+                <td>Quality gates, issues, hotspots; native AI CodeFix / Remediation Agent to orchestrate.</td>
+              </tr>
+              <tr>
+                <th scope="row">GitHub Enterprise</th>
+                <td><span class="pill pill-mcp">MCP</span> GitHub MCP + REST/GraphQL + webhooks</td>
+                <td>Advanced Security; native Copilot coding / autofix agents available.</td>
+              </tr>
+              <tr>
+                <th scope="row">Azure / Azure DevOps</th>
+                <td><span class="pill pill-mcp">MCP</span> Azure DevOps MCP + REST/SDK + managed identity</td>
+                <td>Pipelines, releases, Key Vault, deployments.</td>
+              </tr>
+              <tr>
+                <th scope="row">Veracode</th>
+                <td><span class="pill pill-rest">REST</span> Findings / SCA / Pipeline APIs + CI plugins</td>
+                <td>Wrap read endpoints as OpenAPI tools.</td>
+              </tr>
+              <tr>
+                <th scope="row">Sonatype Nexus</th>
+                <td><span class="pill pill-rest">REST</span> Repository + IQ Server (Lifecycle / Firewall)</td>
+                <td>Component policy, SBOM, quarantine, waivers.</td>
+              </tr>
+              <tr>
+                <th scope="row">Prisma Cloud</th>
+                <td><span class="pill pill-rest">REST</span> CSPM / CWPP / IaC APIs + CI/CD plugins</td>
+                <td>Posture, IaC scan, container / runtime alerts.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note reveal">
+          <span class="note-ico" aria-hidden="true">ℹ️</span>
+          Where no official MCP exists (Veracode, Nexus, Prisma), wrap the REST API as a custom MCP/OpenAPI
+          tool for the Foundry agents. Confirm current vendor MCP availability before building.
+        </p>
+
+        <h3 class="subhead reveal">Build platforms</h3>
+        <div class="platform-cards">
+          <article class="plat-card reveal">
+            <span class="plat-tag">CS</span>
+            <h4>Copilot Studio</h4>
+            <p>Fastest for connector-driven, conversational and approval-centric agents over Jira, Confluence and Teams.</p>
+          </article>
+          <article class="plat-card reveal">
+            <span class="plat-tag">AF</span>
+            <h4>Azure AI Foundry / Agent Service</h4>
+            <p>Code-first, multi-tool orchestration, custom API/MCP wrapping and runtime logic — run network-isolated.</p>
+          </article>
+          <article class="plat-card reveal">
+            <span class="plat-tag">GH</span>
+            <h4>GitHub Copilot coding agent</h4>
+            <p>Anything that writes code or operates inside the repo / CI, with code &amp; secret scanning on agent PRs.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== ROADMAP ============================== -->
+    <section id="roadmap" class="section" aria-labelledby="roadmap-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">05 — Shared roadmap &amp; gates</p>
+          <h2 id="roadmap-title">Overlapping waves, separated by gates</h2>
+          <p class="section-intro">
+            Timings are indicative; fit to the change calendar. Nothing advances across a promotion gate
+            until the prior wave is stable, accurate and incident-free.
+          </p>
+        </header>
+
+        <!-- Gantt -->
+        <div class="gantt reveal" role="img" aria-label="Timeline: Wave 0 weeks 1–2, Wave 1 weeks 2–7, Wave 2 weeks 6–16, Wave 3 weeks 15–26+. L1 gate around week 7, L2 gate around week 15.">
+          <div class="gantt-scroll">
+            <div class="gantt-grid">
+              <div class="gantt-axis" aria-hidden="true">
+                <span>Wk 1</span><span>5</span><span>9</span><span>13</span><span>17</span><span>21</span><span>25</span>
+              </div>
+              <div class="gantt-row">
+                <span class="gantt-name">W0 · Mobilise</span>
+                <div class="gantt-track">
+                  <span class="bar bar-w0" style="--s:1;--e:3;">Setup</span>
+                </div>
+              </div>
+              <div class="gantt-row">
+                <span class="gantt-name">W1 · L1 Advise</span>
+                <div class="gantt-track">
+                  <span class="bar bar-w1" style="--s:2;--e:8;">Read-only wins</span>
+                </div>
+              </div>
+              <div class="gantt-row">
+                <span class="gantt-name">W2 · L2 Propose</span>
+                <div class="gantt-track">
+                  <span class="bar bar-w2" style="--s:6;--e:17;">Drafts for approval</span>
+                </div>
+              </div>
+              <div class="gantt-row">
+                <span class="gantt-name">W3 · L3 Act</span>
+                <div class="gantt-track">
+                  <span class="bar bar-w3" style="--s:15;--e:27;">Approved actions →</span>
+                </div>
+              </div>
+              <span class="gantt-gate" style="--at:8;"><span class="gate-flag">L1 gate</span></span>
+              <span class="gantt-gate" style="--at:16;"><span class="gate-flag">L2 gate</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wave cards -->
+        <div class="wave-cards">
+          <article class="wave-card reveal" data-level="w0">
+            <div class="wave-top"><span class="wave-no">W0</span><span class="wave-weeks">Weeks 1–2</span></div>
+            <h3>Mobilise</h3>
+            <p>Governance, operating model and the shared foundation: identities, Key Vault, connectors/MCP, Purview DLP, Agent 365, Sentinel.</p>
+            <p class="wave-gate"><span aria-hidden="true">⛳</span> Entry: programme charter approved</p>
+          </article>
+          <article class="wave-card reveal" data-level="l1">
+            <div class="wave-top"><span class="wave-no lvl-l1">W1</span><span class="wave-weeks">Weeks 2–7</span></div>
+            <h3>L1 — Advise</h3>
+            <p>Read-only knowledge, gate-watch, metrics and evidence. Immediate signal and reporting wins.</p>
+            <p class="wave-agents"><span class="mini">Agents</span> #4 · #8 · #19 · #3</p>
+            <p class="wave-gate"><span aria-hidden="true">⛳</span> Entry: foundation in place</p>
+          </article>
+          <article class="wave-card reveal" data-level="l2">
+            <div class="wave-top"><span class="wave-no lvl-l2">W2</span><span class="wave-weeks">Weeks 6–16</span></div>
+            <h3>L2 — Propose</h3>
+            <p>Draft tickets, PRs and pages for human approval. Propose-not-act enforced by the platform.</p>
+            <p class="wave-agents"><span class="mini">Agents</span> #1 · #18 · #9 · #2 · #5 · #14 · #11 · #16</p>
+            <p class="wave-gate"><span aria-hidden="true">⛳</span> Entry: L1 gate passed</p>
+          </article>
+          <article class="wave-card reveal" data-level="l3">
+            <div class="wave-top"><span class="wave-no lvl-l3">W3</span><span class="wave-weeks">Weeks 15–26+</span></div>
+            <h3>L3 — Act-with-approval</h3>
+            <p>Execute reversible changes under explicit, in-flow human approval, with rollback designed for every action.</p>
+            <p class="wave-agents"><span class="mini">Agents</span> #6 · #7 · #10 · #12 · #13 · #15 · #17 · #20 · #21</p>
+            <p class="wave-gate"><span aria-hidden="true">⛳</span> Entry: L2 gate passed</p>
+          </article>
+        </div>
+
+        <!-- Promotion gates -->
+        <h3 class="subhead reveal">Promotion gates</h3>
+        <div class="gates">
+          <article class="gate-card reveal">
+            <h4><span class="lvl-badge lvl-l1">L1</span> <span class="gate-arrow" aria-hidden="true">→</span> <span class="lvl-badge lvl-l2">L2</span></h4>
+            <ul class="gate-list">
+              <li>≥ 4 weeks stable</li>
+              <li>Answer / metric accuracy threshold met</li>
+              <li><strong>Zero data-leak incidents</strong></li>
+              <li>Owner sign-off</li>
+              <li>Security review of new <em>write</em> scopes</li>
+            </ul>
+          </article>
+          <article class="gate-card reveal">
+            <h4><span class="lvl-badge lvl-l2">L2</span> <span class="gate-arrow" aria-hidden="true">→</span> <span class="lvl-badge lvl-l3">L3</span></h4>
+            <ul class="gate-list">
+              <li>≥ 4–6 weeks stable</li>
+              <li>Proposal acceptance rate above threshold; low false positives</li>
+              <li><strong>Zero unauthorised-action incidents</strong></li>
+              <li>Owner sign-off</li>
+              <li>Security review of <em>act</em> scopes + rollback design</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= GOVERNANCE ============================= -->
+    <section id="governance" class="section section-alt" aria-labelledby="governance-title">
+      <div class="shell">
+        <header class="section-head reveal">
+          <p class="kicker">06 — Governance &amp; risk</p>
+          <h2 id="governance-title">Control demonstrably maintained as autonomy grows</h2>
+          <p class="section-intro">
+            The consolidated risk register and RACI keep accountability explicit at every level. Blast
+            radius is bounded by design: read → draft → approved-act.
+          </p>
+        </header>
+
+        <h3 class="subhead reveal">Consolidated risk register</h3>
+        <div class="risk-grid">
+          <article class="risk-card reveal">
+            <span class="risk-wave">All waves</span>
+            <h4>Indirect prompt injection via ingested content</h4>
+            <p>Instruction/data separation; allow-listed tools; output DLP; bounded blast radius (read → draft → approved-act).</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">L2 / L3</span>
+            <h4>Agent makes a change effective without approval</h4>
+            <p>Branch protection blocks self-merge; no act scope at L2; JIT per-action approval at L3; "cannot-act" test.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">L2 / L3</span>
+            <h4>Proposal / alert noise</h4>
+            <p>Confidence thresholds + volume caps; acceptance-rate KPI; continuous tuning.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">L2 / L3</span>
+            <h4>Attribution confusion (AI vs human)</h4>
+            <p>Dedicated bot identity; labels + "pending review" notes; <code>actor_is_agent</code>.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">All waves</span>
+            <h4>Credential sprawl / over-scoping</h4>
+            <p>One scoped credential per tool in Key Vault; periodic recertification; JIT act scopes.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">All waves</span>
+            <h4>Over-reliance on agent output</h4>
+            <p>"Advise / propose, not decide"; mandatory citations; human ownership of all actions.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">All waves</span>
+            <h4>Scope creep across autonomy levels</h4>
+            <p>Hard level definitions; promotion gates with fresh security review of new scopes.</p>
+          </article>
+          <article class="risk-card reveal">
+            <span class="risk-wave">All waves</span>
+            <h4>Reviewer overload</h4>
+            <p>CODEOWNERS routing; prioritise high-confidence; volume caps.</p>
+          </article>
+        </div>
+
+        <h3 class="subhead reveal">Programme RACI</h3>
+        <div class="table-wrap reveal">
+          <table class="data-table raci">
+            <caption class="visually-hidden">Responsibility assignment across programme activities. R responsible, A accountable, C consulted, I informed.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">DevSecOps Lead</th>
+                <th scope="col">Repo/Proj Admin</th>
+                <th scope="col">Identity</th>
+                <th scope="col">Data Protection</th>
+                <th scope="col">Agent Owner</th>
+                <th scope="col">Reviewers</th>
+                <th scope="col">SOC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Governance gate &amp; registration</th><td data-r="A">A</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="R">R</td><td data-r="I">I</td><td data-r="I">I</td></tr>
+              <tr><th scope="row">Identities &amp; Conditional Access</th><td data-r="C">C</td><td data-r="I">I</td><td data-r="R">R</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="I">I</td><td data-r="I">I</td></tr>
+              <tr><th scope="row">Credentials &amp; Key Vault</th><td data-r="C">C</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="R">R</td><td data-r="I">I</td><td data-r="I">I</td></tr>
+              <tr><th scope="row">Connectors / MCP &amp; allow-list</th><td data-r="R">R</td><td data-r="I">I</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="I">I</td><td data-r="C">C</td></tr>
+              <tr><th scope="row">Branch protection / staging</th><td data-r="A">A</td><td data-r="R">R</td><td data-r="I">I</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="I">I</td></tr>
+              <tr><th scope="row">Propose/act enforcement &amp; DLP</th><td data-r="A">A</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="R">R</td><td data-r="C">C</td><td data-r="I">I</td><td data-r="C">C</td></tr>
+              <tr><th scope="row">Agent build (all waves)</th><td data-r="A">A</td><td data-r="C">C</td><td data-r="I">I</td><td data-r="C">C</td><td data-r="R">R</td><td data-r="C">C</td><td data-r="I">I</td></tr>
+              <tr><th scope="row">Validation &amp; UAT</th><td data-r="R">R</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="C">C</td><td data-r="C">C</td></tr>
+              <tr><th scope="row">Pilot, approvals &amp; operations</th><td data-r="A">A</td><td data-r="C">C</td><td data-r="I">I</td><td data-r="I">I</td><td data-r="R">R</td><td data-r="R">R</td><td data-r="C">C</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="legend reveal">
+          <span><b class="r-key" data-r="R">R</b> Responsible</span>
+          <span><b class="r-key" data-r="A">A</b> Accountable</span>
+          <span><b class="r-key" data-r="C">C</b> Consulted</span>
+          <span><b class="r-key" data-r="I">I</b> Informed</span>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3 5 7v8c0 6.1 4.4 10.7 11 13 6.6-2.3 11-6.9 11-13V7Z"/><circle cx="16" cy="14" r="3"/><path d="M16 17v4M11 21h10"/></svg>
+        </span>
+        <p><strong>DevSecOps Agentic Automation</strong><br>Programme Plan — Draft v1.0, June 2026</p>
+      </div>
+      <div class="footer-meta">
+        <p><span class="badge-restricted">Internal — Restricted</span></p>
+        <p class="footer-note">
+          Control backbone: Microsoft Agent 365 · Entra Agent ID · Purview · Defender / Sentinel.
+          Integration and feature availability evolves — confirm current MCP/API support and scope names
+          per vendor before building. Informational only — not legal or regulatory advice.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="to-top" id="to-top" type="button" aria-label="Back to top" hidden>
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>
+  </button>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
