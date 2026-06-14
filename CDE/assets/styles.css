@@ -413,12 +413,14 @@ a { color: inherit; text-decoration: none; }
 .control-accent .control-num { color: var(--violet); opacity: 1; }
 
 .compliance { margin-block-start: 3rem; }
+.compliance-sub { text-align: center; color: var(--text-dim); max-inline-size: 46rem; margin: -.4rem auto 1.6rem; font-size: .98rem; }
 .chips { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; }
 .chip {
   font-size: .85rem; font-weight: 600;
   padding: .5rem 1rem; border-radius: 999px;
   background: var(--surface); border: 1px solid var(--border); color: var(--text-dim);
 }
+.chip b { color: var(--cyan); font-weight: 800; letter-spacing: .02em; margin-inline-end: .15rem; }
 
 /* ============================ Timeline ============================ */
 .timeline { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 1.4rem; }
