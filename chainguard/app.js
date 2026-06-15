@@ -1,0 +1,164 @@
+/* ============================================================
+   Secure by Default — Chainguard deck interactions
+   - dot nav + arrows + keyboard
+   - progress bar + slide counter
+   - IntersectionObserver reveals
+   - interactive CVE-remediation calculator
+   ============================================================ */
+(() => {
+  "use strict";
+
+  const deck   = document.getElementById("deck");
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsNav = document.querySelector(".dots");
+  const prevBtn = document.querySelector(".nav--prev");
+  const nextBtn = document.querySelector(".nav--next");
+  const bar     = document.querySelector(".progress__bar");
+  const nowEl   = document.getElementById("slideNow");
+  const totalEl = document.getElementById("slideTotal");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+
+  /* ---- build dot nav ---- */
+  slides.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", `Go to slide ${i + 1}: ${s.dataset.label || ""}`);
+    const tip = document.createElement("span");
+    tip.textContent = s.dataset.label || `Slide ${i + 1}`;
+    b.appendChild(tip);
+    b.addEventListener("click", () => goTo(i));
+    dotsNav.appendChild(b);
+  });
+  const dots = Array.from(dotsNav.children);
+  if (totalEl) totalEl.textContent = String(slides.length).padStart(2, "0");
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  function setActive(i) {
+    if (i === current) return;
+    current = i;
+    dots.forEach((d, n) => d.setAttribute("aria-current", n === i ? "true" : "false"));
+    if (nowEl) nowEl.textContent = String(i + 1).padStart(2, "0");
+    const pct = slides.length > 1 ? (i / (slides.length - 1)) * 100 : 100;
+    if (bar) bar.style.width = pct + "%";
+    if (prevBtn) prevBtn.disabled = i === 0;
+    if (nextBtn) nextBtn.disabled = i === slides.length - 1;
+  }
+
+  /* ---- which slide is in view ---- */
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+          setActive(slides.indexOf(e.target));
+        }
+      });
+    },
+    { root: deck, threshold: [0.5] }
+  );
+  slides.forEach((s) => spy.observe(s));
+
+  /* ---- arrows ---- */
+  prevBtn?.addEventListener("click", () => goTo(current - 1));
+  nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+  /* ---- keyboard ---- */
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+      if (e.target.tagName === "INPUT") return;
+      e.preventDefault(); goTo(current + 1);
+    } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+      e.preventDefault(); goTo(current - 1);
+    } else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End")  { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  setActive(0);
+
+  /* ---- reveals (progressive enhancement) ---- */
+  document.documentElement.classList.add("js-anim");
+  if (reduceMotion) {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  } else {
+    const revObs = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("in"); obs.unobserve(e.target); }
+        });
+      },
+      { root: deck, threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => revObs.observe(el));
+  }
+
+  /* ============================================================
+     CVE-REMEDIATION CALCULATOR
+     Illustrative rates — edit to match your own scan + cost data.
+     ============================================================ */
+  const CVES_PER_IMAGE_MONTH = 12;  // CVEs needing remediation per image / month
+  const HOURS_PER_CVE        = 2.5; // eng-hours to triage, patch, test, redeploy
+  const ENG_RATE             = 100; // $ loaded engineering cost / hour
+  const REDUCTION            = 0.95; // share of CVE work removed on hardened images
+
+  const vol   = document.getElementById("vol");
+  const split = document.getElementById("split");
+  const volOut   = document.getElementById("volOut");
+  const splitOut = document.getElementById("splitOut");
+  const costAllEl = document.getElementById("costAll");
+  const costMixEl = document.getElementById("costMix");
+  const saveEl    = document.getElementById("save");
+  const tagAll = document.getElementById("tagAll");
+  const tagMix = document.getElementById("tagMix");
+  const savePct = document.getElementById("savePct");
+  const orgSave = document.getElementById("orgSave");
+  const orgHours = document.getElementById("orgHours");
+
+  const usd0 = (n) => "$" + Math.round(n).toLocaleString("en-US");
+  const hrs  = (n) => Math.round(n).toLocaleString("en-US") + " hrs/mo";
+
+  function recalc() {
+    if (!vol || !split) return;
+    const images = +vol.value;
+    const migShare = +split.value / 100;
+
+    const migrated  = images * migShare;
+    const untouched = images - migrated;
+
+    // monthly engineering hours of CVE remediation
+    const hoursAll = images * CVES_PER_IMAGE_MONTH * HOURS_PER_CVE;
+    const hoursMix =
+      (untouched * CVES_PER_IMAGE_MONTH * HOURS_PER_CVE) +
+      (migrated  * CVES_PER_IMAGE_MONTH * HOURS_PER_CVE * (1 - REDUCTION));
+
+    const hoursSavedMo = hoursAll - hoursMix;
+    const hoursSavedYr = hoursSavedMo * 12;
+    const valueYr      = hoursSavedYr * ENG_RATE;
+    const pct = hoursAll > 0 ? (hoursSavedMo / hoursAll) * 100 : 0;
+
+    if (volOut)   volOut.textContent = images.toLocaleString("en-US");
+    if (splitOut) splitOut.textContent = Math.round(migShare * 100) + "%";
+
+    if (costAllEl) costAllEl.textContent = hrs(hoursAll);
+    if (costMixEl) costMixEl.textContent = hrs(hoursMix);
+    if (saveEl)    saveEl.textContent = Math.round(hoursSavedYr).toLocaleString("en-US") + " hrs";
+    if (savePct)   savePct.textContent = pct.toFixed(0) + "% less CVE remediation toil";
+
+    if (tagAll) tagAll.textContent =
+      "≈ " + Math.round(images * CVES_PER_IMAGE_MONTH).toLocaleString("en-US") + " CVEs to triage / month";
+    if (tagMix) tagMix.textContent =
+      "≈ " + Math.round((untouched + migrated * (1 - REDUCTION)) * CVES_PER_IMAGE_MONTH).toLocaleString("en-US") + " CVEs / month";
+
+    // mirror onto the "at scale" slide
+    if (orgHours) orgHours.textContent = Math.round(hoursSavedYr / 1000) + "k+";
+    if (orgSave)  orgSave.textContent = usd0(valueYr);
+  }
+
+  vol?.addEventListener("input", recalc);
+  split?.addEventListener("input", recalc);
+  recalc();
+})();

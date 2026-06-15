@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="An enterprise business case for adopting Chainguard secure-by-default container images and hardened library repositories — minimal, signed, near-zero-CVE software, built from source, to cut vulnerability toil and pass audits." />
+  <title>Secure by Default — Chainguard for the Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Slide-number / brand -->
+  <header class="topbar">
+    <span class="topbar__brand">
+      <span class="dot"></span> Chainguard&nbsp;·&nbsp;Secure by Default
+    </span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">14</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-label="Title">
+      <div class="wrap">
+        <p class="eyebrow reveal">Platform Security · Software Supply Chain</p>
+        <h1 class="reveal">Secure by <span class="grad">default</span>.</h1>
+        <p class="lede reveal">Replace the base images and open-source dependencies your enterprise
+          builds on with <b>Chainguard</b> — minimal, signed, <b>near-zero-CVE</b> software built from
+          source. Stop patching vulnerabilities you never needed to ship.</p>
+        <div class="title-meta reveal">
+          <span class="pill">Hardened container images</span>
+          <span class="pill">Secure library repository</span>
+          <span class="pill">Provenance &amp; SBOMs</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 — THE THREAT REALITY -->
+    <section class="slide" id="s2" data-label="The reality">
+      <div class="wrap">
+        <p class="kicker reveal">The starting point</p>
+        <h2 class="reveal">Your software is mostly <span class="grad">other people's code</span>.</h2>
+        <p class="body reveal">Every container you ship is a stack of someone else's base OS, language
+          runtime, and open-source packages. That inherited surface is where the CVEs live — and where
+          modern supply-chain attacks land. You're accountable for code you didn't write.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">70–90%</span><span class="stat__lbl">of a typical app is open-source &amp; third-party code</span></div>
+          <div class="stat reveal"><span class="stat__num">~28k+</span><span class="stat__lbl">new CVEs disclosed per year — and rising</span></div>
+          <div class="stat reveal"><span class="stat__num">3</span><span class="stat__lbl">days median for an exploit to appear after disclosure</span></div>
+        </div>
+        <p class="foot reveal">Log4Shell, SolarWinds, the <b>xz</b> backdoor — the perimeter moved into your
+          build. Regulators noticed: SBOMs and provenance are now table stakes for the enterprise.</p>
+      </div>
+    </section>
+
+    <!-- 03 — THE CVE TREADMILL -->
+    <section class="slide" id="s3" data-label="The treadmill">
+      <div class="wrap">
+        <p class="kicker reveal">The problem</p>
+        <h2 class="reveal">Your teams run on a CVE treadmill.</h2>
+        <div class="grid-2">
+          <ul class="checklist reveal">
+            <li data-x>Bloated base images ship hundreds of packages you never call</li>
+            <li data-x>Each one is a scanner finding someone must triage and patch</li>
+            <li data-x>Engineers patch CVEs instead of building product</li>
+            <li data-x>Audits stall on "where did this binary come from?"</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">Most of the vulnerabilities you remediate are in software you never run.</p>
+            <p>A full OS distro in a container means a shell, a package manager, and dozens of libraries
+              that exist only to generate scanner noise — and widen the blast radius.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — THE IDEA -->
+    <section class="slide slide--accent" id="s4" data-label="The idea">
+      <div class="wrap">
+        <p class="kicker reveal">The idea</p>
+        <h2 class="reveal">Don't out-patch the problem. <span class="grad">Start from secure.</span></h2>
+        <p class="body reveal">Shift security all the way left — to the artifact itself. Build on images and
+          dependencies that are <b>minimal by design</b>, <b>built from source</b>, <b>signed</b>, and
+          <b>continuously rebuilt</b> so CVEs are fixed upstream before they ever reach your scanners.</p>
+        <div class="lanes">
+          <div class="lane reveal">
+            <span class="lane__tag">Layer 1 · Runtime</span>
+            <h3>Chainguard Images</h3>
+            <p>Minimal, distroless container images on the Wolfi base — no shell, no package manager in
+              production, near-zero known CVEs, signed with full provenance.</p>
+          </div>
+          <div class="lane lane--arrow reveal" aria-hidden="true">＋</div>
+          <div class="lane lane--alt reveal">
+            <span class="lane__tag">Layer 2 · Dependencies</span>
+            <h3>Chainguard Libraries</h3>
+            <p>Open-source language packages — Java, Python and more — rebuilt from source in a hardened
+              factory, so the dependencies <em>inside</em> your app are trusted too.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — CHAINGUARD IMAGES -->
+    <section class="slide" id="s5" data-label="Images">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The runtime</p>
+        <h2 class="reveal">Chainguard Images: secure by construction.</h2>
+        <div class="cards">
+          <article class="card reveal">
+            <header><h3>Minimal</h3><span class="card__tag">Smaller surface</span></header>
+            <p>Distroless by default — only what your app needs to run. No shell, no package manager, often
+              90%+ smaller than a general-purpose base image.</p>
+            <ul>
+              <li>Fewer packages = fewer CVEs</li>
+              <li>Tiny attack surface</li>
+              <li>Faster pulls &amp; cold starts</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>Near-zero CVE</h3><span class="card__tag">Always current</span></header>
+            <p>Rebuilt continuously from source against the latest patched upstreams, with a remediation SLA.
+              You inherit fixes instead of chasing them.</p>
+            <ul>
+              <li>Daily rebuilds</li>
+              <li>CVE remediation SLA</li>
+              <li>Clean scanner reports</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>Provable</h3><span class="card__tag">Signed · SBOM</span></header>
+            <p>Every image is Sigstore-signed and ships an SBOM plus SLSA build provenance — verifiable
+              evidence of exactly what's inside and how it was built.</p>
+            <ul>
+              <li>Cryptographic signatures</li>
+              <li>SBOM per image</li>
+              <li>FIPS &amp; FedRAMP options</li>
+            </ul>
+          </article>
+        </div>
+        <p class="foot reveal">Drop-in compatible with your existing Dockerfiles and registries — usually a
+          one-line <code>FROM</code> change to a hardened, supported equivalent.</p>
+      </div>
+    </section>
+
+    <!-- 06 — CHAINGUARD LIBRARIES -->
+    <section class="slide" id="s6" data-label="Libraries">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The dependencies</p>
+        <h2 class="reveal">Securing the packages <em>inside</em> the app.</h2>
+        <p class="body reveal">A hardened image doesn't help if you pull a poisoned package from the public
+          registry. Chainguard Libraries rebuilds popular open-source dependencies from source in the same
+          secure factory — so the supply chain is trusted end to end.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Built from source</h3><p>No mystery prebuilt binaries — each artifact is compiled in a hardened, reproducible pipeline.</p></div>
+          <div class="feat reveal"><h3>Drop-in registry</h3><p>A trusted Maven / PyPI-compatible endpoint. Point your build at it; no code changes.</p></div>
+          <div class="feat reveal"><h3>Signed &amp; attested</h3><p>Provenance and SBOMs on every package, so audits can trace each dependency to its source.</p></div>
+          <div class="feat reveal"><h3>Tamper-resistant</h3><p>Defends against typosquats, dependency confusion and registry-poisoning attacks.</p></div>
+          <div class="feat reveal"><h3>Always patched</h3><p>Vulnerable transitive dependencies get rebuilt and remediated, not just flagged.</p></div>
+          <div class="feat reveal"><h3>Language coverage</h3><p>Java first, with Python and more — covering the ecosystems your enterprise ships most.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 — CVE COMPARISON -->
+    <section class="slide" id="s7" data-label="The numbers">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The difference</p>
+        <h2 class="reveal">Same workload. A fraction of the CVEs.</h2>
+        <p class="body reveal">Known CVEs in a representative production image — a popular language runtime on a
+          general-purpose base, versus the hardened Chainguard equivalent running the same app.</p>
+        <div class="bars reveal" role="img" aria-label="Known CVEs: standard base image well over a hundred; slim variant dozens; Chainguard near zero.">
+          <div class="bar"><span class="bar__lbl">Standard base image <small>(full distro)</small></span><span class="bar__track"><span class="bar__fill" style="--w:100%"><b>150+ CVEs</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">"Slim" variant <small>(trimmed)</small></span><span class="bar__track"><span class="bar__fill" style="--w:42%"><b>~60 CVEs</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">Chainguard image <small>(hardened)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:4%"><b>0–1 CVE</b></span></span></div>
+        </div>
+        <p class="foot reveal">Fewer findings means less triage, fewer emergency patches, and audit reports that
+          come back clean. <span class="muted">Counts are illustrative — validate against a scan of your own images.</span></p>
+      </div>
+    </section>
+
+    <!-- 08 — INTERACTIVE CALCULATOR -->
+    <section class="slide slide--accent" id="s8" data-label="Calculator">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Do the math</p>
+        <h2 class="reveal">What does the treadmill cost you?</h2>
+        <div class="calc reveal">
+          <div class="calc__controls">
+            <label class="ctl">
+              <span class="ctl__top"><span>Container images in your fleet</span><b id="volOut">600</b></span>
+              <input id="vol" type="range" min="50" max="3000" step="50" value="600" />
+            </label>
+            <label class="ctl">
+              <span class="ctl__top"><span>Share migrated to Chainguard</span><b id="splitOut">70%</b></span>
+              <input id="split" type="range" min="0" max="100" step="5" value="70" />
+            </label>
+          </div>
+          <div class="calc__out">
+            <div class="result result--bad">
+              <span class="result__lbl">Remediation effort today</span>
+              <span class="result__num" id="costAll">—</span>
+              <span class="result__tag" id="tagAll">—</span>
+            </div>
+            <div class="result result--good">
+              <span class="result__lbl">With Chainguard adopted</span>
+              <span class="result__num" id="costMix">—</span>
+              <span class="result__tag" id="tagMix">—</span>
+            </div>
+            <div class="result result--save">
+              <span class="result__lbl">Engineering recovered / year</span>
+              <span class="result__num" id="save">—</span>
+              <span class="result__tag" id="savePct">—</span>
+            </div>
+          </div>
+        </div>
+        <p class="foot reveal">Assumes ≈ 12 CVEs needing remediation per image / month at ≈ 2.5 engineering
+          hours each, and that hardened images remove ≈ 95% of that work.
+          <span class="muted">Illustrative model — adjust rates to your data.</span></p>
+      </div>
+    </section>
+
+    <!-- 09 — AT SCALE -->
+    <section class="slide" id="s9" data-label="At scale">
+      <div class="wrap">
+        <p class="kicker reveal">At scale</p>
+        <h2 class="reveal">The saving compounds across the fleet.</h2>
+        <p class="body reveal">Per-image relief multiplied by thousands of images is a step-change in security
+          posture <em>and</em> reclaimed engineering capacity — without adding headcount.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">~95%</span><span class="stat__lbl">fewer CVEs to triage on migrated images</span></div>
+          <div class="stat reveal"><span class="stat__num" id="orgHours">—</span><span class="stat__lbl">engineer-hours reclaimed / year (above)</span></div>
+          <div class="stat reveal"><span class="stat__num" id="orgSave">—</span><span class="stat__lbl">est. annual value of that time (above)</span></div>
+        </div>
+        <p class="foot reveal">Reinvest recovered time in product and resilience instead of perpetual patching —
+          and shrink your real attack surface at the same time.</p>
+      </div>
+    </section>
+
+    <!-- 10 — SECURE BY DEFAULT / COMPLIANCE -->
+    <section class="slide" id="s10" data-label="Compliance">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Why it satisfies the auditors</p>
+        <h2 class="reveal">Secure <em>and</em> provable, out of the box.</h2>
+        <p class="body reveal">Secure-by-default isn't only fewer CVEs — it's the evidence enterprise governance
+          demands, generated automatically for every artifact.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>SBOM everywhere</h3><p>A complete bill of materials per image and package — answer "what's in production?" instantly.</p></div>
+          <div class="feat reveal"><h3>Signed provenance</h3><p>Sigstore signatures + SLSA build attestations prove origin and integrity end to end.</p></div>
+          <div class="feat reveal"><h3>FIPS &amp; FedRAMP</h3><p>FIPS-validated and FedRAMP-ready variants for regulated and public-sector workloads.</p></div>
+          <div class="feat reveal"><h3>EO 14028 / NIST</h3><p>Maps directly to federal supply-chain mandates, SSDF and SBOM requirements.</p></div>
+          <div class="feat reveal"><h3>Hardening baselines</h3><p>Minimal, non-root, STIG-aligned defaults reduce the controls you must implement yourself.</p></div>
+          <div class="feat reveal"><h3>Enterprise support</h3><p>Backed by SLAs and an enterprise support contract — not an unowned community pull.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 — ARCHITECTURE -->
+    <section class="slide" id="s11" data-label="Architecture">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">How it plugs in</p>
+        <h2 class="reveal">A drop-in swap, not a re-platform.</h2>
+        <div class="flow reveal">
+          <div class="node">Developer<small>Dockerfile / build</small></div>
+          <span class="arrow">→</span>
+          <div class="node node--hub">Chainguard<small>images + libraries</small></div>
+          <span class="arrow arrow--split">→</span>
+          <div class="node-col">
+            <div class="node node--img">CI/CD pipeline<small>verify signatures + SBOM</small></div>
+            <div class="node node--lib">Your registry<small>golden images, deploy</small></div>
+          </div>
+        </div>
+        <ul class="checklist checklist--tight reveal">
+          <li data-ok>Change the <code>FROM</code> line; mirror images into your internal registry</li>
+          <li data-ok>Point Maven / PyPI builds at the Chainguard Libraries endpoint</li>
+          <li data-ok>Enforce signature + provenance verification as an admission policy</li>
+          <li data-ok>Feed SBOMs into your existing vuln-management and audit tooling</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 12 — ROLLOUT -->
+    <section class="slide" id="s12" data-label="Rollout">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Getting there</p>
+        <h2 class="reveal">A low-risk, 4-phase rollout.</h2>
+        <ol class="timeline">
+          <li class="reveal"><span class="timeline__no">1</span><div><h3>Baseline · Weeks 1–2</h3><p>Scan today's top images, quantify CVE backlog &amp; remediation hours. Pick the highest-volume base images and runtimes.</p></div></li>
+          <li class="reveal"><span class="timeline__no">2</span><div><h3>Pilot · Weeks 3–5</h3><p>Swap <code>FROM</code> for one or two services. Wire signature verification &amp; SBOM into CI. Compare scanner output before/after.</p></div></li>
+          <li class="reveal"><span class="timeline__no">3</span><div><h3>Govern · Weeks 6–8</h3><p>Mirror to internal registry, add admission policy, onboard Chainguard Libraries for a key language. Security sign-off.</p></div></li>
+          <li class="reveal"><span class="timeline__no">4</span><div><h3>Scale · Quarter 2+</h3><p>Make hardened images the golden default. Migrate the fleet, track CVE burn-down &amp; reclaimed hours monthly.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 13 — RISKS -->
+    <section class="slide" id="s13" data-label="Risks">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Honest about trade-offs</p>
+        <h2 class="reveal">Risks &amp; mitigations.</h2>
+        <div class="risk-grid">
+          <div class="risk reveal"><h3>No shell to debug</h3><p>Distroless removes the shell. Use the matching <code>-dev</code> image in CI and ephemeral debug containers in prod — a security win, not a blocker.</p></div>
+          <div class="risk reveal"><h3>Migration effort</h3><p>Most moves are a one-line <code>FROM</code> change. Start with high-volume bases for the biggest return; phase the long tail.</p></div>
+          <div class="risk reveal"><h3>Vendor reliance</h3><p>Images are standard OCI; libraries are standard formats. Mirror everything internally — no hard lock-in if you ever exit.</p></div>
+          <div class="risk reveal"><h3>Cost vs. free base</h3><p>The license is offset by reclaimed engineering hours, avoided breaches, and faster audits — quantified on the calculator slide.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 — THE ASK -->
+    <section class="slide slide--title slide--close" id="s14" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal">The ask</p>
+        <h2 class="reveal">Approve a <span class="grad">2-service pilot</span> this quarter.</h2>
+        <p class="lede reveal">We swap two high-volume services to Chainguard images, wire signature and SBOM
+          verification into CI, and report the before/after CVE counts and reclaimed engineering hours.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--solid">Near-zero CVEs</span>
+          <span class="pill pill--solid">Audit-ready provenance</span>
+          <span class="pill pill--solid">Engineers off the treadmill</span>
+        </div>
+        <p class="foot reveal">Let's start from secure.</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+  </main>
+
+  <!-- nav arrows -->
+  <button class="nav nav--prev" aria-label="Previous slide">‹</button>
+  <button class="nav nav--next" aria-label="Next slide">›</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
