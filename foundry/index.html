@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A business case for supplementing GitHub Copilot with Azure AI Foundry models (DeepSeek, MiniMax, Kimi) to do more inside a $30/user/month AI budget." />
+  <title>Stretch the $30 — Copilot + Azure AI Foundry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Slide-number / brand -->
+  <header class="topbar">
+    <span class="topbar__brand">
+      <span class="dot"></span> Copilot&nbsp;×&nbsp;Azure AI Foundry
+    </span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">14</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-label="Title">
+      <div class="wrap">
+        <p class="eyebrow reveal">Engineering Productivity · Cost Strategy</p>
+        <h1 class="reveal">Stretch the <span class="grad">$30</span>.</h1>
+        <p class="lede reveal">Supplement GitHub Copilot with Azure AI Foundry models —
+          <b>DeepSeek</b>, <b>MiniMax</b> and <b>Kimi</b> — to do far more engineering
+          inside the same <b>$30 / developer / month</b> AI budget.</p>
+        <div class="title-meta reveal">
+          <span class="pill">Multi-model routing</span>
+          <span class="pill">Enterprise governance</span>
+          <span class="pill">Lower $ per request</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 — THE BUDGET REALITY -->
+    <section class="slide" id="s2" data-label="The budget">
+      <div class="wrap">
+        <p class="kicker reveal">The starting point</p>
+        <h2 class="reveal">Every developer has a <span class="grad">$30/month</span> AI budget.</h2>
+        <p class="body reveal">It's a real, finite envelope. The question isn't "should we use AI" —
+          it's <b>how much useful engineering can each dollar buy</b> before the month runs out.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">$30</span><span class="stat__lbl">per dev / month</span></div>
+          <div class="stat reveal"><span class="stat__num">$0.04</span><span class="stat__lbl">per Copilot premium request (overage)</span></div>
+          <div class="stat reveal"><span class="stat__num">~750</span><span class="stat__lbl">premium requests if spent only on overage</span></div>
+        </div>
+        <p class="foot reveal">Premium requests also carry <b>model multipliers</b> — a single call to a
+          top-tier model can cost 1×–50× of the allowance. The budget burns faster than the request count suggests.</p>
+      </div>
+    </section>
+
+    <!-- 03 — THE BOTTLENECK -->
+    <section class="slide" id="s3" data-label="The bottleneck">
+      <div class="wrap">
+        <p class="kicker reveal">The problem</p>
+        <h2 class="reveal">Heavy users hit the wall mid-month.</h2>
+        <div class="grid-2">
+          <ul class="checklist reveal">
+            <li data-x>Premium allowance exhausted by week 2–3 for power users</li>
+            <li data-x>Agentic + long-context tasks burn multipliers fastest</li>
+            <li data-x>Bulk work (refactors, tests, docs) wastes premium calls</li>
+            <li data-x>Overage either blows the budget or gets blocked</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">One model tier for <em>every</em> task is the inefficiency.</p>
+            <p>A premium frontier model answering "rename this variable across the repo"
+              is a Ferrari in a school zone — paying top rate for routine work.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — THE IDEA -->
+    <section class="slide slide--accent" id="s4" data-label="The idea">
+      <div class="wrap">
+        <p class="kicker reveal">The idea</p>
+        <h2 class="reveal">Don't replace Copilot. <span class="grad">Route around its expensive lane.</span></h2>
+        <p class="body reveal">Keep GitHub Copilot for what it's best at — inline completions and tightly
+          integrated chat. Add Azure AI Foundry as a <b>second, cheaper lane</b> for the high-volume and
+          long-context work. Send each task to the model that does it best, for the least money.</p>
+        <div class="lanes">
+          <div class="lane reveal">
+            <span class="lane__tag">Lane 1 · Keep</span>
+            <h3>GitHub Copilot</h3>
+            <p>Inline completion, quick chat, IDE-native flow. Reserve premium requests for high-value, interactive moments.</p>
+          </div>
+          <div class="lane lane--arrow reveal" aria-hidden="true">＋</div>
+          <div class="lane lane--alt reveal">
+            <span class="lane__tag">Lane 2 · Add</span>
+            <h3>Azure AI Foundry</h3>
+            <p>DeepSeek · MiniMax · Kimi for bulk generation, agentic loops, refactors and long-context reasoning — at a fraction of the cost.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — MEET THE MODELS -->
+    <section class="slide" id="s5" data-label="The models">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The supplement</p>
+        <h2 class="reveal">Three frontier-class models, hosted in your Azure tenant.</h2>
+        <div class="cards">
+          <article class="card reveal">
+            <header><h3>DeepSeek</h3><span class="card__tag">Reasoning · Code</span></header>
+            <p>R1-class reasoning and strong V3 coding. Excellent for refactors, test generation,
+              debugging and step-by-step problem solving — at open-model token prices.</p>
+            <ul>
+              <li>Deep chain-of-thought reasoning</li>
+              <li>Top-tier coding benchmarks</li>
+              <li>Very low cost per million tokens</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>MiniMax</h3><span class="card__tag">Long context · Agentic</span></header>
+            <p>Built for high-throughput, agentic and long-document workloads. A workhorse for
+              codebase-wide tasks and multi-step automation that would shred a premium allowance.</p>
+            <ul>
+              <li>Large context window</li>
+              <li>Strong agentic tool-use</li>
+              <li>Cost-efficient at volume</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>Kimi</h3><span class="card__tag">Massive context · Code</span></header>
+            <p>Moonshot's Kimi (K2) pairs huge context with strong coding ability — ideal for reasoning
+              over entire services, large PRs and sprawling logs in a single pass.</p>
+            <ul>
+              <li>Very large context window</li>
+              <li>Strong agentic coding</li>
+              <li>Great $ / long-context task</li>
+            </ul>
+          </article>
+        </div>
+        <p class="foot reveal">All three run behind Azure AI Foundry endpoints — your tenant, your network, your governance.</p>
+      </div>
+    </section>
+
+    <!-- 06 — COST COMPARISON -->
+    <section class="slide" id="s6" data-label="Cost">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The economics</p>
+        <h2 class="reveal">The same task, a fraction of the cost.</h2>
+        <p class="body reveal">Cost of one representative request (≈ 4K input + 1K output tokens). Premium
+          overage is billed per request; Foundry is billed per token, so high-volume work gets dramatically cheaper.</p>
+        <div class="bars reveal" role="img" aria-label="Cost per request: Copilot premium overage about 4 cents; Foundry models about a third of a cent.">
+          <div class="bar"><span class="bar__lbl">Copilot premium <small>(overage)</small></span><span class="bar__track"><span class="bar__fill" style="--w:100%"><b>$0.040</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">DeepSeek-V3 <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:7.5%"><b>$0.0030</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">Kimi K2 <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:9%"><b>$0.0036</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">MiniMax <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:6%"><b>$0.0024</b></span></span></div>
+        </div>
+        <p class="foot reveal">≈ <b>10–15× cheaper per request</b> for routine, high-volume work.
+          <span class="muted">Figures are illustrative — validate against current Azure AI Foundry pricing for your region.</span></p>
+      </div>
+    </section>
+
+    <!-- 07 — CAPABILITY / ROUTING MATRIX -->
+    <section class="slide" id="s7" data-label="Routing">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The routing logic</p>
+        <h2 class="reveal">Right task → right model.</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr><th>Workload</th><th>Best lane</th><th>Why</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Inline completion / quick chat</td><td><span class="tag tag--copilot">Copilot</span></td><td>IDE-native, lowest latency, already paid for</td></tr>
+              <tr><td>Bulk refactor across repo</td><td><span class="tag tag--ds">DeepSeek</span></td><td>Strong code edits at token prices, not per-request</td></tr>
+              <tr><td>Test &amp; doc generation</td><td><span class="tag tag--ds">DeepSeek</span></td><td>High volume, routine — cheapest lane wins</td></tr>
+              <tr><td>Agentic multi-step tasks</td><td><span class="tag tag--mm">MiniMax</span></td><td>Tool-use throughput without burning multipliers</td></tr>
+              <tr><td>Reason over whole service / big PR</td><td><span class="tag tag--kimi">Kimi</span></td><td>Massive context in a single pass</td></tr>
+              <tr><td>Tricky debugging / architecture</td><td><span class="tag tag--ds">DeepSeek&nbsp;R1</span></td><td>Deep reasoning at low cost</td></tr>
+              <tr><td>High-stakes, customer-facing answer</td><td><span class="tag tag--copilot">Copilot premium</span></td><td>Spend premium where quality matters most</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 — INTERACTIVE CALCULATOR -->
+    <section class="slide slide--accent" id="s8" data-label="Calculator">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Do the math</p>
+        <h2 class="reveal">How far does $30 actually go?</h2>
+        <div class="calc reveal">
+          <div class="calc__controls">
+            <label class="ctl">
+              <span class="ctl__top"><span>AI requests / dev / month</span><b id="volOut">1,200</b></span>
+              <input id="vol" type="range" min="200" max="4000" step="100" value="1200" />
+            </label>
+            <label class="ctl">
+              <span class="ctl__top"><span>Share routed to Foundry</span><b id="splitOut">70%</b></span>
+              <input id="split" type="range" min="0" max="100" step="5" value="70" />
+            </label>
+          </div>
+          <div class="calc__out">
+            <div class="result result--bad">
+              <span class="result__lbl">Copilot premium only</span>
+              <span class="result__num" id="costAll">—</span>
+              <span class="result__tag" id="tagAll">—</span>
+            </div>
+            <div class="result result--good">
+              <span class="result__lbl">Copilot + Foundry routing</span>
+              <span class="result__num" id="costMix">—</span>
+              <span class="result__tag" id="tagMix">—</span>
+            </div>
+            <div class="result result--save">
+              <span class="result__lbl">Monthly saving / dev</span>
+              <span class="result__num" id="save">—</span>
+              <span class="result__tag" id="savePct">—</span>
+            </div>
+          </div>
+        </div>
+        <p class="foot reveal">Assumes $0.04 / premium request vs ≈ $0.003 / Foundry request.
+          <span class="muted">Illustrative model — adjust rates to your contracted pricing.</span></p>
+      </div>
+    </section>
+
+    <!-- 09 — FLEET-SCALE IMPACT -->
+    <section class="slide" id="s9" data-label="At scale">
+      <div class="wrap">
+        <p class="kicker reveal">At scale</p>
+        <h2 class="reveal">Multiply it by the whole org.</h2>
+        <p class="body reveal">The per-developer saving compounds. The same budget either costs less —
+          or, better, buys <b>more AI-assisted engineering</b> at no extra spend.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">~3×</span><span class="stat__lbl">more requests inside the same $30</span></div>
+          <div class="stat reveal"><span class="stat__num">$0</span><span class="stat__lbl">extra budget required to start</span></div>
+          <div class="stat reveal"><span class="stat__num" id="orgSave">$25k+</span><span class="stat__lbl">est. annual saving / 100 devs</span></div>
+        </div>
+        <p class="foot reveal">Reinvest the saving as throughput: more refactors shipped, more tests written, less waiting on quota.</p>
+      </div>
+    </section>
+
+    <!-- 10 — GOVERNANCE -->
+    <section class="slide" id="s10" data-label="Governance">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Why Azure AI Foundry</p>
+        <h2 class="reveal">Cheaper <em>and</em> enterprise-grade.</h2>
+        <p class="body reveal">These aren't consumer API keys. Running the models through Azure AI Foundry
+          keeps everything inside your existing Microsoft security and compliance perimeter.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Your tenant</h3><p>Data stays in your Azure subscription. No training on your prompts or code.</p></div>
+          <div class="feat reveal"><h3>Private networking</h3><p>VNet integration, private endpoints, managed identity — no public egress.</p></div>
+          <div class="feat reveal"><h3>Content safety</h3><p>Built-in guardrails, abuse monitoring and configurable filters.</p></div>
+          <div class="feat reveal"><h3>Region &amp; residency</h3><p>Choose hosting regions to meet data-residency requirements.</p></div>
+          <div class="feat reveal"><h3>Unified billing</h3><p>One Azure invoice, cost tags, budgets and alerts per team.</p></div>
+          <div class="feat reveal"><h3>No lock-in</h3><p>Swap or add models as the frontier moves — same endpoint pattern.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 — ARCHITECTURE -->
+    <section class="slide" id="s11" data-label="Architecture">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">How it plugs in</p>
+        <h2 class="reveal">A thin routing layer, familiar tools.</h2>
+        <div class="flow reveal">
+          <div class="node">VS Code / IDE<small>Developer</small></div>
+          <span class="arrow">→</span>
+          <div class="node node--hub">Model Router<small>policy + cost rules</small></div>
+          <span class="arrow arrow--split">→</span>
+          <div class="node-col">
+            <div class="node node--copilot">GitHub Copilot<small>premium lane</small></div>
+            <div class="node node--foundry">Azure AI Foundry<small>DeepSeek · MiniMax · Kimi</small></div>
+          </div>
+        </div>
+        <ul class="checklist checklist--tight reveal">
+          <li data-ok>Copilot stays the default for inline + quick chat</li>
+          <li data-ok>Foundry models exposed via OpenAI-compatible endpoints — usable from Copilot Chat (BYOK), Continue, or an internal gateway</li>
+          <li data-ok>Routing rules by task type, file size, or explicit model pick</li>
+          <li data-ok>Central telemetry: cost per team, per model, per task</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 12 — ROLLOUT -->
+    <section class="slide" id="s12" data-label="Rollout">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Getting there</p>
+        <h2 class="reveal">A low-risk, 4-phase rollout.</h2>
+        <ol class="timeline">
+          <li class="reveal"><span class="timeline__no">1</span><div><h3>Pilot · Weeks 1–2</h3><p>Stand up Foundry endpoints for DeepSeek/Kimi. Onboard one volunteer squad. Measure baseline cost &amp; quality.</p></div></li>
+          <li class="reveal"><span class="timeline__no">2</span><div><h3>Route · Weeks 3–4</h3><p>Add routing rules for bulk + long-context work. Wire Copilot Chat BYOK or gateway. Track quota relief.</p></div></li>
+          <li class="reveal"><span class="timeline__no">3</span><div><h3>Govern · Weeks 5–6</h3><p>Private networking, content safety, cost budgets &amp; dashboards. Security sign-off.</p></div></li>
+          <li class="reveal"><span class="timeline__no">4</span><div><h3>Scale · Week 7+</h3><p>Roll out org-wide with defaults. Publish the routing playbook. Review savings monthly.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 13 — RISKS -->
+    <section class="slide" id="s13" data-label="Risks">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Honest about trade-offs</p>
+        <h2 class="reveal">Risks &amp; mitigations.</h2>
+        <div class="risk-grid">
+          <div class="risk reveal"><h3>Quality variance</h3><p>Keep premium lane for high-stakes work; auto-escalate on low confidence. Continuous eval set.</p></div>
+          <div class="risk reveal"><h3>Routing complexity</h3><p>Start with 3 simple rules; expand only when measured. Sensible defaults, manual override.</p></div>
+          <div class="risk reveal"><h3>Tooling fit</h3><p>Use OpenAI-compatible endpoints so existing extensions work; no custom IDE forks.</p></div>
+          <div class="risk reveal"><h3>Security review</h3><p>Foundry keeps data in-tenant; run it through the standard Azure approval path early.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 — THE ASK -->
+    <section class="slide slide--title slide--close" id="s14" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal">The ask</p>
+        <h2 class="reveal">Approve a <span class="grad">2-week pilot</span> with one squad.</h2>
+        <p class="lede reveal">No new budget. We add an Azure AI Foundry lane next to Copilot, route the
+          high-volume work to DeepSeek, MiniMax and Kimi, and report back the cost-per-task and quota relief.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--solid">Same $30 budget</span>
+          <span class="pill pill--solid">More engineering per dollar</span>
+          <span class="pill pill--solid">In your Azure tenant</span>
+        </div>
+        <p class="foot reveal">Let's stretch the $30.</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+  </main>
+
+  <!-- nav arrows -->
+  <button class="nav nav--prev" aria-label="Previous slide">‹</button>
+  <button class="nav nav--next" aria-label="Next slide">›</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
