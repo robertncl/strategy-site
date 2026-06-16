@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Strategic investment proposal for a secure Cloud Development Environment (CDE) enabling safe agentic AI development at enterprise scale." />
+  <title>Secure CDE for Agentic AI — Strategic Investment Proposal</title>
+  <style>
+/* =========================================================================
+   Secure CDE for Agentic AI — Strategy site
+   Dark executive theme. Self-contained, no external dependencies.
+   ========================================================================= */
+
+:root {
+  /* palette */
+  --bg: #0a0e1a;
+  --bg-alt: #0d1424;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --text: #e8edf6;
+  --text-dim: #9aa6bd;
+  --text-faint: #687389;
+
+  --cyan: #38e1d3;
+  --violet: #8b7cff;
+  --blue: #4f93ff;
+  --green: #3ddc84;
+  --amber: #ffc24b;
+  --rose: #ff6b8b;
+
+  --grad: linear-gradient(110deg, var(--cyan), var(--blue) 45%, var(--violet));
+  --grad-soft: linear-gradient(135deg, rgba(56,225,211,.16), rgba(139,124,255,.16));
+
+  --maxw: 1140px;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.65);
+
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ambient gradient wash */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(60rem 40rem at 80% -10%, rgba(79, 147, 255, 0.18), transparent 60%),
+    radial-gradient(50rem 40rem at 0% 10%, rgba(139, 124, 255, 0.16), transparent 55%),
+    radial-gradient(50rem 40rem at 50% 120%, rgba(56, 225, 211, 0.12), transparent 55%);
+  pointer-events: none;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+.container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================ Scroll progress ============================ */
+.scroll-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  block-size: 3px;
+  inline-size: 0;
+  background: var(--grad);
+  z-index: 100;
+  transition: inline-size .08s linear;
+}
+
+/* ============================ Navigation ============================ */
+.nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-block: .8rem;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+  background: rgba(10, 14, 26, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-block-end: 1px solid transparent;
+  transition: border-color .3s ease, background .3s ease;
+}
+.nav.scrolled { border-block-end-color: var(--border); }
+
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; }
+.brand-mark {
+  display: grid; place-items: center;
+  inline-size: 38px; block-size: 38px;
+  border-radius: 11px;
+  background: var(--grad-soft);
+  border: 1px solid var(--border-strong);
+  color: var(--cyan);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.05; font-size: .98rem; letter-spacing: .2px; }
+.brand-text small { font-weight: 500; font-size: .66rem; color: var(--text-dim); letter-spacing: .4px; }
+
+.nav-links { display: flex; gap: .25rem; margin-inline-start: auto; flex-wrap: wrap; }
+.nav-links a {
+  font-size: .82rem;
+  color: var(--text-dim);
+  padding: .4rem .6rem;
+  border-radius: 8px;
+  transition: color .2s, background .2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface); }
+.nav-links a.active { color: var(--text); }
+.nav-links a.active::after {
+  content: ""; display: block; height: 2px; margin-top: 3px;
+  border-radius: 2px; background: var(--grad);
+}
+
+.nav-cta {
+  font-size: .82rem; font-weight: 600;
+  padding: .5rem .9rem; border-radius: 9px;
+  background: var(--grad); color: #051018;
+  white-space: nowrap;
+}
+.nav-cta:hover { filter: brightness(1.08); }
+
+.nav-toggle { display: none; }
+
+/* ============================ Buttons ============================ */
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-weight: 600; font-size: .95rem;
+  padding: .8rem 1.4rem; border-radius: 11px;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform .15s ease, filter .2s ease, background .2s ease, border-color .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--grad); color: #051018; box-shadow: 0 10px 30px -10px rgba(79,147,255,.6); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--border-strong); background: var(--surface-2); }
+
+/* ============================ Hero ============================ */
+.hero {
+  position: relative;
+  min-block-size: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: clamp(4rem, 12vh, 9rem);
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: -1;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 30%, transparent 75%);
+}
+.hero-inner { max-inline-size: 56rem; }
+
+.eyebrow {
+  display: inline-block;
+  font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--cyan);
+  padding: .35rem .8rem; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  line-height: 1.05; letter-spacing: -.02em;
+  font-weight: 800; margin: 1.2rem 0 0;
+}
+.hero-sub {
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  color: var(--text-dim);
+  max-inline-size: 44rem;
+  margin: 1.4rem 0 0;
+}
+.hero-sub strong { color: var(--text); }
+
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-block-start: 2.2rem; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: 3.5rem 0 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--border);
+  overflow: hidden;
+}
+.hero-stats > div { background: var(--bg); padding: 1.3rem 1.4rem; }
+.hero-stats dt { font-size: .78rem; color: var(--text-dim); letter-spacing: .03em; }
+.hero-stats dd {
+  margin: .3rem 0 0; font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 800; line-height: 1;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+.scroll-hint {
+  position: absolute;
+  inset-block-end: 1.5rem; inset-inline-start: 50%;
+  transform: translateX(-50%);
+  inline-size: 26px; block-size: 42px;
+  border: 2px solid var(--border-strong); border-radius: 999px;
+}
+.scroll-hint span {
+  position: absolute; inset-block-start: 8px; inset-inline-start: 50%;
+  inline-size: 4px; block-size: 8px; border-radius: 2px; background: var(--cyan);
+  transform: translateX(-50%);
+  animation: scrolldot 1.8s ease-in-out infinite;
+}
+@keyframes scrolldot { 0%,100% { opacity: 0; transform: translate(-50%, 0); } 50% { opacity: 1; transform: translate(-50%, 12px); } }
+
+/* ============================ Sections ============================ */
+.section { padding-block: clamp(4.5rem, 10vh, 8rem); position: relative; }
+.section-alt { background: linear-gradient(180deg, var(--bg-alt), var(--bg)); border-block: 1px solid var(--border); }
+
+.section-head { max-inline-size: 52rem; margin-block-end: 3rem; }
+.kicker {
+  font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--violet);
+}
+.section-head h2 {
+  font-size: clamp(1.8rem, 4vw, 2.9rem);
+  line-height: 1.12; letter-spacing: -.015em; font-weight: 800;
+  margin: .7rem 0 0;
+}
+.lede { font-size: clamp(1.02rem, 1.8vw, 1.22rem); color: var(--text-dim); margin: 1.1rem 0 0; }
+.lede em { color: var(--text); font-style: italic; }
+
+.mini-head { font-size: 1.1rem; font-weight: 700; margin: 0 0 1.1rem; letter-spacing: -.01em; }
+.mini-head.center { text-align: center; }
+
+/* ============================ Card grid ============================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.card:hover { transform: translateY(-4px); border-color: var(--border-strong); background: var(--surface-2); }
+.card.compact { padding: 1.3rem 1.4rem; }
+.card h3 { margin: .9rem 0 .5rem; font-size: 1.12rem; letter-spacing: -.01em; }
+.card.compact h3 { margin-block-start: 0; }
+.card p { margin: 0; color: var(--text-dim); font-size: .95rem; }
+
+.card-icon {
+  inline-size: 44px; block-size: 44px; border-radius: 12px;
+  display: grid; place-items: center;
+  font-size: 1.3rem; font-weight: 700;
+  background: var(--grad-soft); border: 1px solid var(--border);
+  color: var(--cyan);
+}
+.card-icon[data-variant="amber"] { color: var(--amber); }
+.card-icon[data-variant="violet"] { color: var(--violet); }
+.card-icon[data-variant="cyan"] { color: var(--cyan); }
+.card-icon[data-variant="rose"] { color: var(--rose); }
+
+/* pull quote */
+.pull-quote {
+  margin-block-start: 3rem;
+  padding: 2.2rem clamp(1.5rem, 5vw, 3.5rem);
+  border-radius: var(--radius);
+  background: var(--grad-soft);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.pull-quote p { margin: 0; font-size: clamp(1.2rem, 2.6vw, 1.7rem); font-weight: 600; line-height: 1.35; letter-spacing: -.01em; }
+
+/* ============================ Current state ============================ */
+.gap-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .7rem; }
+.gap-list li {
+  padding: .8rem 0 .8rem 1.4rem; position: relative;
+  border-block-end: 1px solid var(--border); color: var(--text-dim); font-size: .96rem;
+}
+.gap-list li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 1.25rem; inline-size: 7px; block-size: 7px; border-radius: 2px; background: var(--rose); }
+.gap-list li strong { color: var(--text); }
+.gaps { max-inline-size: 960px; }
+.gap-list-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); column-gap: 2.5rem; }
+
+/* maturity bars */
+.maturity { margin-block-start: 3.5rem; padding: 2rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.maturity-rows { display: grid; gap: 1.1rem; max-inline-size: 760px; margin-inline: auto; }
+.maturity-row { display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 1rem; }
+.m-label { font-size: .9rem; color: var(--text-dim); }
+.m-track { position: relative; block-size: 12px; border-radius: 999px; background: rgba(255,255,255,.06); overflow: hidden; }
+.m-now, .m-target {
+  position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: 0; border-radius: 999px;
+  transition: inline-size 1.1s cubic-bezier(.2,.7,.2,1);
+}
+.m-target { background: var(--grad); opacity: .9; }
+.m-now { background: var(--rose); z-index: 1; opacity: .85; }
+.m-legend { display: flex; gap: 1.5rem; justify-content: center; margin-block-start: 1.4rem; font-size: .82rem; color: var(--text-dim); }
+.dot { display: inline-block; inline-size: 10px; block-size: 10px; border-radius: 3px; margin-inline-end: .35rem; vertical-align: middle; }
+.dot-now { background: var(--rose); }
+.dot-target { background: var(--blue); }
+
+/* ============================ Pillars ============================ */
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2rem; }
+.pillar {
+  position: relative;
+  padding: 2rem 1.5rem 1.6rem;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  overflow: hidden;
+  transition: transform .25s, border-color .25s;
+}
+.pillar:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+.pillar::before { content: ""; position: absolute; inset-block-start: 0; inset-inline: 0; block-size: 3px; background: var(--grad); }
+.pillar-no { font-size: .78rem; font-weight: 800; letter-spacing: .1em; color: var(--cyan); }
+.pillar h3 { margin: .5rem 0 .5rem; font-size: 1.15rem; }
+.pillar p { margin: 0; color: var(--text-dim); font-size: .93rem; }
+
+/* before/after */
+.before-after {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 1.5rem;
+  margin-block-start: 3rem;
+}
+.ba-col { padding: 1.7rem; border-radius: var(--radius); border: 1px solid var(--border); }
+.ba-before { background: rgba(255,107,139,.06); border-color: rgba(255,107,139,.25); }
+.ba-after { background: rgba(61,220,132,.06); border-color: rgba(61,220,132,.25); }
+.ba-col h3 { margin: 0 0 1rem; font-size: 1.05rem; }
+.ba-col ul { margin: 0; padding-inline-start: 1.1rem; display: grid; gap: .55rem; color: var(--text-dim); font-size: .93rem; }
+.ba-before ul { list-style: "✕  "; }
+.ba-after ul { list-style: "✓  "; }
+.ba-arrow { display: grid; place-items: center; font-size: 2rem; color: var(--cyan); }
+
+/* what the CDE replaces */
+.replaces { margin-block-start: 3rem; }
+.replaces-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem; margin-block-start: 1.4rem; }
+.replace {
+  display: grid; gap: .5rem; justify-items: center;
+  padding: 1.6rem 1.4rem; text-align: center;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  transition: transform .25s, border-color .25s;
+}
+.replace:hover { transform: translateY(-4px); border-color: var(--border-strong); }
+.replace-from {
+  font-weight: 600; font-size: .95rem; color: var(--rose);
+  text-decoration: line-through; text-decoration-color: rgba(255,107,139,.55);
+}
+.replace-arrow { color: var(--text-faint); font-size: 1.2rem; line-height: 1; }
+.replace-to {
+  font-weight: 800; font-size: 1.18rem; letter-spacing: -.01em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.replace p { margin: .4rem 0 0; color: var(--text-dim); font-size: .9rem; }
+
+/* ============================ Architecture ============================ */
+.arch { display: grid; gap: .4rem; max-inline-size: 880px; margin-inline: auto; }
+.arch-layer {
+  display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 1.2rem;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface);
+}
+.arch-layer.arch-agent { border-color: rgba(139,124,255,.4); background: linear-gradient(120deg, rgba(139,124,255,.10), var(--surface)); }
+.arch-tag { font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--cyan); }
+.arch-agent .arch-tag { color: var(--violet); }
+.arch-nodes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .6rem; }
+.node {
+  padding: .7rem .9rem; border-radius: var(--radius-sm);
+  background: var(--bg-alt); border: 1px solid var(--border);
+  font-size: .88rem; color: var(--text); text-align: center;
+}
+.arch-flow { text-align: center; color: var(--text-faint); font-size: 1rem; }
+.arch-notes { margin-block-start: 2.5rem; }
+
+/* ============================ Controls (security) ============================ */
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem; }
+.control {
+  position: relative; padding: 1.7rem 1.5rem;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface);
+  transition: transform .25s, border-color .25s, background .25s;
+}
+.control:hover { transform: translateY(-4px); border-color: var(--border-strong); background: var(--surface-2); }
+.control-num { font-size: 1.5rem; font-weight: 800; color: var(--cyan); opacity: .55; }
+.control h3 { margin: .4rem 0 .5rem; font-size: 1.1rem; }
+.control p { margin: 0; color: var(--text-dim); font-size: .93rem; }
+.control-accent { background: var(--grad-soft); border-color: var(--border-strong); }
+.control-accent .control-num { color: var(--violet); opacity: 1; }
+
+.compliance { margin-block-start: 3rem; }
+.compliance-sub { text-align: center; color: var(--text-dim); max-inline-size: 46rem; margin: -.4rem auto 1.6rem; font-size: .98rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; }
+.chip {
+  font-size: .85rem; font-weight: 600;
+  padding: .5rem 1rem; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-dim);
+}
+.chip b { color: var(--cyan); font-weight: 800; letter-spacing: .02em; margin-inline-end: .15rem; }
+
+/* ============================ Timeline ============================ */
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 1.4rem; }
+.timeline::before {
+  content: ""; position: absolute; inset-block: 8px; inset-inline-start: 33px;
+  inline-size: 2px; background: linear-gradient(var(--cyan), var(--violet));
+  opacity: .4;
+}
+.tl-item { display: grid; grid-template-columns: 70px 1fr; gap: 1.3rem; align-items: start; }
+.tl-marker {
+  position: relative; z-index: 1;
+  inline-size: 68px; block-size: 68px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bg-alt); border: 2px solid var(--border-strong);
+  font-weight: 800; font-size: 1.1rem; line-height: 1;
+}
+.tl-marker small { display: block; font-size: .6rem; font-weight: 600; color: var(--text-dim); }
+.tl-body {
+  padding: 1.4rem 1.6rem; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border);
+}
+.tl-body h3 { margin: 0 0 .4rem; font-size: 1.15rem; }
+.tl-body p { margin: 0 0 1rem; color: var(--text-dim); font-size: .95rem; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tl-tags span {
+  font-size: .76rem; font-weight: 600; padding: .3rem .7rem; border-radius: 7px;
+  background: var(--grad-soft); border: 1px solid var(--border); color: var(--text);
+}
+
+/* ============================ Business case ============================ */
+.kpi-band {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px; margin-block-end: 3rem;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--border); overflow: hidden;
+}
+.kpi { background: var(--bg-alt); padding: 1.8rem 1.4rem; text-align: center; }
+.kpi-value { display: block; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.kpi-label { display: block; margin-block-start: .5rem; font-size: .85rem; color: var(--text-dim); }
+
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+.chart-card {
+  margin: 0; padding: 1.6rem; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface);
+}
+.chart-card figcaption { font-weight: 700; font-size: 1rem; margin-block-end: 1rem; }
+.chart { inline-size: 100%; block-size: auto; }
+.axis { stroke: var(--border-strong); stroke-width: 1; }
+.ax-text { fill: var(--text-faint); font-size: 12px; font-family: var(--font); }
+.bar-val { fill: var(--text); font-size: 13px; font-weight: 700; font-family: var(--font); }
+.bar { transition: height .9s cubic-bezier(.2,.7,.2,1), y .9s cubic-bezier(.2,.7,.2,1); }
+.bar-neg { fill: var(--rose); }
+.bar-pos { fill: var(--green); }
+.bar-hi { fill: var(--green); }
+
+/* donut */
+.donut-wrap { position: relative; inline-size: 200px; margin-inline: auto; }
+.donut { transform: rotate(-90deg); }
+.donut-ring { fill: none; stroke: rgba(255,255,255,.07); stroke-width: 22; }
+.donut-seg {
+  fill: none; stroke-width: 22; stroke-linecap: butt;
+  stroke-dasharray: 0 502.4; /* 2*pi*80 */
+  transition: stroke-dasharray 1.1s cubic-bezier(.2,.7,.2,1);
+}
+.donut-seg.seg1 { stroke: var(--blue); }
+.donut-seg.seg2 { stroke: var(--violet); }
+.donut-seg.seg3 { stroke: var(--cyan); }
+.donut-seg.seg4 { stroke: var(--amber); }
+.donut-center {
+  position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+}
+.donut-center strong { display: block; font-size: 1.5rem; font-weight: 800; }
+.donut-center span { font-size: .75rem; color: var(--text-dim); }
+
+.legend { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; gap: .55rem; font-size: .88rem; color: var(--text-dim); }
+.legend li { display: flex; align-items: center; gap: .5rem; }
+.legend b { margin-inline-start: auto; color: var(--text); }
+.dot.seg1 { background: var(--blue); }
+.dot.seg2 { background: var(--violet); }
+.dot.seg3 { background: var(--cyan); }
+.dot.seg4 { background: var(--amber); }
+
+.value-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-block-start: 2.5rem; }
+.value { padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.value h3 { margin: 0 0 .5rem; font-size: 1.1rem; color: var(--cyan); }
+.value p { margin: 0; color: var(--text-dim); font-size: .95rem; }
+.value strong { color: var(--text); }
+
+/* cost basis */
+.cost-basis { margin-block-start: 2.5rem; padding: 2rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.cost-basis > p { color: var(--text-dim); font-size: .96rem; margin: 0 0 1.4rem; max-inline-size: 70rem; }
+.cost-basis strong { color: var(--text); }
+.cost-table { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.cost-row { display: grid; grid-template-columns: 2fr .7fr 2.6fr; gap: 1rem; padding: .85rem 1.2rem; border-block-end: 1px solid var(--border); align-items: center; font-size: .92rem; }
+.cost-row:last-child { border-block-end: none; }
+.cost-row > span:nth-child(2) { font-weight: 800; color: var(--cyan); }
+.cost-row > span:last-child { color: var(--text-dim); font-size: .86rem; }
+.cost-head { background: var(--surface-2); font-weight: 700; font-size: .76rem; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); }
+.cost-head span { color: var(--text-dim) !important; font-weight: 700 !important; }
+.cost-total { background: var(--grad-soft); font-weight: 700; }
+.cost-total > span:nth-child(2) { color: var(--green); }
+.cost-foot { margin: 1.2rem 0 0; font-size: .82rem; color: var(--text-faint); line-height: 1.55; }
+.cost-foot strong { color: var(--text-dim); }
+
+/* ============================ Risk table ============================ */
+.risk-table { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.risk-row { display: grid; grid-template-columns: 1.2fr .6fr 2.4fr; gap: 1rem; padding: 1rem 1.3rem; border-block-end: 1px solid var(--border); align-items: center; font-size: .94rem; }
+.risk-row:last-child { border-block-end: none; }
+.risk-row > span:first-child { font-weight: 600; }
+.risk-row > span:last-child { color: var(--text-dim); }
+.risk-head { background: var(--surface-2); font-weight: 700; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); }
+.risk-head span { color: var(--text-dim) !important; }
+.sev { display: inline-block; font-size: .74rem; font-weight: 700; padding: .25rem .65rem; border-radius: 999px; text-align: center; }
+.sev-high { background: rgba(255,107,139,.16); color: var(--rose); }
+.sev-med { background: rgba(255,194,75,.16); color: var(--amber); }
+.sev-low { background: rgba(61,220,132,.16); color: var(--green); }
+
+/* ============================ Metrics ============================ */
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; }
+.metric {
+  padding: 1.8rem 1.5rem; text-align: center;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+}
+.metric-num { display: block; font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; line-height: 1;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.metric-num small { font-size: .9rem; }
+.metric-desc { display: block; margin-block-start: .6rem; font-size: .9rem; color: var(--text-dim); }
+
+/* ============================ The Ask ============================ */
+.ask { background: linear-gradient(180deg, var(--bg), var(--bg-alt)); }
+.ask-card {
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border-radius: 24px;
+  background: var(--grad-soft);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+}
+.ask-card h2 { font-size: clamp(1.6rem, 3.6vw, 2.6rem); line-height: 1.15; letter-spacing: -.015em; margin: .8rem 0 0; max-inline-size: 38ch; }
+.ask-points { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 2.5rem 0; }
+.ask-points > div { padding-inline-start: 1.2rem; border-inline-start: 3px solid var(--cyan); }
+.ask-figure { display: block; font-size: 2rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ask-points p { margin: .4rem 0 0; color: var(--text-dim); font-size: .95rem; }
+.ask-close { font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--text); max-inline-size: 56rem; }
+.ask-close em { color: var(--cyan); font-style: normal; font-weight: 600; }
+
+/* ============================ Footer ============================ */
+.footer { border-block-start: 1px solid var(--border); padding-block: 2.5rem; }
+.footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; align-items: center; }
+.footer p { margin: 0; font-size: .9rem; }
+.muted { color: var(--text-faint); }
+
+/* ============================ Reveal animation ============================ */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .scroll-hint span { animation: none; }
+  .bar, .m-now, .m-target, .donut-seg { transition: none; }
+}
+
+/* ============================ Responsive ============================ */
+@media (max-width: 900px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-links.open {
+    display: flex; flex-direction: column; gap: .2rem;
+    position: absolute; inset-block-start: 100%; inset-inline: 0;
+    padding: 1rem clamp(1rem, 4vw, 2.5rem) 1.4rem;
+    background: rgba(10,14,26,.97); backdrop-filter: blur(14px);
+    border-block-end: 1px solid var(--border);
+  }
+  .nav-links.open a { padding: .7rem .4rem; font-size: .95rem; }
+  .nav-toggle {
+    display: grid; gap: 5px; margin-inline-start: auto;
+    background: none; border: none; cursor: pointer; padding: .4rem;
+  }
+  .nav-toggle span { inline-size: 24px; block-size: 2px; background: var(--text); border-radius: 2px; transition: transform .2s, opacity .2s; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .before-after { grid-template-columns: 1fr; }
+  .ba-arrow { transform: rotate(90deg); }
+  .arch-layer { grid-template-columns: 1fr; gap: .7rem; }
+  .maturity-row { grid-template-columns: 1fr; gap: .4rem; }
+  .risk-row { grid-template-columns: 1fr; gap: .4rem; }
+  .risk-head { display: none; }
+  .risk-row > span:first-child { font-size: 1rem; }
+
+  .cost-row { grid-template-columns: 1fr auto; gap: .3rem 1rem; }
+  .cost-row > span:last-child { grid-column: 1 / -1; }
+  .cost-head { display: none; }
+}
+
+@media (max-width: 560px) {
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .tl-item { grid-template-columns: 50px 1fr; gap: .8rem; }
+  .tl-marker { inline-size: 50px; block-size: 50px; font-size: .9rem; }
+  .timeline::before { inset-inline-start: 24px; }
+}
+  </style>
+</head>
+<body>
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Sticky navigation -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#home" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5l-8-3Z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </span>
+      <span class="brand-text">Secure&nbsp;CDE<small>for Agentic AI</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Section navigation">
+      <a href="#imperative">Imperative</a>
+      <a href="#current">Current State</a>
+      <a href="#solution">Solution</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#security">Security</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#business-case">Business Case</a>
+      <a href="#metrics">KPIs</a>
+    </nav>
+    <a href="#ask" class="nav-cta">The Ask</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="eyebrow reveal">Strategic Investment Proposal &nbsp;·&nbsp; Platform Engineering &amp; Security</p>
+        <h1 class="hero-title reveal">Securing the Development Environment<br /><span class="grad-text">for the Age of Agentic AI</span></h1>
+        <p class="hero-sub reveal">A unified, governed <strong>Cloud Development Environment (CDE)</strong> that lets thousands of engineers — and the AI agents working alongside them — build at speed without expanding our attack surface.</p>
+        <div class="hero-actions reveal">
+          <a href="#ask" class="btn btn-primary">See the Investment Ask</a>
+          <a href="#imperative" class="btn btn-ghost">Why Now &rarr;</a>
+        </div>
+        <dl class="hero-stats reveal">
+          <div>
+            <dt>Developers &amp; contractors</dt>
+            <dd><span class="counter" data-target="3000">0</span>+</dd>
+          </div>
+          <div>
+            <dt>Core tech stacks</dt>
+            <dd><span class="counter" data-target="4">0</span></dd>
+          </div>
+          <div>
+            <dt>Target onboarding</dt>
+            <dd>&lt; <span class="counter" data-target="15">0</span> min</dd>
+          </div>
+          <div>
+            <dt>3-yr net benefit</dt>
+            <dd>$<span class="counter" data-target="30">0</span>M</dd>
+          </div>
+        </dl>
+      </div>
+      <a href="#imperative" class="scroll-hint" aria-label="Scroll to next section">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- THE IMPERATIVE -->
+    <section class="section" id="imperative">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">01 — The Imperative</span>
+          <h2>Agentic AI rewrites the threat model of the developer inner loop</h2>
+          <p class="lede">AI coding agents now read source, execute commands, install packages, call internal APIs, and open pull requests autonomously. Run on unmanaged laptops and ad-hoc VMs, they multiply both our velocity <em>and</em> our blast radius. The environment is now a control plane — and it is not yet under control.</p>
+        </div>
+
+        <div class="card-grid">
+          <article class="card reveal">
+            <div class="card-icon" data-variant="amber" aria-hidden="true">⚠</div>
+            <h3>Autonomy without containment</h3>
+            <p>An agent that can run arbitrary code and reach the internet is an insider with super-human speed. Without a sandbox, prompt injection becomes remote code execution and data exfiltration.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="violet" aria-hidden="true">⌘</div>
+            <h3>Secrets sprawl on endpoints</h3>
+            <p>Long-lived tokens, cloud keys and source live on thousands of laptops and one-off VMs. Each is an unmanaged copy of our crown jewels and an audit blind spot.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="cyan" aria-hidden="true">⟳</div>
+            <h3>"Works on my machine" at scale</h3>
+            <p>Four major stacks (Java, .NET, Python, JavaScript) × thousands of devs = unbounded environment drift, slow onboarding, and irreproducible builds that frustrate audits and incident response.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="rose" aria-hidden="true">◎</div>
+            <h3>No identity for non-humans</h3>
+            <p>AI agents and automation act with borrowed human credentials. We cannot attribute, scope, throttle, or revoke their access — a governance and compliance gap regulators increasingly probe.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="cyan" aria-hidden="true">◷</div>
+            <h3>Speed pressure is real</h3>
+            <p>Competitors are shipping agent-assisted delivery today. Banning the tools cedes the advantage; allowing them ungoverned courts the next headline breach. We need a third path.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon" data-variant="violet" aria-hidden="true">§</div>
+            <h3>Regulatory gravity</h3>
+            <p>SBOM mandates, supply-chain integrity (SLSA), EU AI Act and sector rules expect provenance and control over how — and by what — code is produced. Our inner loop must become evidence-grade.</p>
+          </article>
+        </div>
+
+        <div class="pull-quote reveal">
+          <p>"The most privileged actor in our software supply chain is no longer a person. It's an agent running on a machine we don't manage."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CURRENT STATE -->
+    <section class="section section-alt" id="current">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">02 — Current State</span>
+          <h2>A strong foundation — with structural gaps for AI</h2>
+          <p class="lede">We already run GitHub Enterprise, Azure and a Citrix VDI estate. The opportunity is to consolidate the inner loop into one governed environment — and retire the cost and risk of running it across laptops, VDI desktops and per-seat tooling.</p>
+        </div>
+
+        <div class="gaps reveal">
+          <h3 class="mini-head">Where today's setup breaks for agentic AI</h3>
+          <ul class="gap-list gap-list-2">
+            <li><strong>Compute is fragmented.</strong> Laptops, personal VMs and inconsistent VDI images — no common, policy-enforced runtime for code or agents.</li>
+            <li><strong>Egress is open.</strong> Dev machines reach the internet freely; an agent can pull a malicious package or post data anywhere.</li>
+            <li><strong>Credentials are static.</strong> PATs and keys live on disk instead of short-lived, federated tokens minted per session.</li>
+            <li><strong>Telemetry is thin.</strong> We can't reconstruct what an agent did, with what data, against which systems.</li>
+            <li><strong>Onboarding is slow.</strong> Days of setup per stack per engineer; even longer for contractors and acquisitions.</li>
+            <li><strong>The estate is expensive.</strong> Powerful laptops, a VDI farm and per-seat tooling licences scale linearly with every new developer.</li>
+          </ul>
+        </div>
+
+        <div class="maturity reveal" aria-label="Capability maturity, current vs target">
+          <h3 class="mini-head center">Capability maturity — today vs. target</h3>
+          <div class="maturity-rows" id="maturityRows">
+            <div class="maturity-row" data-now="35" data-target="90">
+              <span class="m-label">Environment standardization</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="25" data-target="92">
+              <span class="m-label">Agent / non-human identity</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="30" data-target="88">
+              <span class="m-label">Egress &amp; data-loss control</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="40" data-target="95">
+              <span class="m-label">Secrets management</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+            <div class="maturity-row" data-now="20" data-target="90">
+              <span class="m-label">Audit &amp; provenance</span>
+              <div class="m-track"><span class="m-now"></span><span class="m-target"></span></div>
+            </div>
+          </div>
+          <div class="m-legend">
+            <span><i class="dot dot-now"></i> Today</span>
+            <span><i class="dot dot-target"></i> Target (Year 2)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="section" id="solution">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">03 — The Solution</span>
+          <h2>One governed Cloud Development Environment</h2>
+          <p class="lede">Move the inner loop off the endpoint and into ephemeral, policy-enforced workspaces in Azure — accessed through Citrix and the browser, wired into GitHub Enterprise, and built for AI agents from day one. Code and credentials never rest on a laptop again.</p>
+        </div>
+
+        <div class="pillars">
+          <article class="pillar reveal">
+            <span class="pillar-no">P1</span>
+            <h3>Ephemeral by default</h3>
+            <p>Workspaces are created on demand from versioned <em>golden images</em> and destroyed after use. No persistent state, no drift, no forensic ambiguity.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P2</span>
+            <h3>Secure by design</h3>
+            <p>Zero-trust access, default-deny egress, secrets injected just-in-time from Key Vault, full session telemetry to the SIEM. Security is the path of least resistance.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P3</span>
+            <h3>Agent-ready</h3>
+            <p>Every agent runs in a contained workspace with its own scoped, short-lived identity, an egress allowlist, and a model gateway that logs and filters every call.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-no">P4</span>
+            <h3>Golden-path productive</h3>
+            <p>Pre-built, compliant stacks for Java, .NET, Python and JavaScript. A developer is coding in minutes — the secure way is the fast way.</p>
+          </article>
+        </div>
+
+        <div class="before-after reveal">
+          <div class="ba-col ba-before">
+            <h3>Before — endpoint inner loop</h3>
+            <ul>
+              <li>Source &amp; secrets cloned to laptops</li>
+              <li>VDI farm + per-seat Docker Desktop licences</li>
+              <li>Unmanaged, drifting environments</li>
+              <li>Open internet egress</li>
+              <li>Agents run with human credentials</li>
+              <li>Days to onboard a new engineer</li>
+            </ul>
+          </div>
+          <div class="ba-arrow" aria-hidden="true">→</div>
+          <div class="ba-col ba-after">
+            <h3>After — governed CDE</h3>
+            <ul>
+              <li>Thin-client / browser access — code stays in Azure</li>
+              <li>Golden images replace Docker Desktop seats</li>
+              <li>Identical, versioned environments</li>
+              <li>Default-deny egress via inspecting proxy</li>
+              <li>Per-agent scoped, short-lived identity</li>
+              <li>Minutes to a fully compliant workspace</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="replaces reveal">
+          <h3 class="mini-head center">One platform that retires three recurring line items</h3>
+          <div class="replaces-grid">
+            <article class="replace">
+              <span class="replace-from">Citrix VDI farm</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Ephemeral cloud workspaces</span>
+              <p>Retire general-purpose engineering VDI. Access goes straight to governed, on-demand workspaces — no persistent desktop estate to license, patch and scale.</p>
+            </article>
+            <article class="replace">
+              <span class="replace-from">Docker Desktop licences</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Managed golden images</span>
+              <p>Container builds run inside the CDE on curated, compliant images — eliminating per-seat Docker Desktop licensing across thousands of developers.</p>
+            </article>
+            <article class="replace">
+              <span class="replace-from">Powerful dev laptops</span>
+              <span class="replace-arrow" aria-hidden="true">↓</span>
+              <span class="replace-to">Low-cost thin clients</span>
+              <p>Compute moves to Azure. Engineers connect from inexpensive, locked-down thin clients — lower hardware capex, smaller attack surface, nothing sensitive on the device.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section class="section section-alt" id="architecture">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">04 — Reference Architecture</span>
+          <h2>Built on what we already run</h2>
+          <p class="lede">No rip-and-replace. The CDE composes GitHub Enterprise, Azure and Citrix into layered controls, with a dedicated governance plane for AI agents.</p>
+        </div>
+
+        <div class="arch reveal" aria-label="Layered reference architecture">
+          <div class="arch-layer">
+            <span class="arch-tag">Access</span>
+            <div class="arch-nodes">
+              <div class="node">Thin client / secure browser</div>
+              <div class="node">Entra ID + Conditional Access</div>
+              <div class="node">Device posture &amp; MFA</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Workspace</span>
+            <div class="arch-nodes">
+              <div class="node">Ephemeral dev workspaces (Azure)</div>
+              <div class="node">Golden images · Java / .NET / Python / JS</div>
+              <div class="node">GitHub Enterprise + Advanced Security</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer arch-agent">
+            <span class="arch-tag">Agent governance</span>
+            <div class="arch-nodes">
+              <div class="node">Model gateway (prompt/response logging)</div>
+              <div class="node">Policy engine &amp; guardrails</div>
+              <div class="node">Per-agent identity &amp; scoped tokens</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Controls</span>
+            <div class="arch-nodes">
+              <div class="node">Egress proxy — default-deny allowlist</div>
+              <div class="node">Azure Key Vault — JIT secrets, OIDC</div>
+              <div class="node">Private endpoints · no public ingress</div>
+            </div>
+          </div>
+          <div class="arch-flow" aria-hidden="true">▼</div>
+          <div class="arch-layer">
+            <span class="arch-tag">Assurance</span>
+            <div class="arch-nodes">
+              <div class="node">Microsoft Sentinel (SIEM)</div>
+              <div class="node">Full session &amp; agent action audit</div>
+              <div class="node">SBOM · SLSA provenance</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-notes card-grid">
+          <article class="card compact reveal">
+            <h3>Identity first</h3>
+            <p>Entra ID issues identities for <strong>both humans and agents</strong>. Conditional Access gates every session; workload identity federation removes static keys entirely.</p>
+          </article>
+          <article class="card compact reveal">
+            <h3>GitHub Enterprise, governed</h3>
+            <p>Advanced Security (secret scanning, code scanning, dependency review) and Copilot policies run inside the CDE perimeter — not on the open endpoint.</p>
+          </article>
+          <article class="card compact reveal">
+            <h3>Thin client, not laptop</h3>
+            <p>Engineering compute moves to Azure, so developers connect from low-cost, hardened thin clients through the browser — retiring both the VDI farm and powerful laptops, with nothing sensitive stored on the endpoint.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECURITY MODEL -->
+    <section class="section" id="security">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">05 — Security Model</span>
+          <h2>Containing the agent's blast radius</h2>
+          <p class="lede">Every agentic workflow is wrapped in five enforced controls. Even a fully compromised or hijacked agent stays inside a small, observable box.</p>
+        </div>
+
+        <div class="controls">
+          <article class="control reveal">
+            <span class="control-num">01</span>
+            <h3>Identity &amp; least privilege</h3>
+            <p>Each agent gets its own non-human identity with narrowly scoped, time-boxed tokens. No standing access, no shared service accounts, full attribution.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">02</span>
+            <h3>Isolation</h3>
+            <p>Agents execute in sandboxed, ephemeral workspaces with no lateral path to other tenants, production, or the corporate network.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">03</span>
+            <h3>Egress control</h3>
+            <p>Default-deny networking. Package registries and approved APIs are allowlisted through an inspecting proxy; everything else is blocked and logged.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">04</span>
+            <h3>Guardrails &amp; gateway</h3>
+            <p>A model gateway mediates every LLM call — logging prompts/responses, redacting secrets, and enforcing policy on tools the agent may invoke.</p>
+          </article>
+          <article class="control reveal">
+            <span class="control-num">05</span>
+            <h3>Observability &amp; provenance</h3>
+            <p>Every command, file touch and API call streams to Sentinel. Builds carry SBOM and SLSA provenance — we can prove what produced any artifact.</p>
+          </article>
+          <article class="control reveal control-accent">
+            <span class="control-num">∑</span>
+            <h3>Defense in depth</h3>
+            <p>No single control is trusted alone. Identity, isolation, egress, guardrails and audit compound so a failure in one layer is caught by the next.</p>
+          </article>
+        </div>
+
+        <div class="compliance reveal">
+          <h3 class="mini-head center">Maps directly to the controls our insurance regulators ask for</h3>
+          <div class="chips">
+            <span class="chip"><b>HK</b> · IA GL20 Cybersecurity</span>
+            <span class="chip"><b>SG</b> · MAS TRM &amp; Notice 127</span>
+            <span class="chip"><b>MY</b> · BNM RMiT</span>
+            <span class="chip"><b>ID</b> · OJK IT Risk (POJK)</span>
+            <span class="chip"><b>AU</b> · APRA CPS 234 / 230</span>
+            <span class="chip">ISO 27001</span>
+            <span class="chip">Zero Trust (NIST 800-207)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="section section-alt" id="roadmap">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">06 — Delivery Roadmap</span>
+          <h2>A phased, de-risked rollout</h2>
+          <p class="lede">Value lands early and compounds. Each phase is independently useful and gated on adoption and security sign-off before the next begins.</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>0–3<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 0 — Foundation &amp; pilot</h3>
+              <p>Stand up the landing zone, identity model, and one golden image. Onboard a 50-developer pilot across two stacks. Establish baseline security telemetry.</p>
+              <div class="tl-tags"><span>Landing zone</span><span>Pilot cohort</span><span>Java + Python images</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>3–9<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 1 — Secure core</h3>
+              <p>All four stacks as golden images. Default-deny egress, JIT secrets, and full session audit in production. Scale to ~1,000 developers.</p>
+              <div class="tl-tags"><span>All stacks</span><span>Egress + secrets</span><span>1k devs</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>9–18<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 2 — Agent governance</h3>
+              <p>Per-agent identity, model gateway, and policy guardrails go live. Sanctioned agentic workflows for code, test and review. Scale to ~2,000 developers.</p>
+              <div class="tl-tags"><span>Agent identity</span><span>Model gateway</span><span>2k devs</span></div>
+            </div>
+          </li>
+          <li class="tl-item reveal">
+            <div class="tl-marker"><span>18–30<small>mo</small></span></div>
+            <div class="tl-body">
+              <h3>Phase 3 — Scale &amp; optimize</h3>
+              <p>Full rollout to 3,000 developers and contractors. Decommission legacy local-dev paths. Continuous cost &amp; control optimization; provenance everywhere.</p>
+              <div class="tl-tags"><span>3k devs</span><span>Legacy retired</span><span>Full provenance</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BUSINESS CASE -->
+    <section class="section" id="business-case">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">07 — Business Case</span>
+          <h2>The economics work — and the risk math is decisive</h2>
+          <p class="lede">A three-year program with payback inside year two. Figures below are illustrative planning estimates for a 3,000 developer-and-contractor organization, benchmarked against real CDE tooling and to be calibrated with Finance.</p>
+        </div>
+
+        <div class="kpi-band">
+          <div class="kpi reveal">
+            <span class="kpi-value">$<span class="counter" data-target="18">0</span>M</span>
+            <span class="kpi-label">3-year total investment</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value">$<span class="counter" data-target="48">0</span>M</span>
+            <span class="kpi-label">3-year gross benefit</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value"><span class="counter" data-target="18">0</span> mo</span>
+            <span class="kpi-label">Payback period</span>
+          </div>
+          <div class="kpi reveal">
+            <span class="kpi-value"><span class="counter" data-target="165">0</span>%</span>
+            <span class="kpi-label">3-year ROI</span>
+          </div>
+        </div>
+
+        <div class="charts">
+          <figure class="chart-card reveal">
+            <figcaption>Cumulative net cash flow ($M)</figcaption>
+            <svg class="chart" viewBox="0 0 520 300" role="img" aria-label="Cumulative net cash flow: about minus 6 million dollars in year one, turning positive during year two, reaching roughly 30 million dollars by year three">
+              <!-- baseline -->
+              <line x1="50" y1="210" x2="500" y2="210" class="axis" />
+              <!-- axis labels: scale 5px per $M from baseline at y=210 -->
+              <text x="40" y="64"  class="ax-text" text-anchor="end">+30</text>
+              <text x="40" y="139" class="ax-text" text-anchor="end">+15</text>
+              <text x="40" y="214" class="ax-text" text-anchor="end">0</text>
+              <text x="40" y="264" class="ax-text" text-anchor="end">-10</text>
+              <!-- bars: cumulative net; baseline y=210, scale 5px/$M -->
+              <g class="bars">
+                <rect class="bar bar-neg" x="90"  y="210" width="70" height="0" data-h="30" data-dir="down"></rect>
+                <rect class="bar bar-pos" x="230" y="210" width="70" height="0" data-h="25" data-dir="up"></rect>
+                <rect class="bar bar-pos bar-hi" x="370" y="210" width="70" height="0" data-h="150" data-dir="up"></rect>
+              </g>
+              <g class="bar-labels">
+                <text x="125" y="288" text-anchor="middle" class="ax-text">Yr 1</text>
+                <text x="265" y="288" text-anchor="middle" class="ax-text">Yr 2</text>
+                <text x="405" y="288" text-anchor="middle" class="ax-text">Yr 3</text>
+                <text x="125" y="258" text-anchor="middle" class="bar-val">-$6M</text>
+                <text x="265" y="175" text-anchor="middle" class="bar-val">+$5M</text>
+                <text x="405" y="50"  text-anchor="middle" class="bar-val">+$30M</text>
+              </g>
+            </svg>
+          </figure>
+
+          <figure class="chart-card reveal">
+            <figcaption>Where the benefit comes from</figcaption>
+            <div class="donut-wrap">
+              <svg class="donut" viewBox="0 0 200 200" role="img" aria-label="Benefit composition: developer productivity 45 percent, risk and incident avoidance 30 percent, infrastructure rationalization 15 percent, compliance efficiency 10 percent">
+                <circle class="donut-ring" cx="100" cy="100" r="80" />
+                <circle class="donut-seg seg1" cx="100" cy="100" r="80" data-dash="45" data-offset="0" />
+                <circle class="donut-seg seg2" cx="100" cy="100" r="80" data-dash="30" data-offset="45" />
+                <circle class="donut-seg seg3" cx="100" cy="100" r="80" data-dash="15" data-offset="75" />
+                <circle class="donut-seg seg4" cx="100" cy="100" r="80" data-dash="10" data-offset="90" />
+              </svg>
+              <div class="donut-center"><strong>$48M</strong><span>3-yr benefit</span></div>
+            </div>
+            <ul class="legend">
+              <li><i class="dot seg1"></i> Developer productivity &amp; faster onboarding <b>45%</b></li>
+              <li><i class="dot seg2"></i> Breach / incident risk avoidance <b>30%</b></li>
+              <li><i class="dot seg3"></i> Infrastructure &amp; license rationalization <b>15%</b></li>
+              <li><i class="dot seg4"></i> Audit &amp; compliance efficiency <b>10%</b></li>
+            </ul>
+          </figure>
+        </div>
+
+        <div class="value-grid">
+          <article class="value reveal">
+            <h3>Productivity</h3>
+            <p>Onboarding from days to minutes; near-zero environment troubleshooting; governed agents that actually get adopted. A conservative <strong>3–5% effective capacity uplift</strong> across 3,000 engineers and contractors dwarfs the program cost.</p>
+          </article>
+          <article class="value reveal">
+            <h3>Risk avoidance</h3>
+            <p>Containing one material breach or supply-chain incident — average cost in the tens of millions — can pay for the entire program. Insurance and audit posture improve materially.</p>
+          </article>
+          <article class="value reveal">
+            <h3>Rationalization</h3>
+            <p>Retiring the engineering <strong>VDI farm</strong>, eliminating per-seat <strong>Docker Desktop</strong> licences, and swapping powerful laptops for <strong>low-cost thin clients</strong> cuts hardware capex and licensing spend while shrinking the attack surface.</p>
+          </article>
+        </div>
+
+        <div class="cost-basis reveal">
+          <h3 class="mini-head">Cost basis — benchmarked against real CDE tooling</h3>
+          <p>The dominant cost of a CDE is <strong>Azure compute for ephemeral, auto-stopped workspaces</strong> — not platform licensing. A tool like <strong>Coder</strong>, GitHub Codespaces or Microsoft Dev Box adds a comparatively small per-seat orchestration layer on top of compute you already pay Azure for.</p>
+          <div class="cost-table">
+            <div class="cost-row cost-head"><span>Cost component</span><span>Per dev / mo</span><span>Pricing basis (list, Jun 2026)</span></div>
+            <div class="cost-row"><span>CDE compute &amp; storage (Azure, ephemeral)</span><span>$120–180</span><span>8 vCPU / 32 GB at ~160 active hrs/mo with auto-shutdown &amp; reserved capacity</span></div>
+            <div class="cost-row"><span>Workspace orchestration — e.g. Coder</span><span>$3–6</span><span>Coder Premium / Codespaces / Dev Box service — small next to compute</span></div>
+            <div class="cost-row"><span>Egress proxy, Key Vault, Sentinel, gateway</span><span>$25–40</span><span>Azure platform services + SIEM log ingestion</span></div>
+            <div class="cost-row cost-total"><span>Blended run-rate</span><span>~$165</span><span>&asymp; $6M / yr at 3,000 developers, plus the platform team (~$2M/yr)</span></div>
+          </div>
+          <p class="cost-foot">Reference list pricing: <strong>GitHub Codespaces</strong> compute from $0.18/core-hr + $0.07/GB-mo storage · <strong>Microsoft Dev Box</strong> ~$138–629/mo compute + $19–152/mo storage per box · <strong>Coder</strong> Premium licensed separately and runs on your own Azure compute (no public per-seat list price — quote via sales). Ephemeral auto-shutdown and reserved/savings-plan capacity are what keep the compute line affordable; validate with a paid pilot before committing.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section class="section section-alt" id="risks">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">08 — Risks &amp; Mitigations</span>
+          <h2>What could go wrong — and how we de-risk it</h2>
+        </div>
+        <div class="risk-table reveal">
+          <div class="risk-row risk-head">
+            <span>Risk</span><span>Impact</span><span>Mitigation</span>
+          </div>
+          <div class="risk-row">
+            <span>Developer adoption / friction</span>
+            <span class="sev sev-high">High</span>
+            <span>Co-design golden paths with engineers; make the CDE faster than local; phased opt-in before mandate.</span>
+          </div>
+          <div class="risk-row">
+            <span>Latency / developer experience</span>
+            <span class="sev sev-med">Medium</span>
+            <span>Region-local workspaces, warm pools for instant start, performance SLOs measured from day one.</span>
+          </div>
+          <div class="risk-row">
+            <span>Cost overrun at scale</span>
+            <span class="sev sev-med">Medium</span>
+            <span>Ephemeral auto-shutdown, right-sized images, FinOps guardrails and per-team showback.</span>
+          </div>
+          <div class="risk-row">
+            <span>Agent guardrail bypass</span>
+            <span class="sev sev-high">High</span>
+            <span>Defense in depth — isolation + egress + identity mean no single bypass is sufficient; continuous red-teaming.</span>
+          </div>
+          <div class="risk-row">
+            <span>Vendor / platform lock-in</span>
+            <span class="sev sev-low">Low</span>
+            <span>Open standards (OCI dev containers, OIDC, SLSA, SBOM); portable golden-image definitions.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="section" id="metrics">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">09 — Success Metrics</span>
+          <h2>How we'll know it's working</h2>
+          <p class="lede">Outcome-based KPIs reported quarterly to the steering committee — balancing security, productivity and cost.</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric reveal"><span class="metric-num">&lt;15<small>min</small></span><span class="metric-desc">Time to first commit for a new engineer</span></div>
+          <div class="metric reveal"><span class="metric-num">100<small>%</small></span><span class="metric-desc">Agent actions captured in the audit trail</span></div>
+          <div class="metric reveal"><span class="metric-num">0</span><span class="metric-desc">Secrets or source persisted on endpoints</span></div>
+          <div class="metric reveal"><span class="metric-num">90<small>%</small></span><span class="metric-desc">Developers on the CDE by end of year 2</span></div>
+          <div class="metric reveal"><span class="metric-num">&lt;5<small>min</small></span><span class="metric-desc">Mean time to revoke a compromised agent</span></div>
+          <div class="metric reveal"><span class="metric-num">100<small>%</small></span><span class="metric-desc">Builds with SBOM &amp; provenance attestation</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE ASK -->
+    <section class="section ask" id="ask">
+      <div class="container">
+        <div class="ask-card reveal">
+          <span class="kicker">10 — The Ask</span>
+          <h2>Approve a funded, three-year program to make our developer environment secure by default — and ready for agentic AI.</h2>
+          <div class="ask-points">
+            <div>
+              <span class="ask-figure">$18M</span>
+              <p>Three-year program funding across platform, licensing, engineering and change management.</p>
+            </div>
+            <div>
+              <span class="ask-figure">2 FTE</span>
+              <p>Executive sponsor and a dedicated platform team to own the CDE as a product.</p>
+            </div>
+            <div>
+              <span class="ask-figure">90 days</span>
+              <p>To stand up the foundation and prove value with a 50-developer pilot.</p>
+            </div>
+          </div>
+          <p class="ask-close">The question is no longer <em>whether</em> our engineers will work with AI agents — it's whether they'll do it inside our control plane or outside it. This investment puts us inside.</p>
+          <div class="hero-actions">
+            <a href="#home" class="btn btn-primary">Back to top</a>
+            <a href="#business-case" class="btn btn-ghost">Review the numbers</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p><strong>Secure CDE for Agentic AI</strong> — Strategic Investment Proposal</p>
+      <p class="muted">Confidential · Illustrative figures for planning · Prepared for executive review</p>
+    </div>
+  </footer>
+
+  <script>
+/* =========================================================================
+   Secure CDE for Agentic AI — interactions
+   Vanilla JS, no dependencies. Progressive enhancement + reduced-motion aware.
+   ========================================================================= */
+(function () {
+  "use strict";
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $  = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+
+  /* ---------- Scroll progress bar + nav shadow ---------- */
+  const progress = $("#scrollProgress");
+  const nav = $("#nav");
+
+  function onScroll() {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (scrolled / max) * 100 : 0;
+    if (progress) progress.style.inlineSize = pct + "%";
+    if (nav) nav.classList.toggle("scrolled", scrolled > 8);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Mobile nav toggle ---------- */
+  const navToggle = $("#navToggle");
+  const navLinks = $(".nav-links");
+  if (navToggle && navLinks) {
+    navToggle.addEventListener("click", () => {
+      const open = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", String(open));
+    });
+    navLinks.addEventListener("click", (e) => {
+      if (e.target.tagName === "A") {
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  /* ---------- Reveal on scroll (IntersectionObserver — universally supported) ---------- */
+  const reveals = $$(".reveal");
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    reveals.forEach((el) => el.classList.add("in"));
+  } else {
+    const revObserver = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    reveals.forEach((el) => revObserver.observe(el));
+  }
+
+  /* ---------- Scroll-spy: highlight active nav link ---------- */
+  const sections = $$("main section[id]");
+  const linkFor = {};
+  $$(".nav-links a").forEach((a) => {
+    const id = a.getAttribute("href").slice(1);
+    linkFor[id] = a;
+  });
+  if ("IntersectionObserver" in window && sections.length) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const link = linkFor[entry.target.id];
+          if (!link) return;
+          if (entry.isIntersecting) {
+            $$(".nav-links a").forEach((a) => a.classList.remove("active"));
+            link.classList.add("active");
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => spy.observe(s));
+  }
+
+  /* ---------- Animated number counters ---------- */
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target || "0");
+    if (reduceMotion) { el.textContent = formatNum(target); return; }
+    const duration = 1300;
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      el.textContent = formatNum(target * eased, target);
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = formatNum(target);
+    }
+    requestAnimationFrame(tick);
+  }
+  function formatNum(v, target) {
+    const ref = target != null ? target : v;
+    const decimals = Number.isInteger(ref) ? 0 : 1;
+    const n = decimals === 0 ? Math.round(v) : Math.round(v * 10) / 10;
+    return n.toLocaleString("en-US");
+  }
+
+  /* ---------- One-shot reveal for data-viz blocks ---------- */
+  function whenVisible(el, cb, opts) {
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) { cb(); return; }
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { cb(); o.unobserve(e.target); }
+      });
+    }, opts || { threshold: 0.4 });
+    obs.observe(el);
+  }
+
+  // counters
+  $$(".counter").forEach((el) => whenVisible(el, () => animateCounter(el), { threshold: 0.6 }));
+
+  /* ---------- Maturity bars ---------- */
+  $$(".maturity-row").forEach((row) => {
+    whenVisible(row, () => {
+      const now = row.dataset.now || 0;
+      const target = row.dataset.target || 0;
+      const targetBar = $(".m-target", row);
+      const nowBar = $(".m-now", row);
+      if (targetBar) targetBar.style.inlineSize = target + "%";
+      if (nowBar) nowBar.style.inlineSize = now + "%";
+    }, { threshold: 0.5 });
+  });
+
+  /* ---------- Bar chart (cumulative cash flow) ---------- */
+  const barFig = $(".chart .bars");
+  if (barFig) {
+    whenVisible(barFig.closest(".chart-card"), () => {
+      $$(".bar", barFig).forEach((bar) => {
+        const h = parseFloat(bar.dataset.h || "0");
+        const dir = bar.dataset.dir;
+        const baseline = 210;
+        if (reduceMotion) {
+          setBar(bar, h, dir, baseline);
+        } else {
+          requestAnimationFrame(() => setBar(bar, h, dir, baseline));
+        }
+      });
+    }, { threshold: 0.4 });
+  }
+  function setBar(bar, h, dir, baseline) {
+    if (dir === "up") {
+      bar.style.height = h + "px";
+      bar.style.y = (baseline - h) + "px";
+      bar.setAttribute("height", h);
+      bar.setAttribute("y", baseline - h);
+    } else {
+      bar.style.height = h + "px";
+      bar.style.y = baseline + "px";
+      bar.setAttribute("height", h);
+      bar.setAttribute("y", baseline);
+    }
+  }
+
+  /* ---------- Donut chart ---------- */
+  const donut = $(".donut");
+  if (donut) {
+    const C = 2 * Math.PI * 80; // r = 80
+    whenVisible(donut.closest(".chart-card"), () => {
+      $$(".donut-seg", donut).forEach((seg) => {
+        const pct = parseFloat(seg.dataset.dash || "0");
+        const offset = parseFloat(seg.dataset.offset || "0");
+        const len = (C * pct) / 100;
+        seg.style.strokeDashoffset = String(-(C * offset) / 100);
+        const apply = () => { seg.style.strokeDasharray = `${len} ${C - len}`; };
+        if (reduceMotion) apply();
+        else requestAnimationFrame(apply);
+      });
+    }, { threshold: 0.4 });
+  }
+})();
+  </script>
+</body>
+</html>
