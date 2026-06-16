@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A business case for supplementing GitHub Copilot with Azure AI Foundry models (DeepSeek, MiniMax, Kimi) to do more inside a $30/user/month AI budget." />
+  <title>Stretch the $30 — Copilot + Azure AI Foundry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   Stretch the $30 — Copilot × Azure AI Foundry pitch deck
+   Framework-free. Scroll-snap slides + scroll-driven reveals
+   with progressive-enhancement fallbacks.
+   ============================================================ */
+
+:root {
+  --bg:        #070a14;
+  --bg-2:      #0c1122;
+  --panel:     rgba(255,255,255,.045);
+  --panel-2:   rgba(255,255,255,.07);
+  --stroke:    rgba(255,255,255,.10);
+  --stroke-2:  rgba(255,255,255,.18);
+  --ink:       #eef2ff;
+  --ink-soft:  #aab4d4;
+  --ink-dim:   #6f7aa0;
+
+  --brand:     #6ea8ff;   /* azure blue */
+  --brand-2:   #9b8cff;   /* violet */
+  --accent:    #38e8c4;   /* teal/mint */
+  --warn:      #ff7a7a;
+
+  --grad: linear-gradient(100deg, var(--brand) 0%, var(--brand-2) 55%, var(--accent) 110%);
+
+  --maxw: 1080px;
+  --r: 18px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 800px at 78% -10%, rgba(110,168,255,.18), transparent 60%),
+    radial-gradient(1000px 700px at 8% 110%, rgba(155,140,255,.16), transparent 55%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden; /* deck owns the scroll */
+}
+
+/* ---------- DECK / SCROLL SNAP ---------- */
+.deck {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.deck::-webkit-scrollbar { display: none; }
+
+.slide {
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  place-items: center;
+  padding: clamp(72px, 9vh, 120px) clamp(22px, 6vw, 80px) clamp(48px, 7vh, 90px);
+  position: relative;
+  container-type: inline-size;
+}
+
+.wrap { width: 100%; max-width: var(--maxw); }
+.wrap--wide { max-width: 1220px; }
+
+/* ---------- TYPE ---------- */
+h1 {
+  font-size: clamp(3rem, 11vw, 8rem);
+  line-height: .94;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  margin: .12em 0 .28em;
+}
+h2 {
+  font-size: clamp(1.9rem, 5.2vw, 3.6rem);
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  margin: 0 0 .55em;
+}
+h3 { font-size: 1.06rem; font-weight: 700; letter-spacing: -.01em; margin: 0 0 .4em; }
+
+.grad {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eyebrow, .kicker {
+  text-transform: uppercase;
+  letter-spacing: .26em;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 .2em;
+}
+.kicker { color: var(--accent); }
+
+.lede {
+  font-size: clamp(1.05rem, 2.1vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 0 1.6em;
+}
+.lede b { color: var(--ink); font-weight: 700; }
+
+.body {
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 62ch;
+  margin: 0 0 1.6em;
+}
+.body b { color: var(--ink); }
+
+.foot {
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 1.6em 0 0;
+  max-width: 70ch;
+}
+.foot b { color: var(--ink); }
+.muted { color: var(--ink-dim); }
+
+/* ---------- TOP BAR + PROGRESS ---------- */
+.progress {
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 50;
+  background: rgba(255,255,255,.06);
+}
+.progress__bar { display:block; height:100%; width:0; background: var(--grad); transition: width .25s var(--ease); }
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px clamp(22px, 6vw, 80px);
+  font-size: .82rem; pointer-events: none;
+}
+.topbar__brand { display:flex; align-items:center; gap:.55em; font-weight:700; letter-spacing:-.01em; }
+.topbar__count { color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+.topbar__count b { color: var(--ink); }
+.dot { width:9px; height:9px; border-radius:50%; background: var(--grad); box-shadow:0 0 14px var(--brand); }
+
+/* ---------- DOT NAV ---------- */
+.dots {
+  position: fixed; right: clamp(12px, 2.4vw, 26px); top: 50%;
+  transform: translateY(-50%); z-index: 45;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.dots button {
+  width: 11px; height: 11px; padding: 0; border-radius: 50%;
+  border: 1px solid var(--stroke-2); background: transparent;
+  cursor: pointer; transition: all .25s var(--ease); position: relative;
+}
+.dots button:hover { background: var(--stroke-2); }
+.dots button[aria-current="true"] { background: var(--grad); border-color: transparent; transform: scale(1.35); }
+.dots button span {
+  position:absolute; right: 20px; top:50%; transform: translateY(-50%);
+  white-space:nowrap; font-size:.72rem; color:var(--ink-soft);
+  background: var(--bg-2); border:1px solid var(--stroke); padding:3px 9px; border-radius:7px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.dots button:hover span { opacity:1; }
+
+/* ---------- NAV ARROWS ---------- */
+.nav {
+  position: fixed; bottom: 22px; z-index: 45;
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid var(--stroke-2); background: var(--panel-2);
+  backdrop-filter: blur(10px);
+  color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer;
+  display: grid; place-items: center; transition: all .2s var(--ease);
+}
+.nav:hover { background: var(--panel); border-color: var(--brand); transform: translateY(-2px); }
+.nav:disabled { opacity: .3; cursor: default; transform: none; }
+.nav--prev { right: 80px; }
+.nav--next { right: 22px; }
+
+/* ---------- PILLS / META ---------- */
+.title-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top: .4em; }
+.pill {
+  font-size: .82rem; font-weight: 600; padding: .5em 1em; border-radius: 999px;
+  border: 1px solid var(--stroke-2); color: var(--ink-soft); background: var(--panel);
+}
+.pill--solid { background: var(--panel-2); color: var(--ink); }
+
+.scrollcue { margin-top: 2.4em; color: var(--ink-dim); font-size:.86rem; letter-spacing:.04em; }
+.scrollcue::before { content:"↓ "; }
+
+/* ---------- ORBS / TITLE BG ---------- */
+.orb { position:absolute; border-radius:50%; filter: blur(60px); opacity:.5; z-index:-1; pointer-events:none; }
+.orb--a { width:520px; height:520px; background: radial-gradient(circle, rgba(110,168,255,.5), transparent 70%); top:-120px; right:-80px; }
+.orb--b { width:480px; height:480px; background: radial-gradient(circle, rgba(56,232,196,.32), transparent 70%); bottom:-140px; left:-100px; }
+
+/* ---------- STATS ---------- */
+.stat-row { display:flex; flex-wrap:wrap; gap: clamp(14px,2.5vw,28px); margin: .6em 0; }
+.stat {
+  flex: 1 1 200px; padding: 22px 24px; border-radius: var(--r);
+  background: var(--panel); border: 1px solid var(--stroke);
+}
+.stat__num { display:block; font-size: clamp(2.2rem,5vw,3.4rem); font-weight:900; letter-spacing:-.03em;
+  background: var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
+.stat__lbl { display:block; margin-top:.5em; color: var(--ink-soft); font-size:.92rem; line-height:1.4; }
+
+/* ---------- GRID-2 / CHECKLIST / CALLOUT ---------- */
+.grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(20px,3vw,40px); align-items:start; }
+@container (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.checklist { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+.checklist li { position:relative; padding-left: 38px; font-size:1.06rem; line-height:1.45; color: var(--ink-soft); }
+.checklist li::before {
+  position:absolute; left:0; top:-1px; width:26px; height:26px; border-radius:8px;
+  display:grid; place-items:center; font-size:.9rem; font-weight:800;
+}
+.checklist li[data-x]::before { content:"✕"; color:var(--warn); background:rgba(255,122,122,.12); border:1px solid rgba(255,122,122,.3); }
+.checklist li[data-ok]::before { content:"✓"; color:var(--accent); background:rgba(56,232,196,.12); border:1px solid rgba(56,232,196,.3); }
+.checklist--tight li { font-size:1rem; }
+
+.callout {
+  padding: 26px 28px; border-radius: var(--r);
+  background: linear-gradient(160deg, rgba(155,140,255,.14), rgba(110,168,255,.05));
+  border: 1px solid var(--stroke-2);
+}
+.callout__big { font-size:1.3rem; font-weight:800; letter-spacing:-.02em; margin:0 0 .5em; color:var(--ink); }
+.callout p { color: var(--ink-soft); line-height:1.55; margin:0; }
+.callout em { color: var(--accent); font-style:normal; }
+
+/* ---------- LANES ---------- */
+.slide--accent { background: linear-gradient(180deg, transparent, rgba(110,168,255,.04)); }
+.lanes { display:flex; align-items:stretch; gap:18px; margin-top:.4em; flex-wrap:wrap; }
+.lane {
+  flex:1 1 280px; padding: 26px 26px; border-radius: var(--r);
+  background: var(--panel); border:1px solid var(--stroke);
+}
+.lane--alt { background: linear-gradient(165deg, rgba(56,232,196,.12), rgba(110,168,255,.05)); border-color: rgba(56,232,196,.3); }
+.lane__tag { font-size:.72rem; text-transform:uppercase; letter-spacing:.16em; color:var(--ink-dim); font-weight:700; }
+.lane h3 { font-size:1.5rem; margin:.4em 0 .35em; }
+.lane p { color: var(--ink-soft); line-height:1.5; margin:0; }
+.lane--arrow { flex:0 0 auto; display:grid; place-items:center; font-size:2.2rem; color:var(--brand); background:none; border:none; padding:0; }
+@container (max-width: 760px) { .lane--arrow { transform: rotate(90deg); } }
+
+/* ---------- CARDS ---------- */
+.cards { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; margin:.4em 0; }
+@container (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  padding: 26px; border-radius: var(--r); background: var(--panel);
+  border: 1px solid var(--stroke); transition: transform .3s var(--ease), border-color .3s;
+}
+.card:hover { transform: translateY(-5px); border-color: var(--stroke-2); }
+.card header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.7em; }
+.card h3 { font-size:1.5rem; margin:0; }
+.card__tag { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);
+  border:1px solid rgba(56,232,196,.3); padding:.35em .7em; border-radius:999px; }
+.card p { color: var(--ink-soft); line-height:1.55; margin:0 0 1em; font-size:.96rem; }
+.card ul { margin:0; padding-left:1.1em; color: var(--ink-dim); font-size:.9rem; line-height:1.7; }
+.card ul li::marker { color: var(--brand); }
+
+/* ---------- BARS ---------- */
+.bars { display:grid; gap:16px; margin: .6em 0; }
+.bar { display:grid; grid-template-columns: 220px 1fr; gap:18px; align-items:center; }
+@container (max-width: 700px){ .bar{ grid-template-columns:1fr; gap:6px; } }
+.bar__lbl { font-weight:600; font-size:.98rem; }
+.bar__lbl small { color: var(--ink-dim); font-weight:400; }
+.bar__track { background: rgba(255,255,255,.05); border-radius:10px; overflow:hidden; height:42px; border:1px solid var(--stroke); }
+.bar__fill {
+  display:flex; align-items:center; justify-content:flex-end; height:100%;
+  width: var(--w); min-width: 70px; padding:0 14px; border-radius:10px;
+  background: linear-gradient(90deg, rgba(255,122,122,.5), var(--warn));
+  font-weight:800; font-variant-numeric:tabular-nums; font-size:.95rem;
+  transition: width .9s var(--ease);
+}
+.bar__fill--alt { background: var(--grad); }
+
+/* ---------- TABLE / MATRIX ---------- */
+.table-wrap { border-radius: var(--r); border:1px solid var(--stroke); overflow:hidden; background: var(--panel); }
+.matrix { width:100%; border-collapse:collapse; font-size:.98rem; }
+.matrix th, .matrix td { text-align:left; padding:15px 20px; border-bottom:1px solid var(--stroke); }
+.matrix thead th { background: rgba(255,255,255,.04); font-size:.74rem; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-dim); }
+.matrix tbody tr:last-child td { border-bottom:none; }
+.matrix tbody tr:hover { background: rgba(255,255,255,.03); }
+.matrix td:first-child { font-weight:600; color:var(--ink); }
+.matrix td:last-child { color: var(--ink-soft); }
+.tag { font-size:.78rem; font-weight:700; padding:.35em .75em; border-radius:999px; white-space:nowrap; }
+.tag--copilot { color:#cdd7ff; background:rgba(110,168,255,.16); border:1px solid rgba(110,168,255,.4); }
+.tag--ds { color:#b9c8ff; background:rgba(155,140,255,.16); border:1px solid rgba(155,140,255,.4); }
+.tag--mm { color:#9ff3e2; background:rgba(56,232,196,.14); border:1px solid rgba(56,232,196,.4); }
+.tag--kimi { color:#ffe3b0; background:rgba(255,200,120,.14); border:1px solid rgba(255,200,120,.4); }
+
+/* ---------- CALCULATOR ---------- */
+.calc {
+  display:grid; grid-template-columns: 1fr 1.15fr; gap: clamp(20px,3vw,40px);
+  padding: clamp(22px,3vw,34px); border-radius: var(--r);
+  background: var(--panel); border:1px solid var(--stroke-2); align-items:center;
+}
+@container (max-width: 820px){ .calc{ grid-template-columns:1fr; } }
+.calc__controls { display:grid; gap: 26px; }
+.ctl { display:block; }
+.ctl__top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.6em; font-size:.96rem; color:var(--ink-soft); }
+.ctl__top b { font-size:1.3rem; color:var(--ink); font-variant-numeric:tabular-nums; }
+.ctl input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:7px; border-radius:99px;
+  background: rgba(255,255,255,.12); outline:none; }
+.ctl input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:22px; height:22px; border-radius:50%;
+  background: var(--grad); cursor:pointer; border:3px solid var(--bg); box-shadow:0 0 0 1px var(--stroke-2); }
+.ctl input[type=range]::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:#6ea8ff; cursor:pointer; border:3px solid var(--bg); }
+
+.calc__out { display:grid; gap:14px; }
+.result {
+  display:grid; grid-template-columns: 1fr auto; align-items:center; gap:6px 14px;
+  padding:16px 20px; border-radius:14px; border:1px solid var(--stroke);
+}
+.result__lbl { font-size:.92rem; color:var(--ink-soft); grid-row:1; }
+.result__num { font-size:1.9rem; font-weight:900; font-variant-numeric:tabular-nums; grid-row:1; grid-column:2; text-align:right; }
+.result__tag { font-size:.8rem; grid-column:1 / -1; color:var(--ink-dim); }
+.result--bad { background: rgba(255,122,122,.07); border-color: rgba(255,122,122,.25); }
+.result--bad .result__num { color: var(--warn); }
+.result--good { background: rgba(110,168,255,.08); border-color: rgba(110,168,255,.3); }
+.result--good .result__num { color: var(--brand); }
+.result--save { background: linear-gradient(120deg, rgba(56,232,196,.14), rgba(155,140,255,.08)); border-color: rgba(56,232,196,.4); }
+.result--save .result__num { color: var(--accent); }
+.result.over .result__num { color: var(--warn); }
+
+/* ---------- FEATURE GRID ---------- */
+.feat-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-top:.3em; }
+@container (max-width: 820px){ .feat-grid{ grid-template-columns:1fr 1fr; } }
+@container (max-width: 520px){ .feat-grid{ grid-template-columns:1fr; } }
+.feat { padding:20px 22px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke); }
+.feat h3 { color:var(--brand); margin-bottom:.35em; }
+.feat p { color: var(--ink-soft); font-size:.93rem; line-height:1.5; margin:0; }
+
+/* ---------- FLOW / ARCHITECTURE ---------- */
+.flow { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:.4em 0 1.6em; }
+.node {
+  padding:18px 22px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke);
+  font-weight:700; min-width:130px; text-align:center; display:grid; gap:4px;
+}
+.node small { font-weight:400; font-size:.78rem; color:var(--ink-dim); }
+.node--hub { background: linear-gradient(160deg, rgba(155,140,255,.18), rgba(110,168,255,.06)); border-color: var(--stroke-2); }
+.node--copilot { background: rgba(110,168,255,.12); border-color: rgba(110,168,255,.35); }
+.node--foundry { background: rgba(56,232,196,.10); border-color: rgba(56,232,196,.35); }
+.node-col { display:grid; gap:12px; }
+.arrow { color: var(--brand); font-size:1.6rem; }
+@container (max-width: 760px){ .flow{ flex-direction:column; align-items:stretch; } .arrow{ transform:rotate(90deg); justify-self:center; } .node-col{ } }
+
+/* ---------- TIMELINE ---------- */
+.timeline { list-style:none; counter-reset:t; margin:.3em 0 0; padding:0; display:grid; gap:16px; }
+.timeline li { display:flex; gap:18px; align-items:flex-start; padding:18px 22px; border-radius:14px;
+  background: var(--panel); border:1px solid var(--stroke); }
+.timeline__no { flex:0 0 auto; width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  font-weight:900; background: var(--grad); color:#06121f; }
+.timeline h3 { margin:.1em 0 .3em; }
+.timeline p { margin:0; color: var(--ink-soft); line-height:1.5; font-size:.96rem; }
+
+/* ---------- RISKS ---------- */
+.risk-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@container (max-width: 720px){ .risk-grid{ grid-template-columns:1fr; } }
+.risk { padding:22px 24px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke); }
+.risk h3 { color: var(--accent); }
+.risk p { margin:0; color: var(--ink-soft); line-height:1.5; }
+
+.slide--close .orb--a { opacity:.6; }
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   Default: visible (progressive enhancement / no-JS safe).
+   JS adds .js-anim to <html>; then items start hidden and
+   reveal when scrolled into view via IntersectionObserver.
+   ============================================================ */
+.reveal { opacity: 1; transform: none; }
+
+.js-anim .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+}
+.js-anim .reveal.in { opacity: 1; transform: none; }
+
+/* stagger children */
+.js-anim .reveal.in:nth-child(2) { transition-delay:.05s; }
+.js-anim .stat:nth-child(2).in,
+.js-anim .card:nth-child(2).in,
+.js-anim .feat:nth-child(2).in { transition-delay:.08s; }
+.js-anim .card:nth-child(3).in,
+.js-anim .feat:nth-child(3).in { transition-delay:.16s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .deck { scroll-behavior: auto; }
+  .js-anim .reveal { opacity:1 !important; transform:none !important; transition:none; }
+  .bar__fill { transition: none; }
+  .orb { display:none; }
+}
+
+/* ---------- mobile tweaks ---------- */
+@media (max-width: 640px) {
+  .nav--prev { right: auto; left: 22px; }
+  .dots { display: none; }
+  .topbar { font-size: .74rem; }
+}
+  </style>
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Slide-number / brand -->
+  <header class="topbar">
+    <span class="topbar__brand">
+      <span class="dot"></span> Copilot&nbsp;×&nbsp;Azure AI Foundry
+    </span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">14</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-label="Title">
+      <div class="wrap">
+        <p class="eyebrow reveal">Engineering Productivity · Cost Strategy</p>
+        <h1 class="reveal">Stretch the <span class="grad">$30</span>.</h1>
+        <p class="lede reveal">Supplement GitHub Copilot with Azure AI Foundry models —
+          <b>DeepSeek</b>, <b>MiniMax</b> and <b>Kimi</b> — to do far more engineering
+          inside the same <b>$30 / developer / month</b> AI budget.</p>
+        <div class="title-meta reveal">
+          <span class="pill">Multi-model routing</span>
+          <span class="pill">Enterprise governance</span>
+          <span class="pill">Lower $ per request</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 — THE BUDGET REALITY -->
+    <section class="slide" id="s2" data-label="The budget">
+      <div class="wrap">
+        <p class="kicker reveal">The starting point</p>
+        <h2 class="reveal">Every developer has a <span class="grad">$30/month</span> AI budget.</h2>
+        <p class="body reveal">It's a real, finite envelope. The question isn't "should we use AI" —
+          it's <b>how much useful engineering can each dollar buy</b> before the month runs out.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">$30</span><span class="stat__lbl">per dev / month</span></div>
+          <div class="stat reveal"><span class="stat__num">$0.04</span><span class="stat__lbl">per Copilot premium request (overage)</span></div>
+          <div class="stat reveal"><span class="stat__num">~750</span><span class="stat__lbl">premium requests if spent only on overage</span></div>
+        </div>
+        <p class="foot reveal">Premium requests also carry <b>model multipliers</b> — a single call to a
+          top-tier model can cost 1×–50× of the allowance. The budget burns faster than the request count suggests.</p>
+      </div>
+    </section>
+
+    <!-- 03 — THE BOTTLENECK -->
+    <section class="slide" id="s3" data-label="The bottleneck">
+      <div class="wrap">
+        <p class="kicker reveal">The problem</p>
+        <h2 class="reveal">Heavy users hit the wall mid-month.</h2>
+        <div class="grid-2">
+          <ul class="checklist reveal">
+            <li data-x>Premium allowance exhausted by week 2–3 for power users</li>
+            <li data-x>Agentic + long-context tasks burn multipliers fastest</li>
+            <li data-x>Bulk work (refactors, tests, docs) wastes premium calls</li>
+            <li data-x>Overage either blows the budget or gets blocked</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">One model tier for <em>every</em> task is the inefficiency.</p>
+            <p>A premium frontier model answering "rename this variable across the repo"
+              is a Ferrari in a school zone — paying top rate for routine work.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — THE IDEA -->
+    <section class="slide slide--accent" id="s4" data-label="The idea">
+      <div class="wrap">
+        <p class="kicker reveal">The idea</p>
+        <h2 class="reveal">Don't replace Copilot. <span class="grad">Route around its expensive lane.</span></h2>
+        <p class="body reveal">Keep GitHub Copilot for what it's best at — inline completions and tightly
+          integrated chat. Add Azure AI Foundry as a <b>second, cheaper lane</b> for the high-volume and
+          long-context work. Send each task to the model that does it best, for the least money.</p>
+        <div class="lanes">
+          <div class="lane reveal">
+            <span class="lane__tag">Lane 1 · Keep</span>
+            <h3>GitHub Copilot</h3>
+            <p>Inline completion, quick chat, IDE-native flow. Reserve premium requests for high-value, interactive moments.</p>
+          </div>
+          <div class="lane lane--arrow reveal" aria-hidden="true">＋</div>
+          <div class="lane lane--alt reveal">
+            <span class="lane__tag">Lane 2 · Add</span>
+            <h3>Azure AI Foundry</h3>
+            <p>DeepSeek · MiniMax · Kimi for bulk generation, agentic loops, refactors and long-context reasoning — at a fraction of the cost.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — MEET THE MODELS -->
+    <section class="slide" id="s5" data-label="The models">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The supplement</p>
+        <h2 class="reveal">Three frontier-class models, hosted in your Azure tenant.</h2>
+        <div class="cards">
+          <article class="card reveal">
+            <header><h3>DeepSeek</h3><span class="card__tag">Reasoning · Code</span></header>
+            <p>R1-class reasoning and strong V3 coding. Excellent for refactors, test generation,
+              debugging and step-by-step problem solving — at open-model token prices.</p>
+            <ul>
+              <li>Deep chain-of-thought reasoning</li>
+              <li>Top-tier coding benchmarks</li>
+              <li>Very low cost per million tokens</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>MiniMax</h3><span class="card__tag">Long context · Agentic</span></header>
+            <p>Built for high-throughput, agentic and long-document workloads. A workhorse for
+              codebase-wide tasks and multi-step automation that would shred a premium allowance.</p>
+            <ul>
+              <li>Large context window</li>
+              <li>Strong agentic tool-use</li>
+              <li>Cost-efficient at volume</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <header><h3>Kimi</h3><span class="card__tag">Massive context · Code</span></header>
+            <p>Moonshot's Kimi (K2) pairs huge context with strong coding ability — ideal for reasoning
+              over entire services, large PRs and sprawling logs in a single pass.</p>
+            <ul>
+              <li>Very large context window</li>
+              <li>Strong agentic coding</li>
+              <li>Great $ / long-context task</li>
+            </ul>
+          </article>
+        </div>
+        <p class="foot reveal">All three run behind Azure AI Foundry endpoints — your tenant, your network, your governance.</p>
+      </div>
+    </section>
+
+    <!-- 06 — COST COMPARISON -->
+    <section class="slide" id="s6" data-label="Cost">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The economics</p>
+        <h2 class="reveal">The same task, a fraction of the cost.</h2>
+        <p class="body reveal">Cost of one representative request (≈ 4K input + 1K output tokens). Premium
+          overage is billed per request; Foundry is billed per token, so high-volume work gets dramatically cheaper.</p>
+        <div class="bars reveal" role="img" aria-label="Cost per request: Copilot premium overage about 4 cents; Foundry models about a third of a cent.">
+          <div class="bar"><span class="bar__lbl">Copilot premium <small>(overage)</small></span><span class="bar__track"><span class="bar__fill" style="--w:100%"><b>$0.040</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">DeepSeek-V3 <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:7.5%"><b>$0.0030</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">Kimi K2 <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:9%"><b>$0.0036</b></span></span></div>
+          <div class="bar"><span class="bar__lbl">MiniMax <small>(Foundry)</small></span><span class="bar__track"><span class="bar__fill bar__fill--alt" style="--w:6%"><b>$0.0024</b></span></span></div>
+        </div>
+        <p class="foot reveal">≈ <b>10–15× cheaper per request</b> for routine, high-volume work.
+          <span class="muted">Figures are illustrative — validate against current Azure AI Foundry pricing for your region.</span></p>
+      </div>
+    </section>
+
+    <!-- 07 — CAPABILITY / ROUTING MATRIX -->
+    <section class="slide" id="s7" data-label="Routing">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The routing logic</p>
+        <h2 class="reveal">Right task → right model.</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr><th>Workload</th><th>Best lane</th><th>Why</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Inline completion / quick chat</td><td><span class="tag tag--copilot">Copilot</span></td><td>IDE-native, lowest latency, already paid for</td></tr>
+              <tr><td>Bulk refactor across repo</td><td><span class="tag tag--ds">DeepSeek</span></td><td>Strong code edits at token prices, not per-request</td></tr>
+              <tr><td>Test &amp; doc generation</td><td><span class="tag tag--ds">DeepSeek</span></td><td>High volume, routine — cheapest lane wins</td></tr>
+              <tr><td>Agentic multi-step tasks</td><td><span class="tag tag--mm">MiniMax</span></td><td>Tool-use throughput without burning multipliers</td></tr>
+              <tr><td>Reason over whole service / big PR</td><td><span class="tag tag--kimi">Kimi</span></td><td>Massive context in a single pass</td></tr>
+              <tr><td>Tricky debugging / architecture</td><td><span class="tag tag--ds">DeepSeek&nbsp;R1</span></td><td>Deep reasoning at low cost</td></tr>
+              <tr><td>High-stakes, customer-facing answer</td><td><span class="tag tag--copilot">Copilot premium</span></td><td>Spend premium where quality matters most</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 — INTERACTIVE CALCULATOR -->
+    <section class="slide slide--accent" id="s8" data-label="Calculator">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Do the math</p>
+        <h2 class="reveal">How far does $30 actually go?</h2>
+        <div class="calc reveal">
+          <div class="calc__controls">
+            <label class="ctl">
+              <span class="ctl__top"><span>AI requests / dev / month</span><b id="volOut">1,200</b></span>
+              <input id="vol" type="range" min="200" max="4000" step="100" value="1200" />
+            </label>
+            <label class="ctl">
+              <span class="ctl__top"><span>Share routed to Foundry</span><b id="splitOut">70%</b></span>
+              <input id="split" type="range" min="0" max="100" step="5" value="70" />
+            </label>
+          </div>
+          <div class="calc__out">
+            <div class="result result--bad">
+              <span class="result__lbl">Copilot premium only</span>
+              <span class="result__num" id="costAll">—</span>
+              <span class="result__tag" id="tagAll">—</span>
+            </div>
+            <div class="result result--good">
+              <span class="result__lbl">Copilot + Foundry routing</span>
+              <span class="result__num" id="costMix">—</span>
+              <span class="result__tag" id="tagMix">—</span>
+            </div>
+            <div class="result result--save">
+              <span class="result__lbl">Monthly saving / dev</span>
+              <span class="result__num" id="save">—</span>
+              <span class="result__tag" id="savePct">—</span>
+            </div>
+          </div>
+        </div>
+        <p class="foot reveal">Assumes $0.04 / premium request vs ≈ $0.003 / Foundry request.
+          <span class="muted">Illustrative model — adjust rates to your contracted pricing.</span></p>
+      </div>
+    </section>
+
+    <!-- 09 — FLEET-SCALE IMPACT -->
+    <section class="slide" id="s9" data-label="At scale">
+      <div class="wrap">
+        <p class="kicker reveal">At scale</p>
+        <h2 class="reveal">Multiply it by the whole org.</h2>
+        <p class="body reveal">The per-developer saving compounds. The same budget either costs less —
+          or, better, buys <b>more AI-assisted engineering</b> at no extra spend.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">~3×</span><span class="stat__lbl">more requests inside the same $30</span></div>
+          <div class="stat reveal"><span class="stat__num">$0</span><span class="stat__lbl">extra budget required to start</span></div>
+          <div class="stat reveal"><span class="stat__num" id="orgSave">$25k+</span><span class="stat__lbl">est. annual saving / 100 devs</span></div>
+        </div>
+        <p class="foot reveal">Reinvest the saving as throughput: more refactors shipped, more tests written, less waiting on quota.</p>
+      </div>
+    </section>
+
+    <!-- 10 — GOVERNANCE -->
+    <section class="slide" id="s10" data-label="Governance">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Why Azure AI Foundry</p>
+        <h2 class="reveal">Cheaper <em>and</em> enterprise-grade.</h2>
+        <p class="body reveal">These aren't consumer API keys. Running the models through Azure AI Foundry
+          keeps everything inside your existing Microsoft security and compliance perimeter.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Your tenant</h3><p>Data stays in your Azure subscription. No training on your prompts or code.</p></div>
+          <div class="feat reveal"><h3>Private networking</h3><p>VNet integration, private endpoints, managed identity — no public egress.</p></div>
+          <div class="feat reveal"><h3>Content safety</h3><p>Built-in guardrails, abuse monitoring and configurable filters.</p></div>
+          <div class="feat reveal"><h3>Region &amp; residency</h3><p>Choose hosting regions to meet data-residency requirements.</p></div>
+          <div class="feat reveal"><h3>Unified billing</h3><p>One Azure invoice, cost tags, budgets and alerts per team.</p></div>
+          <div class="feat reveal"><h3>No lock-in</h3><p>Swap or add models as the frontier moves — same endpoint pattern.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 — ARCHITECTURE -->
+    <section class="slide" id="s11" data-label="Architecture">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">How it plugs in</p>
+        <h2 class="reveal">A thin routing layer, familiar tools.</h2>
+        <div class="flow reveal">
+          <div class="node">VS Code / IDE<small>Developer</small></div>
+          <span class="arrow">→</span>
+          <div class="node node--hub">Model Router<small>policy + cost rules</small></div>
+          <span class="arrow arrow--split">→</span>
+          <div class="node-col">
+            <div class="node node--copilot">GitHub Copilot<small>premium lane</small></div>
+            <div class="node node--foundry">Azure AI Foundry<small>DeepSeek · MiniMax · Kimi</small></div>
+          </div>
+        </div>
+        <ul class="checklist checklist--tight reveal">
+          <li data-ok>Copilot stays the default for inline + quick chat</li>
+          <li data-ok>Foundry models exposed via OpenAI-compatible endpoints — usable from Copilot Chat (BYOK), Continue, or an internal gateway</li>
+          <li data-ok>Routing rules by task type, file size, or explicit model pick</li>
+          <li data-ok>Central telemetry: cost per team, per model, per task</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 12 — ROLLOUT -->
+    <section class="slide" id="s12" data-label="Rollout">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Getting there</p>
+        <h2 class="reveal">A low-risk, 4-phase rollout.</h2>
+        <ol class="timeline">
+          <li class="reveal"><span class="timeline__no">1</span><div><h3>Pilot · Weeks 1–2</h3><p>Stand up Foundry endpoints for DeepSeek/Kimi. Onboard one volunteer squad. Measure baseline cost &amp; quality.</p></div></li>
+          <li class="reveal"><span class="timeline__no">2</span><div><h3>Route · Weeks 3–4</h3><p>Add routing rules for bulk + long-context work. Wire Copilot Chat BYOK or gateway. Track quota relief.</p></div></li>
+          <li class="reveal"><span class="timeline__no">3</span><div><h3>Govern · Weeks 5–6</h3><p>Private networking, content safety, cost budgets &amp; dashboards. Security sign-off.</p></div></li>
+          <li class="reveal"><span class="timeline__no">4</span><div><h3>Scale · Week 7+</h3><p>Roll out org-wide with defaults. Publish the routing playbook. Review savings monthly.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 13 — RISKS -->
+    <section class="slide" id="s13" data-label="Risks">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Honest about trade-offs</p>
+        <h2 class="reveal">Risks &amp; mitigations.</h2>
+        <div class="risk-grid">
+          <div class="risk reveal"><h3>Quality variance</h3><p>Keep premium lane for high-stakes work; auto-escalate on low confidence. Continuous eval set.</p></div>
+          <div class="risk reveal"><h3>Routing complexity</h3><p>Start with 3 simple rules; expand only when measured. Sensible defaults, manual override.</p></div>
+          <div class="risk reveal"><h3>Tooling fit</h3><p>Use OpenAI-compatible endpoints so existing extensions work; no custom IDE forks.</p></div>
+          <div class="risk reveal"><h3>Security review</h3><p>Foundry keeps data in-tenant; run it through the standard Azure approval path early.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 — THE ASK -->
+    <section class="slide slide--title slide--close" id="s14" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal">The ask</p>
+        <h2 class="reveal">Approve a <span class="grad">2-week pilot</span> with one squad.</h2>
+        <p class="lede reveal">No new budget. We add an Azure AI Foundry lane next to Copilot, route the
+          high-volume work to DeepSeek, MiniMax and Kimi, and report back the cost-per-task and quota relief.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--solid">Same $30 budget</span>
+          <span class="pill pill--solid">More engineering per dollar</span>
+          <span class="pill pill--solid">In your Azure tenant</span>
+        </div>
+        <p class="foot reveal">Let's stretch the $30.</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+  </main>
+
+  <!-- nav arrows -->
+  <button class="nav nav--prev" aria-label="Previous slide">‹</button>
+  <button class="nav nav--next" aria-label="Next slide">›</button>
+
+  <script>
+/* ============================================================
+   Stretch the $30 — deck interactions
+   - dot nav + arrows + keyboard
+   - progress bar + slide counter
+   - IntersectionObserver reveals
+   - interactive cost calculator
+   ============================================================ */
+(() => {
+  "use strict";
+
+  const deck   = document.getElementById("deck");
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsNav = document.querySelector(".dots");
+  const prevBtn = document.querySelector(".nav--prev");
+  const nextBtn = document.querySelector(".nav--next");
+  const bar     = document.querySelector(".progress__bar");
+  const nowEl   = document.getElementById("slideNow");
+  const totalEl = document.getElementById("slideTotal");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+
+  /* ---- build dot nav ---- */
+  slides.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", `Go to slide ${i + 1}: ${s.dataset.label || ""}`);
+    const tip = document.createElement("span");
+    tip.textContent = s.dataset.label || `Slide ${i + 1}`;
+    b.appendChild(tip);
+    b.addEventListener("click", () => goTo(i));
+    dotsNav.appendChild(b);
+  });
+  const dots = Array.from(dotsNav.children);
+  if (totalEl) totalEl.textContent = String(slides.length).padStart(2, "0");
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  function setActive(i) {
+    if (i === current) return;
+    current = i;
+    dots.forEach((d, n) => d.setAttribute("aria-current", n === i ? "true" : "false"));
+    if (nowEl) nowEl.textContent = String(i + 1).padStart(2, "0");
+    const pct = slides.length > 1 ? (i / (slides.length - 1)) * 100 : 100;
+    if (bar) bar.style.width = pct + "%";
+    if (prevBtn) prevBtn.disabled = i === 0;
+    if (nextBtn) nextBtn.disabled = i === slides.length - 1;
+  }
+
+  /* ---- which slide is in view ---- */
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+          setActive(slides.indexOf(e.target));
+        }
+      });
+    },
+    { root: deck, threshold: [0.5] }
+  );
+  slides.forEach((s) => spy.observe(s));
+
+  /* ---- arrows ---- */
+  prevBtn?.addEventListener("click", () => goTo(current - 1));
+  nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+  /* ---- keyboard ---- */
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+      if (e.target.tagName === "INPUT") return;
+      e.preventDefault(); goTo(current + 1);
+    } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+      e.preventDefault(); goTo(current - 1);
+    } else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End")  { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  setActive(0);
+
+  /* ---- reveals (progressive enhancement) ---- */
+  document.documentElement.classList.add("js-anim");
+  if (reduceMotion) {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  } else {
+    const revObs = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("in"); obs.unobserve(e.target); }
+        });
+      },
+      { root: deck, threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => revObs.observe(el));
+  }
+
+  /* ============================================================
+     COST CALCULATOR
+     Illustrative rates — edit to match contracted pricing.
+     ============================================================ */
+  const RATE_PREMIUM = 0.04;   // $ per Copilot premium request (overage)
+  const RATE_FOUNDRY = 0.003;  // $ per equivalent Foundry request (~4K in + 1K out)
+  const BUDGET = 30;           // $ per dev / month
+
+  const vol   = document.getElementById("vol");
+  const split = document.getElementById("split");
+  const volOut   = document.getElementById("volOut");
+  const splitOut = document.getElementById("splitOut");
+  const costAllEl = document.getElementById("costAll");
+  const costMixEl = document.getElementById("costMix");
+  const saveEl    = document.getElementById("save");
+  const tagAll = document.getElementById("tagAll");
+  const tagMix = document.getElementById("tagMix");
+  const savePct = document.getElementById("savePct");
+  const orgSave = document.getElementById("orgSave");
+
+  const usd = (n) =>
+    "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const usd0 = (n) => "$" + Math.round(n).toLocaleString("en-US");
+
+  function budgetTag(cost, el) {
+    if (!el) return;
+    if (cost <= BUDGET) {
+      el.textContent = `Within the $30 budget (${usd(BUDGET - cost)} to spare)`;
+      el.closest(".result")?.classList.remove("over");
+    } else {
+      el.textContent = `Over budget by ${usd(cost - BUDGET)}`;
+      el.closest(".result")?.classList.add("over");
+    }
+  }
+
+  function recalc() {
+    if (!vol || !split) return;
+    const requests = +vol.value;
+    const foundryShare = +split.value / 100;
+
+    const toFoundry = requests * foundryShare;
+    const toPremium = requests - toFoundry;
+
+    const costAll = requests * RATE_PREMIUM;
+    const costMix = toPremium * RATE_PREMIUM + toFoundry * RATE_FOUNDRY;
+    const save = costAll - costMix;
+    const pct = costAll > 0 ? (save / costAll) * 100 : 0;
+
+    if (volOut)   volOut.textContent = requests.toLocaleString("en-US");
+    if (splitOut) splitOut.textContent = Math.round(foundryShare * 100) + "%";
+
+    if (costAllEl) costAllEl.textContent = usd(costAll);
+    if (costMixEl) costMixEl.textContent = usd(costMix);
+    if (saveEl)    saveEl.textContent = usd(save);
+    if (savePct)   savePct.textContent = pct.toFixed(0) + "% lower cost for the same work";
+
+    budgetTag(costAll, tagAll);
+    budgetTag(costMix, tagMix);
+
+    // org saving / 100 devs / year
+    if (orgSave) orgSave.textContent = usd0(save * 100 * 12);
+  }
+
+  vol?.addEventListener("input", recalc);
+  split?.addEventListener("input", recalc);
+  recalc();
+})();
+  </script>
+</body>
+</html>
