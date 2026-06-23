@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Evaluating three sandbox solutions for containing GitHub Copilot CLI in full autopilot mode: Copilot local sandbox, Docker, and NVIDIA OpenShell." />
+  <title>What Controls Hold When Autopilot Is On</title>
+  <style>
+/* ============================================================
+   Controlling Copilot Autopilot — sandbox comparison deck
+   Framework-free. Scroll-snap slides + scroll-driven reveals.
+   ============================================================ */
+
+:root {
+  --bg:        #060910;
+  --bg-2:      #0b1120;
+  --panel:     rgba(255,255,255,.045);
+  --panel-2:   rgba(255,255,255,.07);
+  --stroke:    rgba(255,255,255,.10);
+  --stroke-2:  rgba(255,255,255,.18);
+  --ink:       #e8f0ff;
+  --ink-soft:  #a4b3cf;
+  --ink-dim:   #6a7a96;
+
+  --brand:     #58a6ff;   /* github blue */
+  --brand-2:   #bc8cff;   /* copilot violet */
+  --accent:    #3fb950;   /* github green */
+  --warn:      #f85149;   /* github red */
+  --amber:     #d29922;
+
+  /* per-solution accents */
+  --sol-a:     #bc8cff;   /* copilot local - violet */
+  --sol-b:     #58a6ff;   /* docker - blue */
+  --sol-c:     #76b900;   /* nvidia green */
+
+  --grad: linear-gradient(100deg, var(--brand) 0%, var(--brand-2) 55%, var(--accent) 120%);
+
+  --maxw: 1080px;
+  --r: 18px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 800px at 78% -10%, rgba(88,166,255,.18), transparent 60%),
+    radial-gradient(1000px 700px at 8% 110%, rgba(188,140,255,.14), transparent 55%),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* ---------- DECK / SCROLL SNAP ---------- */
+.deck {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.deck::-webkit-scrollbar { display: none; }
+
+.slide {
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  place-items: center;
+  padding: clamp(72px, 9vh, 120px) clamp(22px, 6vw, 80px) clamp(48px, 7vh, 90px);
+  position: relative;
+  container-type: inline-size;
+}
+
+.wrap { width: 100%; max-width: var(--maxw); }
+.wrap--wide { max-width: 1220px; }
+
+/* ---------- TYPE ---------- */
+h1 {
+  font-size: clamp(2.6rem, 9vw, 6.8rem);
+  line-height: .94;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  margin: .12em 0 .28em;
+}
+h2 {
+  font-size: clamp(1.9rem, 5.2vw, 3.6rem);
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  margin: 0 0 .55em;
+}
+h3 { font-size: 1.06rem; font-weight: 700; letter-spacing: -.01em; margin: 0 0 .4em; }
+
+.grad {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eyebrow, .kicker {
+  text-transform: uppercase;
+  letter-spacing: .26em;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 .2em;
+}
+.kicker { color: var(--accent); }
+
+.lede {
+  font-size: clamp(1.05rem, 2.1vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin: 0 0 1.6em;
+}
+.lede b { color: var(--ink); font-weight: 700; }
+
+.body {
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 64ch;
+  margin: 0 0 1.6em;
+}
+.body b { color: var(--ink); }
+.body em { color: var(--accent); font-style: normal; }
+
+.foot {
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 1.6em 0 0;
+  max-width: 74ch;
+}
+.foot b { color: var(--ink); }
+.muted { color: var(--ink-dim); }
+
+code {
+  font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", Menlo, monospace;
+  font-size: .86em;
+  padding: .12em .42em;
+  border-radius: 6px;
+  background: rgba(88,166,255,.14);
+  border: 1px solid rgba(88,166,255,.3);
+  color: #b8d7ff;
+}
+
+/* ---------- TOP BAR + PROGRESS ---------- */
+.progress {
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 50;
+  background: rgba(255,255,255,.06);
+}
+.progress__bar { display:block; height:100%; width:0; background: var(--grad); transition: width .25s var(--ease); }
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px clamp(22px, 6vw, 80px);
+  font-size: .82rem; pointer-events: none;
+}
+.topbar__brand { display:flex; align-items:center; gap:.55em; font-weight:700; letter-spacing:-.01em; }
+.topbar__count { color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+.topbar__count b { color: var(--ink); }
+.dot { width:9px; height:9px; border-radius:50%; background: var(--grad); box-shadow:0 0 14px var(--brand); }
+
+/* ---------- DOT NAV ---------- */
+.dots {
+  position: fixed; right: clamp(12px, 2.4vw, 26px); top: 50%;
+  transform: translateY(-50%); z-index: 45;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.dots button {
+  width: 11px; height: 11px; padding: 0; border-radius: 50%;
+  border: 1px solid var(--stroke-2); background: transparent;
+  cursor: pointer; transition: all .25s var(--ease); position: relative;
+}
+.dots button:hover { background: var(--stroke-2); }
+.dots button[aria-current="true"] { background: var(--grad); border-color: transparent; transform: scale(1.35); }
+.dots button span {
+  position:absolute; right: 20px; top:50%; transform: translateY(-50%);
+  white-space:nowrap; font-size:.72rem; color:var(--ink-soft);
+  background: var(--bg-2); border:1px solid var(--stroke); padding:3px 9px; border-radius:7px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.dots button:hover span { opacity:1; }
+
+/* ---------- NAV ARROWS ---------- */
+.nav {
+  position: fixed; bottom: 22px; z-index: 45;
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid var(--stroke-2); background: var(--panel-2);
+  backdrop-filter: blur(10px);
+  color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer;
+  display: grid; place-items: center; transition: all .2s var(--ease);
+}
+.nav:hover { background: var(--panel); border-color: var(--brand); transform: translateY(-2px); }
+.nav:disabled { opacity: .3; cursor: default; transform: none; }
+.nav--prev { right: 80px; }
+.nav--next { right: 22px; }
+
+/* ---------- PILLS / META ---------- */
+.title-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top: .4em; }
+.pill {
+  font-size: .82rem; font-weight: 600; padding: .5em 1em; border-radius: 999px;
+  border: 1px solid var(--stroke-2); color: var(--ink-soft); background: var(--panel);
+}
+.pill--solid { background: var(--panel-2); color: var(--ink); }
+.pill--a { border-color: rgba(188,140,255,.4); color: var(--sol-a); }
+.pill--b { border-color: rgba(88,166,255,.4); color: var(--sol-b); }
+.pill--c { border-color: rgba(118,185,0,.4); color: var(--sol-c); }
+
+.scrollcue { margin-top: 2.4em; color: var(--ink-dim); font-size:.86rem; letter-spacing:.04em; }
+.scrollcue::before { content:"↓ "; }
+
+/* ---------- ORBS / TITLE BG ---------- */
+.orb { position:absolute; border-radius:50%; filter: blur(60px); opacity:.5; z-index:-1; pointer-events:none; }
+.orb--a { width:520px; height:520px; background: radial-gradient(circle, rgba(88,166,255,.5), transparent 70%); top:-120px; right:-80px; }
+.orb--b { width:480px; height:480px; background: radial-gradient(circle, rgba(63,185,80,.28), transparent 70%); bottom:-140px; left:-100px; }
+
+/* ---------- STATS ---------- */
+.stat-row { display:flex; flex-wrap:wrap; gap: clamp(14px,2.5vw,28px); margin: .6em 0; }
+.stat {
+  flex: 1 1 200px; padding: 22px 24px; border-radius: var(--r);
+  background: var(--panel); border: 1px solid var(--stroke);
+}
+.stat__num { display:block; font-size: clamp(2.2rem,5vw,3.4rem); font-weight:900; letter-spacing:-.03em;
+  background: var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1; }
+.stat__lbl { display:block; margin-top:.5em; color: var(--ink-soft); font-size:.92rem; line-height:1.4; }
+
+/* ---------- GRID-2 / CHECKLIST / CALLOUT ---------- */
+.grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(20px,3vw,40px); align-items:start; }
+@container (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.checklist { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+.checklist li { position:relative; padding-left: 38px; font-size:1.06rem; line-height:1.45; color: var(--ink-soft); }
+.checklist li::before {
+  position:absolute; left:0; top:-1px; width:26px; height:26px; border-radius:8px;
+  display:grid; place-items:center; font-size:.9rem; font-weight:800;
+}
+.checklist li[data-x]::before { content:"✕"; color:var(--warn); background:rgba(248,81,73,.12); border:1px solid rgba(248,81,73,.3); }
+.checklist li[data-ok]::before { content:"✓"; color:var(--accent); background:rgba(63,185,80,.12); border:1px solid rgba(63,185,80,.3); }
+.checklist li[data-warn]::before { content:"~"; color:var(--amber); background:rgba(210,153,34,.12); border:1px solid rgba(210,153,34,.3); }
+.checklist--tight li { font-size:1rem; }
+
+.callout {
+  padding: 26px 28px; border-radius: var(--r);
+  background: linear-gradient(160deg, rgba(188,140,255,.14), rgba(88,166,255,.05));
+  border: 1px solid var(--stroke-2);
+}
+.callout__big { font-size:1.3rem; font-weight:800; letter-spacing:-.02em; margin:0 0 .5em; color:var(--ink); }
+.callout p { color: var(--ink-soft); line-height:1.55; margin:0; }
+.callout em { color: var(--accent); font-style:normal; }
+
+/* ---------- LANES ---------- */
+.slide--accent { background: linear-gradient(180deg, transparent, rgba(88,166,255,.04)); }
+.lanes { display:flex; align-items:stretch; gap:18px; margin-top:.4em; flex-wrap:wrap; }
+.lane {
+  flex:1 1 240px; padding: 24px 24px; border-radius: var(--r);
+  background: var(--panel); border:1px solid var(--stroke);
+}
+.lane--a { background: linear-gradient(165deg, rgba(188,140,255,.10), transparent 60%); border-color: rgba(188,140,255,.3); }
+.lane--b { background: linear-gradient(165deg, rgba(88,166,255,.10), transparent 60%); border-color: rgba(88,166,255,.3); }
+.lane--c { background: linear-gradient(165deg, rgba(118,185,0,.10), transparent 60%); border-color: rgba(118,185,0,.3); }
+.lane__tag { font-size:.72rem; text-transform:uppercase; letter-spacing:.16em; color:var(--ink-dim); font-weight:700; }
+.lane h3 { font-size:1.4rem; margin:.4em 0 .35em; }
+.lane--a h3 { color: var(--sol-a); }
+.lane--b h3 { color: var(--sol-b); }
+.lane--c h3 { color: var(--sol-c); }
+.lane p { color: var(--ink-soft); line-height:1.5; margin:0; }
+
+/* ---------- CARDS ---------- */
+.cards { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; margin:.4em 0; }
+@container (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  padding: 26px; border-radius: var(--r); background: var(--panel);
+  border: 1px solid var(--stroke); transition: transform .3s var(--ease), border-color .3s;
+}
+.card:hover { transform: translateY(-5px); border-color: var(--stroke-2); }
+.card header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.7em; gap:10px; }
+.card h3 { font-size:1.4rem; margin:0; }
+.card__tag { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  border:1px solid; padding:.35em .7em; border-radius:999px; white-space:nowrap; }
+.card__tag--a { color: var(--sol-a); border-color: rgba(188,140,255,.35); }
+.card__tag--b { color: var(--sol-b); border-color: rgba(88,166,255,.35); }
+.card__tag--c { color: var(--sol-c); border-color: rgba(118,185,0,.35); }
+.card p { color: var(--ink-soft); line-height:1.55; margin:0 0 1em; font-size:.96rem; }
+.card ul { margin:0; padding-left:1.1em; color: var(--ink-dim); font-size:.9rem; line-height:1.7; }
+.card ul li::marker { color: var(--brand); }
+
+/* ---------- TABLE / MATRIX ---------- */
+.table-wrap { border-radius: var(--r); border:1px solid var(--stroke); overflow:hidden; background: var(--panel); overflow-x:auto; }
+.matrix { width:100%; border-collapse:collapse; font-size:.95rem; min-width: 700px; }
+.matrix th, .matrix td { text-align:left; padding:14px 18px; border-bottom:1px solid var(--stroke); vertical-align:top; }
+.matrix thead th { background: rgba(255,255,255,.04); font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-dim); }
+.matrix thead th.col-a { color: var(--sol-a); }
+.matrix thead th.col-b { color: var(--sol-b); }
+.matrix thead th.col-c { color: var(--sol-c); }
+.matrix tbody tr:last-child td { border-bottom:none; }
+.matrix tbody tr:hover { background: rgba(255,255,255,.03); }
+.matrix td:first-child { font-weight:600; color:var(--ink); }
+.matrix td { color: var(--ink-soft); line-height:1.4; }
+
+/* verdict badges */
+.v { display:inline-block; font-size:.82rem; font-weight:700; padding:.2em .55em; border-radius:7px; }
+.v--pass { background:rgba(63,185,80,.14); color:var(--accent); }
+.v--partial { background:rgba(210,153,34,.14); color:var(--amber); }
+.v--fail { background:rgba(248,81,73,.14); color:var(--warn); }
+
+/* ---------- FEATURE GRID ---------- */
+.feat-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-top:.3em; }
+@container (max-width: 820px){ .feat-grid{ grid-template-columns:1fr 1fr; } }
+@container (max-width: 520px){ .feat-grid{ grid-template-columns:1fr; } }
+.feat { padding:20px 22px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke); }
+.feat h3 { color:var(--brand); margin-bottom:.35em; }
+.feat p { color: var(--ink-soft); font-size:.93rem; line-height:1.5; margin:0; }
+
+/* ---------- FLOW / ARCHITECTURE ---------- */
+.arch-stack { display:grid; gap:8px; max-width:700px; margin:.4em auto 1.6em; }
+.arch-row {
+  padding:18px 22px; border-radius:14px; border:1px solid var(--stroke);
+  font-weight:700; text-align:center; display:grid; gap:4px; position:relative;
+}
+.arch-row small { font-weight:400; font-size:.82rem; color:var(--ink-dim); }
+.arch-row--agent { background: var(--panel-2); border-color: var(--stroke-2); }
+.arch-row--a { background: rgba(188,140,255,.08); border-color: rgba(188,140,255,.3); color: var(--sol-a); }
+.arch-row--b { background: rgba(88,166,255,.08); border-color: rgba(88,166,255,.3); color: var(--sol-b); }
+.arch-row--c { background: rgba(118,185,0,.08); border-color: rgba(118,185,0,.3); color: var(--sol-c); }
+.arch-row--host { background: var(--panel); }
+.arch-note { position:absolute; right:18px; top:50%; transform:translateY(-50%); font-size:.78rem; font-weight:600; color:var(--ink-dim); }
+
+/* ---------- TIMELINE ---------- */
+.timeline { list-style:none; counter-reset:t; margin:.3em 0 0; padding:0; display:grid; gap:16px; }
+.timeline li { display:flex; gap:18px; align-items:flex-start; padding:18px 22px; border-radius:14px;
+  background: var(--panel); border:1px solid var(--stroke); }
+.timeline__no { flex:0 0 auto; width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  font-weight:900; background: var(--grad); color:#060910; }
+.timeline h3 { margin:.1em 0 .3em; }
+.timeline p { margin:0; color: var(--ink-soft); line-height:1.5; font-size:.96rem; }
+
+/* ---------- RISKS ---------- */
+.risk-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@container (max-width: 720px){ .risk-grid{ grid-template-columns:1fr; } }
+.risk { padding:22px 24px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke); }
+.risk h3 { color: var(--accent); }
+.risk p { margin:0; color: var(--ink-soft); line-height:1.5; }
+
+.slide--close .orb--a { opacity:.6; }
+
+/* ---------- DECISION GRID ---------- */
+.decision-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin-top:.3em; }
+.decision {
+  padding:22px 24px; border-radius:14px; background: var(--panel); border:1px solid var(--stroke);
+  transition: transform .3s var(--ease), border-color .3s;
+}
+.decision:hover { transform: translateY(-4px); border-color: var(--stroke-2); }
+.decision__when { font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-dim); font-weight:700; margin:0 0 .5em; }
+.decision__pick { font-size:1.2rem; font-weight:800; margin:0 0 .5em; }
+.decision__pick--a { color: var(--sol-a); }
+.decision__pick--b { color: var(--sol-b); }
+.decision__pick--c { color: var(--sol-c); }
+.decision__pick--all { background: var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.decision p { margin:0; color:var(--ink-soft); font-size:.92rem; line-height:1.45; }
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   ============================================================ */
+.reveal { opacity: 1; transform: none; }
+
+.js-anim .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+}
+.js-anim .reveal.in { opacity: 1; transform: none; }
+
+.js-anim .reveal.in:nth-child(2) { transition-delay:.05s; }
+.js-anim .stat:nth-child(2).in,
+.js-anim .card:nth-child(2).in,
+.js-anim .feat:nth-child(2).in { transition-delay:.08s; }
+.js-anim .card:nth-child(3).in,
+.js-anim .feat:nth-child(3).in { transition-delay:.16s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .deck { scroll-behavior: auto; }
+  .js-anim .reveal { opacity:1 !important; transform:none !important; transition:none; }
+  .orb { display:none; }
+}
+
+/* ---------- mobile tweaks ---------- */
+@media (max-width: 640px) {
+  .nav--prev { right: auto; left: 22px; }
+  .dots { display: none; }
+  .topbar { font-size: .74rem; }
+}
+  </style>
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Slide-number / brand -->
+  <header class="topbar">
+    <span class="topbar__brand">
+      <span class="dot"></span> Copilot Autopilot&nbsp;·&nbsp;Sandbox Control
+    </span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">13</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-label="Title">
+      <div class="wrap">
+        <p class="eyebrow reveal">Copilot CLI · Autonomous Agent Security</p>
+        <h1 class="reveal">What holds when <span class="grad">autopilot is on?</span></h1>
+        <p class="lede reveal">GitHub Copilot CLI's <code>--autopilot --allow-all-tools</code> removes
+          the human from the loop. The question isn't whether to trust the model — it's
+          <b>what boundary holds when the agent's own approvals are turned off</b>.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--a">Copilot Local Sandbox</span>
+          <span class="pill pill--b">Docker Sandbox</span>
+          <span class="pill pill--c">NVIDIA OpenShell</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 — THE PROBLEM -->
+    <section class="slide" id="s2" data-label="The problem">
+      <div class="wrap">
+        <p class="kicker reveal">What we're controlling</p>
+        <h2 class="reveal">Copilot CLI's autonomy flags remove <span class="grad">every guardrail</span>.</h2>
+        <p class="body reveal">With <code>--autopilot --allow-all-tools</code> the agent runs shell commands,
+          writes files, and calls MCP tools with <b>zero approval prompts</b> until the task finishes.
+          Tool-approval and sandboxing are two different switches — turning off approvals does not by itself
+          enable the sandbox.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">0</span><span class="stat__lbl">approval prompts in full autopilot</span></div>
+          <div class="stat reveal"><span class="stat__num">2</span><span class="stat__lbl">separate switches: tool-approval vs. sandbox</span></div>
+          <div class="stat reveal"><span class="stat__num">∞</span><span class="stat__lbl">commands the agent can run unchecked</span></div>
+        </div>
+        <p class="foot reveal">A sufficiently capable autopilot session — or a prompt injection — that can
+          edit <code>~/.copilot/settings.json</code> can weaken its own cage.
+          <b>That is the gap the out-of-process solutions close.</b></p>
+      </div>
+    </section>
+
+    <!-- 03 — THE RISK SURFACE -->
+    <section class="slide" id="s3" data-label="Risk surface">
+      <div class="wrap">
+        <p class="kicker reveal">What a runaway agent attempts</p>
+        <h2 class="reveal">The probe exercises every escape path.</h2>
+        <div class="grid-2">
+          <ul class="checklist reveal">
+            <li data-x>Read host secrets — <code>~/.ssh/id_rsa</code>, <code>/etc/shadow</code>, <code>~/.aws</code></li>
+            <li data-x>Write outside the workspace — <code>/usr</code>, system paths</li>
+            <li data-x>Reach non-approved hosts — <code>example.com</code></li>
+            <li data-x>POST to a read-only API (Layer-7 method escape)</li>
+            <li data-x>Connect to an unapproved MCP server</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">Every candidate is graded on the same eight checks.</p>
+            <p>Host isolation, filesystem control, network allow/block, Layer-7 method filtering,
+              and MCP allow/block — if the sandbox fails any check, the autonomous agent escapes
+              that boundary.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — THREE SOLUTIONS -->
+    <section class="slide slide--accent" id="s4" data-label="Three solutions">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The candidates</p>
+        <h2 class="reveal">Three solutions at three different altitudes.</h2>
+        <p class="body reveal">Each sits at a different point relative to the agent's process —
+          and that single fact drives everything about its strength.</p>
+        <div class="lanes">
+          <div class="lane lane--a reveal">
+            <span class="lane__tag">Inside the agent</span>
+            <h3>Copilot Local Sandbox</h3>
+            <p>Microsoft MXC — runs each tool call through a local sandbox governed by
+              <code>settings.json</code>. Finest MCP control (per-tool), but same trust domain as the agent.</p>
+          </div>
+          <div class="lane lane--b reveal">
+            <span class="lane__tag">Outside · container</span>
+            <h3>Docker Sandbox</h3>
+            <p>Copilot runs inside a hardened container — read-only rootfs, cap-drop ALL, egress proxy.
+              Independent of any agent flag. Portable and proven.</p>
+          </div>
+          <div class="lane lane--c reveal">
+            <span class="lane__tag">Outside · kernel + proxy</span>
+            <h3>NVIDIA OpenShell</h3>
+            <p>Kernel LSM + policy proxy. Agent believes it has full autonomy; every syscall and
+              connection is judged against a YAML policy the agent cannot read or modify.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — SOLUTION A: COPILOT LOCAL -->
+    <section class="slide" id="s5" data-label="Copilot local">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution A · Inside the agent</p>
+        <h2 class="reveal">Copilot Local Sandbox (MXC)</h2>
+        <p class="body reveal">Even with <code>--allow-all-tools</code>, when <code>sandbox.enabled</code>
+          is true the MXC layer still denies reads of <code>~/.ssh</code>, blocks non-listed hosts,
+          and refuses writes outside the workspace. MCP is gated at the <b>finest granularity of any solution</b> — per tool.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Filesystem rules</h3><p>Per-path access: read-write for workspace, deny for secret paths. Default-deny network with host-level rules.</p></div>
+          <div class="feat reveal"><h3>Per-tool MCP</h3><p><code>--deny-tool</code> always wins over any allow. The only solution that gates individual MCP tools.</p></div>
+          <div class="feat reveal"><h3>Cross-platform</h3><p>Consistent across macOS, Linux and Windows. Lowest setup cost — a JSON config file.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> same trust domain. The policy is user-writable; a prompt injection
+          that edits <code>settings.json</code> can weaken the cage for the next run. No L7 method filtering.
+          <span class="muted">Lock the policy with Intune/MDM on managed devices.</span></p>
+      </div>
+    </section>
+
+    <!-- 06 — SOLUTION B: DOCKER -->
+    <section class="slide" id="s6" data-label="Docker">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution B · Outside · container</p>
+        <h2 class="reveal">Docker Sandbox</h2>
+        <p class="body reveal">Copilot runs with full autonomy <em>inside</em> a hardened container.
+          The boundary is independent of any agent flag — it cannot be weakened from within the session.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Read-only rootfs</h3><p>Writable tmpfs + a single workspace volume. The agent can only write where you let it.</p></div>
+          <div class="feat reveal"><h3>No privileges</h3><p><code>cap_drop: ALL</code>, <code>no-new-privileges</code>, non-root UID. No escalation regardless of <code>--yolo</code>.</p></div>
+          <div class="feat reveal"><h3>Egress proxy</h3><p>Internal network + tinyproxy default-deny allow-list. Approved hosts reachable, everything else blocked.</p></div>
+          <div class="feat reveal"><h3>Secrets never mounted</h3><p>Host secrets are simply never present in the container — isolation by absence.</p></div>
+          <div class="feat reveal"><h3>MCP by reachability</h3><p>Approved MCP server on the internal net; unapproved server only on the egress net — unreachable.</p></div>
+          <div class="feat reveal"><h3>Portable</h3><p>Runs anywhere Docker runs. Familiar tooling for CI and dev environments.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> no L7 method filtering without TLS MITM. MCP control is coarse (reachable or not).
+          No credential proxy — secrets in env/volumes are visible to the agent.</p>
+      </div>
+    </section>
+
+    <!-- 07 — SOLUTION C: OPENSHELL -->
+    <section class="slide" id="s7" data-label="OpenShell">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution C · Outside · kernel + proxy</p>
+        <h2 class="reveal">NVIDIA OpenShell</h2>
+        <p class="body reveal">Copilot runs unmodified in full autopilot and <em>believes</em> it has full
+          autonomy. Every syscall and connection is judged against a declarative YAML policy
+          the agent cannot read or modify.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Landlock LSM</h3><p>Kernel-level filesystem enforcement. Denies writes to read-only paths even at UID 0 inside the namespace.</p></div>
+          <div class="feat reveal"><h3>L7 method filtering</h3><p>Terminates TLS and filters HTTP methods natively. GET allowed, POST/PUT/DELETE blocked. The only solution that passes the L7 check.</p></div>
+          <div class="feat reveal"><h3>Credential proxy</h3><p>Real keys replaced by opaque placeholders. The proxy injects the real key upstream and fails closed on error.</p></div>
+          <div class="feat reveal"><h3>Seccomp + namespaces</h3><p>Process isolation via seccomp-BPF, mount namespaces, and non-root enforcement. Host paths are invisible.</p></div>
+          <div class="feat reveal"><h3>Inference routing</h3><p>Org policy can reroute sensitive prompts to a local model regardless of what the agent requested.</p></div>
+          <div class="feat reveal"><h3>Full audit trail</h3><p>Gateway logs every allow/deny decision. Streams in real time for incident response.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> MCP is connection-level, not per-tool.
+          Linux only (kernel LSM). Needs an OpenShell gateway + Docker daemon.
+          <span class="muted">Pair with Copilot <code>--deny-tool</code> for tool-level control.</span></p>
+      </div>
+    </section>
+
+    <!-- 08 — HEAD-TO-HEAD MATRIX -->
+    <section class="slide" id="s8" data-label="Head to head">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Side by side</p>
+        <h2 class="reveal">Control objectives — who passes what.</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Objective</th>
+                <th class="col-a">Copilot Local</th>
+                <th class="col-b">Docker</th>
+                <th class="col-c">OpenShell</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Host isolation</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>FS read-write / read-only</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Network allow / block</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>L7 method filtering</td><td><span class="v v--partial">host only</span></td><td><span class="v v--fail">needs MITM</span></td><td><span class="v v--pass">✓ native</span></td></tr>
+              <tr><td>MCP allow / block</td><td><span class="v v--pass">✓ per-tool</span></td><td><span class="v v--pass">✓ reachability</span></td><td><span class="v v--pass">✓ per-conn</span></td></tr>
+              <tr><td>Credential protection</td><td><span class="v v--partial">keychain gate</span></td><td><span class="v v--partial">scope inputs</span></td><td><span class="v v--pass">✓ proxy</span></td></tr>
+              <tr><td>Inference routing</td><td><span class="v v--fail">✕</span></td><td><span class="v v--fail">✕</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Audit trail</td><td>agent logs</td><td>container logs</td><td><span class="v v--pass">✓ gateway</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="foot reveal">All three pass the core checks. OpenShell is the only one with native L7 filtering,
+          credential proxy, and a real audit trail.</p>
+      </div>
+    </section>
+
+    <!-- 09 — BOUNDARY STRENGTH -->
+    <section class="slide slide--accent" id="s9" data-label="Boundary strength">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The critical question</p>
+        <h2 class="reveal">Does it survive <code>--allow-all-tools</code>?</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th class="col-a">Copilot Local</th>
+                <th class="col-b">Docker</th>
+                <th class="col-c">OpenShell</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Enforcement location</td><td>in-process</td><td>container namespaces</td><td>kernel LSM + proxy</td></tr>
+              <tr><td>Survives <code>--allow-all-tools</code>?</td><td><span class="v v--partial">if sandbox stays on</span></td><td><span class="v v--pass">✓ always</span></td><td><span class="v v--pass">✓ always</span></td></tr>
+              <tr><td>Survives agent editing its own config?</td><td><span class="v v--fail">✕</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Survives prompt injection?</td><td><span class="v v--partial">~</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Bypassable by a single CLI flag?</td><td><span class="v v--fail">yes</span></td><td><span class="v v--pass">no</span></td><td><span class="v v--pass">no</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="foot reveal"><code>--allow-all-tools</code> only disables the agent's <em>own</em> approval prompts.
+          It cannot affect a boundary the agent's process can't reach. That is why Docker and OpenShell hold.</p>
+      </div>
+    </section>
+
+    <!-- 10 — ARCHITECTURE INSIGHT -->
+    <section class="slide" id="s10" data-label="Architecture">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The key insight</p>
+        <h2 class="reveal">Three boundaries, three trust domains.</h2>
+        <p class="body reveal">The solutions sit at different points relative to the agent's process.
+          That single fact drives everything about each one's strength.</p>
+        <div class="arch-stack reveal">
+          <div class="arch-row arch-row--agent">Copilot CLI — <code>--autopilot --allow-all-tools</code>
+            <div class="arch-row arch-row--a" style="margin:12px -10px -12px; padding:14px 18px;">(A) Copilot MXC local sandbox · in-process<span class="arch-note">a flag can turn it off</span></div>
+          </div>
+          <div class="arch-row arch-row--b">(B) Docker container · namespaces, out-of-process<span class="arch-note">agent can't reach it</span></div>
+          <div class="arch-row arch-row--c">(C) OpenShell · kernel LSM + policy proxy<span class="arch-note">strongest + L7/creds/audit</span></div>
+          <div class="arch-row arch-row--host">Host OS</div>
+        </div>
+        <ul class="checklist checklist--tight reveal">
+          <li data-ok>Solution A lives inside the agent's process — a flag or config edit can disable it</li>
+          <li data-ok>Solutions B and C are out-of-process — the agent cannot reach the enforcement boundary</li>
+          <li data-ok>For MCP tool-level control, pair the outer boundary with Copilot's <code>--deny-tool</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 11 — DEFENSE IN DEPTH -->
+    <section class="slide" id="s11" data-label="Defense in depth">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">They're complementary</p>
+        <h2 class="reveal">Layer all three for maximum assurance.</h2>
+        <p class="body reveal">The three solutions are defense-in-depth, not competitors. Each adds a capability
+          the others lack.</p>
+        <ol class="timeline">
+          <li class="reveal"><span class="timeline__no">1</span><div><h3>Always leave the Copilot local sandbox enabled</h3><p>It adds the one thing the outer layers lack — <b>per-tool MCP gating</b>. <code>--deny-tool</code> beats any allow. Lock the policy with Intune/MDM.</p></div></li>
+          <li class="reveal"><span class="timeline__no">2</span><div><h3>Use Docker where there's no OpenShell gateway</h3><p>Dev boxes, generic CI runners. Strong portable host isolation and egress allow-listing. Accept that L7 and per-tool MCP are out of scope.</p></div></li>
+          <li class="reveal"><span class="timeline__no">3</span><div><h3>Use OpenShell for production &amp; real credentials</h3><p>The only out-of-process boundary with L7 method filtering, fail-closed credential proxy, inference routing, and a full audit trail.</p></div></li>
+          <li class="reveal"><span class="timeline__no">4</span><div><h3>Always cap the loop</h3><p><code>--max-autopilot-continues N</code> — none of the sandboxes bound agent steps or token spend. Scope writable paths tightly.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 12 — DECISION SHORTCUT -->
+    <section class="slide" id="s12" data-label="Decision">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Pick by situation</p>
+        <h2 class="reveal">Decision shortcut.</h2>
+        <div class="decision-grid">
+          <div class="decision reveal">
+            <p class="decision__when">Dev laptop · low effort · guardrail today</p>
+            <p class="decision__pick decision__pick--a">Copilot Local Sandbox</p>
+            <p>MDM-locked config. Fastest to deploy, finest MCP control. Good first layer.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Portable CI · no gateway available</p>
+            <p class="decision__pick decision__pick--b">Docker Sandbox</p>
+            <p>Plus Copilot sandbox on inside. Strong isolation, familiar tooling, runs anywhere.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Production · untrusted code · real secrets · audit</p>
+            <p class="decision__pick decision__pick--c">NVIDIA OpenShell</p>
+            <p>Plus Copilot <code>--deny-tool</code>. L7 filtering, credential proxy, full audit trail.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Maximum assurance</p>
+            <p class="decision__pick decision__pick--all">All three, layered</p>
+            <p>OpenShell as the enforcement boundary, Docker for portability, Copilot sandbox for per-tool MCP. Defense in depth.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 — THE ASK -->
+    <section class="slide slide--title slide--close" id="s13" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal">Recommendation</p>
+        <h2 class="reveal">Implement <span class="grad">OpenShell</span> as the security boundary.</h2>
+        <p class="lede reveal">Keep the Copilot local sandbox enabled as an inner layer. Use Docker where
+          you need portable isolation without an OpenShell gateway. The three are complementary — defense in depth,
+          not a choice between them.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--solid">Out-of-process enforcement</span>
+          <span class="pill pill--solid">L7 + credentials + audit</span>
+          <span class="pill pill--solid">Per-tool MCP via --deny-tool</span>
+        </div>
+        <p class="foot reveal">The boundary that holds is the one the agent can't reach.</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+  </main>
+
+  <!-- nav arrows -->
+  <button class="nav nav--prev" aria-label="Previous slide">‹</button>
+  <button class="nav nav--next" aria-label="Next slide">›</button>
+
+  <script>
+/* ============================================================
+   Copilot Sandbox Comparison — deck interactions
+   ============================================================ */
+(() => {
+  "use strict";
+
+  const deck   = document.getElementById("deck");
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsNav = document.querySelector(".dots");
+  const prevBtn = document.querySelector(".nav--prev");
+  const nextBtn = document.querySelector(".nav--next");
+  const bar     = document.querySelector(".progress__bar");
+  const nowEl   = document.getElementById("slideNow");
+  const totalEl = document.getElementById("slideTotal");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+
+  /* ---- build dot nav ---- */
+  slides.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", `Go to slide ${i + 1}: ${s.dataset.label || ""}`);
+    const tip = document.createElement("span");
+    tip.textContent = s.dataset.label || `Slide ${i + 1}`;
+    b.appendChild(tip);
+    b.addEventListener("click", () => goTo(i));
+    dotsNav.appendChild(b);
+  });
+  const dots = Array.from(dotsNav.children);
+  if (totalEl) totalEl.textContent = String(slides.length).padStart(2, "0");
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  function setActive(i) {
+    if (i === current) return;
+    current = i;
+    dots.forEach((d, n) => d.setAttribute("aria-current", n === i ? "true" : "false"));
+    if (nowEl) nowEl.textContent = String(i + 1).padStart(2, "0");
+    const pct = slides.length > 1 ? (i / (slides.length - 1)) * 100 : 100;
+    if (bar) bar.style.width = pct + "%";
+    if (prevBtn) prevBtn.disabled = i === 0;
+    if (nextBtn) nextBtn.disabled = i === slides.length - 1;
+  }
+
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+          setActive(slides.indexOf(e.target));
+        }
+      });
+    },
+    { root: deck, threshold: [0.5] }
+  );
+  slides.forEach((s) => spy.observe(s));
+
+  prevBtn?.addEventListener("click", () => goTo(current - 1));
+  nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
+      e.preventDefault(); goTo(current + 1);
+    } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+      if (e.target.tagName === "INPUT") return;
+      e.preventDefault(); goTo(current - 1);
+    } else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End")  { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  setActive(0);
+
+  /* ---- reveals ---- */
+  document.documentElement.classList.add("js-anim");
+  if (reduceMotion) {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+  } else {
+    const revObs = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("in"); obs.unobserve(e.target); }
+        });
+      },
+      { root: deck, threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => revObs.observe(el));
+  }
+})();
+  </script>
+</body>
+</html>

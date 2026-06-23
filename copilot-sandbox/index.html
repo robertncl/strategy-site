@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Evaluating three sandbox solutions for containing GitHub Copilot CLI in full autopilot mode: Copilot local sandbox, Docker, and NVIDIA OpenShell." />
+  <title>What Controls Hold When Autopilot Is On</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Slide-number / brand -->
+  <header class="topbar">
+    <span class="topbar__brand">
+      <span class="dot"></span> Copilot Autopilot&nbsp;·&nbsp;Sandbox Control
+    </span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">13</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-label="Title">
+      <div class="wrap">
+        <p class="eyebrow reveal">Copilot CLI · Autonomous Agent Security</p>
+        <h1 class="reveal">What holds when <span class="grad">autopilot is on?</span></h1>
+        <p class="lede reveal">GitHub Copilot CLI's <code>--autopilot --allow-all-tools</code> removes
+          the human from the loop. The question isn't whether to trust the model — it's
+          <b>what boundary holds when the agent's own approvals are turned off</b>.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--a">Copilot Local Sandbox</span>
+          <span class="pill pill--b">Docker Sandbox</span>
+          <span class="pill pill--c">NVIDIA OpenShell</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 — THE PROBLEM -->
+    <section class="slide" id="s2" data-label="The problem">
+      <div class="wrap">
+        <p class="kicker reveal">What we're controlling</p>
+        <h2 class="reveal">Copilot CLI's autonomy flags remove <span class="grad">every guardrail</span>.</h2>
+        <p class="body reveal">With <code>--autopilot --allow-all-tools</code> the agent runs shell commands,
+          writes files, and calls MCP tools with <b>zero approval prompts</b> until the task finishes.
+          Tool-approval and sandboxing are two different switches — turning off approvals does not by itself
+          enable the sandbox.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">0</span><span class="stat__lbl">approval prompts in full autopilot</span></div>
+          <div class="stat reveal"><span class="stat__num">2</span><span class="stat__lbl">separate switches: tool-approval vs. sandbox</span></div>
+          <div class="stat reveal"><span class="stat__num">∞</span><span class="stat__lbl">commands the agent can run unchecked</span></div>
+        </div>
+        <p class="foot reveal">A sufficiently capable autopilot session — or a prompt injection — that can
+          edit <code>~/.copilot/settings.json</code> can weaken its own cage.
+          <b>That is the gap the out-of-process solutions close.</b></p>
+      </div>
+    </section>
+
+    <!-- 03 — THE RISK SURFACE -->
+    <section class="slide" id="s3" data-label="Risk surface">
+      <div class="wrap">
+        <p class="kicker reveal">What a runaway agent attempts</p>
+        <h2 class="reveal">The probe exercises every escape path.</h2>
+        <div class="grid-2">
+          <ul class="checklist reveal">
+            <li data-x>Read host secrets — <code>~/.ssh/id_rsa</code>, <code>/etc/shadow</code>, <code>~/.aws</code></li>
+            <li data-x>Write outside the workspace — <code>/usr</code>, system paths</li>
+            <li data-x>Reach non-approved hosts — <code>example.com</code></li>
+            <li data-x>POST to a read-only API (Layer-7 method escape)</li>
+            <li data-x>Connect to an unapproved MCP server</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">Every candidate is graded on the same eight checks.</p>
+            <p>Host isolation, filesystem control, network allow/block, Layer-7 method filtering,
+              and MCP allow/block — if the sandbox fails any check, the autonomous agent escapes
+              that boundary.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — THREE SOLUTIONS -->
+    <section class="slide slide--accent" id="s4" data-label="Three solutions">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The candidates</p>
+        <h2 class="reveal">Three solutions at three different altitudes.</h2>
+        <p class="body reveal">Each sits at a different point relative to the agent's process —
+          and that single fact drives everything about its strength.</p>
+        <div class="lanes">
+          <div class="lane lane--a reveal">
+            <span class="lane__tag">Inside the agent</span>
+            <h3>Copilot Local Sandbox</h3>
+            <p>Microsoft MXC — runs each tool call through a local sandbox governed by
+              <code>settings.json</code>. Finest MCP control (per-tool), but same trust domain as the agent.</p>
+          </div>
+          <div class="lane lane--b reveal">
+            <span class="lane__tag">Outside · container</span>
+            <h3>Docker Sandbox</h3>
+            <p>Copilot runs inside a hardened container — read-only rootfs, cap-drop ALL, egress proxy.
+              Independent of any agent flag. Portable and proven.</p>
+          </div>
+          <div class="lane lane--c reveal">
+            <span class="lane__tag">Outside · kernel + proxy</span>
+            <h3>NVIDIA OpenShell</h3>
+            <p>Kernel LSM + policy proxy. Agent believes it has full autonomy; every syscall and
+              connection is judged against a YAML policy the agent cannot read or modify.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 — SOLUTION A: COPILOT LOCAL -->
+    <section class="slide" id="s5" data-label="Copilot local">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution A · Inside the agent</p>
+        <h2 class="reveal">Copilot Local Sandbox (MXC)</h2>
+        <p class="body reveal">Even with <code>--allow-all-tools</code>, when <code>sandbox.enabled</code>
+          is true the MXC layer still denies reads of <code>~/.ssh</code>, blocks non-listed hosts,
+          and refuses writes outside the workspace. MCP is gated at the <b>finest granularity of any solution</b> — per tool.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Filesystem rules</h3><p>Per-path access: read-write for workspace, deny for secret paths. Default-deny network with host-level rules.</p></div>
+          <div class="feat reveal"><h3>Per-tool MCP</h3><p><code>--deny-tool</code> always wins over any allow. The only solution that gates individual MCP tools.</p></div>
+          <div class="feat reveal"><h3>Cross-platform</h3><p>Consistent across macOS, Linux and Windows. Lowest setup cost — a JSON config file.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> same trust domain. The policy is user-writable; a prompt injection
+          that edits <code>settings.json</code> can weaken the cage for the next run. No L7 method filtering.
+          <span class="muted">Lock the policy with Intune/MDM on managed devices.</span></p>
+      </div>
+    </section>
+
+    <!-- 06 — SOLUTION B: DOCKER -->
+    <section class="slide" id="s6" data-label="Docker">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution B · Outside · container</p>
+        <h2 class="reveal">Docker Sandbox</h2>
+        <p class="body reveal">Copilot runs with full autonomy <em>inside</em> a hardened container.
+          The boundary is independent of any agent flag — it cannot be weakened from within the session.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Read-only rootfs</h3><p>Writable tmpfs + a single workspace volume. The agent can only write where you let it.</p></div>
+          <div class="feat reveal"><h3>No privileges</h3><p><code>cap_drop: ALL</code>, <code>no-new-privileges</code>, non-root UID. No escalation regardless of <code>--yolo</code>.</p></div>
+          <div class="feat reveal"><h3>Egress proxy</h3><p>Internal network + tinyproxy default-deny allow-list. Approved hosts reachable, everything else blocked.</p></div>
+          <div class="feat reveal"><h3>Secrets never mounted</h3><p>Host secrets are simply never present in the container — isolation by absence.</p></div>
+          <div class="feat reveal"><h3>MCP by reachability</h3><p>Approved MCP server on the internal net; unapproved server only on the egress net — unreachable.</p></div>
+          <div class="feat reveal"><h3>Portable</h3><p>Runs anywhere Docker runs. Familiar tooling for CI and dev environments.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> no L7 method filtering without TLS MITM. MCP control is coarse (reachable or not).
+          No credential proxy — secrets in env/volumes are visible to the agent.</p>
+      </div>
+    </section>
+
+    <!-- 07 — SOLUTION C: OPENSHELL -->
+    <section class="slide" id="s7" data-label="OpenShell">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Solution C · Outside · kernel + proxy</p>
+        <h2 class="reveal">NVIDIA OpenShell</h2>
+        <p class="body reveal">Copilot runs unmodified in full autopilot and <em>believes</em> it has full
+          autonomy. Every syscall and connection is judged against a declarative YAML policy
+          the agent cannot read or modify.</p>
+        <div class="feat-grid">
+          <div class="feat reveal"><h3>Landlock LSM</h3><p>Kernel-level filesystem enforcement. Denies writes to read-only paths even at UID 0 inside the namespace.</p></div>
+          <div class="feat reveal"><h3>L7 method filtering</h3><p>Terminates TLS and filters HTTP methods natively. GET allowed, POST/PUT/DELETE blocked. The only solution that passes the L7 check.</p></div>
+          <div class="feat reveal"><h3>Credential proxy</h3><p>Real keys replaced by opaque placeholders. The proxy injects the real key upstream and fails closed on error.</p></div>
+          <div class="feat reveal"><h3>Seccomp + namespaces</h3><p>Process isolation via seccomp-BPF, mount namespaces, and non-root enforcement. Host paths are invisible.</p></div>
+          <div class="feat reveal"><h3>Inference routing</h3><p>Org policy can reroute sensitive prompts to a local model regardless of what the agent requested.</p></div>
+          <div class="feat reveal"><h3>Full audit trail</h3><p>Gateway logs every allow/deny decision. Streams in real time for incident response.</p></div>
+        </div>
+        <p class="foot reveal"><b>Limitation:</b> MCP is connection-level, not per-tool.
+          Linux only (kernel LSM). Needs an OpenShell gateway + Docker daemon.
+          <span class="muted">Pair with Copilot <code>--deny-tool</code> for tool-level control.</span></p>
+      </div>
+    </section>
+
+    <!-- 08 — HEAD-TO-HEAD MATRIX -->
+    <section class="slide" id="s8" data-label="Head to head">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Side by side</p>
+        <h2 class="reveal">Control objectives — who passes what.</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Objective</th>
+                <th class="col-a">Copilot Local</th>
+                <th class="col-b">Docker</th>
+                <th class="col-c">OpenShell</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Host isolation</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>FS read-write / read-only</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Network allow / block</td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>L7 method filtering</td><td><span class="v v--partial">host only</span></td><td><span class="v v--fail">needs MITM</span></td><td><span class="v v--pass">✓ native</span></td></tr>
+              <tr><td>MCP allow / block</td><td><span class="v v--pass">✓ per-tool</span></td><td><span class="v v--pass">✓ reachability</span></td><td><span class="v v--pass">✓ per-conn</span></td></tr>
+              <tr><td>Credential protection</td><td><span class="v v--partial">keychain gate</span></td><td><span class="v v--partial">scope inputs</span></td><td><span class="v v--pass">✓ proxy</span></td></tr>
+              <tr><td>Inference routing</td><td><span class="v v--fail">✕</span></td><td><span class="v v--fail">✕</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Audit trail</td><td>agent logs</td><td>container logs</td><td><span class="v v--pass">✓ gateway</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="foot reveal">All three pass the core checks. OpenShell is the only one with native L7 filtering,
+          credential proxy, and a real audit trail.</p>
+      </div>
+    </section>
+
+    <!-- 09 — BOUNDARY STRENGTH -->
+    <section class="slide slide--accent" id="s9" data-label="Boundary strength">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The critical question</p>
+        <h2 class="reveal">Does it survive <code>--allow-all-tools</code>?</h2>
+        <div class="table-wrap reveal">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th class="col-a">Copilot Local</th>
+                <th class="col-b">Docker</th>
+                <th class="col-c">OpenShell</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Enforcement location</td><td>in-process</td><td>container namespaces</td><td>kernel LSM + proxy</td></tr>
+              <tr><td>Survives <code>--allow-all-tools</code>?</td><td><span class="v v--partial">if sandbox stays on</span></td><td><span class="v v--pass">✓ always</span></td><td><span class="v v--pass">✓ always</span></td></tr>
+              <tr><td>Survives agent editing its own config?</td><td><span class="v v--fail">✕</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Survives prompt injection?</td><td><span class="v v--partial">~</span></td><td><span class="v v--pass">✓</span></td><td><span class="v v--pass">✓</span></td></tr>
+              <tr><td>Bypassable by a single CLI flag?</td><td><span class="v v--fail">yes</span></td><td><span class="v v--pass">no</span></td><td><span class="v v--pass">no</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="foot reveal"><code>--allow-all-tools</code> only disables the agent's <em>own</em> approval prompts.
+          It cannot affect a boundary the agent's process can't reach. That is why Docker and OpenShell hold.</p>
+      </div>
+    </section>
+
+    <!-- 10 — ARCHITECTURE INSIGHT -->
+    <section class="slide" id="s10" data-label="Architecture">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">The key insight</p>
+        <h2 class="reveal">Three boundaries, three trust domains.</h2>
+        <p class="body reveal">The solutions sit at different points relative to the agent's process.
+          That single fact drives everything about each one's strength.</p>
+        <div class="arch-stack reveal">
+          <div class="arch-row arch-row--agent">Copilot CLI — <code>--autopilot --allow-all-tools</code>
+            <div class="arch-row arch-row--a" style="margin:12px -10px -12px; padding:14px 18px;">(A) Copilot MXC local sandbox · in-process<span class="arch-note">a flag can turn it off</span></div>
+          </div>
+          <div class="arch-row arch-row--b">(B) Docker container · namespaces, out-of-process<span class="arch-note">agent can't reach it</span></div>
+          <div class="arch-row arch-row--c">(C) OpenShell · kernel LSM + policy proxy<span class="arch-note">strongest + L7/creds/audit</span></div>
+          <div class="arch-row arch-row--host">Host OS</div>
+        </div>
+        <ul class="checklist checklist--tight reveal">
+          <li data-ok>Solution A lives inside the agent's process — a flag or config edit can disable it</li>
+          <li data-ok>Solutions B and C are out-of-process — the agent cannot reach the enforcement boundary</li>
+          <li data-ok>For MCP tool-level control, pair the outer boundary with Copilot's <code>--deny-tool</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 11 — DEFENSE IN DEPTH -->
+    <section class="slide" id="s11" data-label="Defense in depth">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">They're complementary</p>
+        <h2 class="reveal">Layer all three for maximum assurance.</h2>
+        <p class="body reveal">The three solutions are defense-in-depth, not competitors. Each adds a capability
+          the others lack.</p>
+        <ol class="timeline">
+          <li class="reveal"><span class="timeline__no">1</span><div><h3>Always leave the Copilot local sandbox enabled</h3><p>It adds the one thing the outer layers lack — <b>per-tool MCP gating</b>. <code>--deny-tool</code> beats any allow. Lock the policy with Intune/MDM.</p></div></li>
+          <li class="reveal"><span class="timeline__no">2</span><div><h3>Use Docker where there's no OpenShell gateway</h3><p>Dev boxes, generic CI runners. Strong portable host isolation and egress allow-listing. Accept that L7 and per-tool MCP are out of scope.</p></div></li>
+          <li class="reveal"><span class="timeline__no">3</span><div><h3>Use OpenShell for production &amp; real credentials</h3><p>The only out-of-process boundary with L7 method filtering, fail-closed credential proxy, inference routing, and a full audit trail.</p></div></li>
+          <li class="reveal"><span class="timeline__no">4</span><div><h3>Always cap the loop</h3><p><code>--max-autopilot-continues N</code> — none of the sandboxes bound agent steps or token spend. Scope writable paths tightly.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 12 — DECISION SHORTCUT -->
+    <section class="slide" id="s12" data-label="Decision">
+      <div class="wrap wrap--wide">
+        <p class="kicker reveal">Pick by situation</p>
+        <h2 class="reveal">Decision shortcut.</h2>
+        <div class="decision-grid">
+          <div class="decision reveal">
+            <p class="decision__when">Dev laptop · low effort · guardrail today</p>
+            <p class="decision__pick decision__pick--a">Copilot Local Sandbox</p>
+            <p>MDM-locked config. Fastest to deploy, finest MCP control. Good first layer.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Portable CI · no gateway available</p>
+            <p class="decision__pick decision__pick--b">Docker Sandbox</p>
+            <p>Plus Copilot sandbox on inside. Strong isolation, familiar tooling, runs anywhere.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Production · untrusted code · real secrets · audit</p>
+            <p class="decision__pick decision__pick--c">NVIDIA OpenShell</p>
+            <p>Plus Copilot <code>--deny-tool</code>. L7 filtering, credential proxy, full audit trail.</p>
+          </div>
+          <div class="decision reveal">
+            <p class="decision__when">Maximum assurance</p>
+            <p class="decision__pick decision__pick--all">All three, layered</p>
+            <p>OpenShell as the enforcement boundary, Docker for portability, Copilot sandbox for per-tool MCP. Defense in depth.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 — THE ASK -->
+    <section class="slide slide--title slide--close" id="s13" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal">Recommendation</p>
+        <h2 class="reveal">Implement <span class="grad">OpenShell</span> as the security boundary.</h2>
+        <p class="lede reveal">Keep the Copilot local sandbox enabled as an inner layer. Use Docker where
+          you need portable isolation without an OpenShell gateway. The three are complementary — defense in depth,
+          not a choice between them.</p>
+        <div class="title-meta reveal">
+          <span class="pill pill--solid">Out-of-process enforcement</span>
+          <span class="pill pill--solid">L7 + credentials + audit</span>
+          <span class="pill pill--solid">Per-tool MCP via --deny-tool</span>
+        </div>
+        <p class="foot reveal">The boundary that holds is the one the agent can't reach.</p>
+      </div>
+      <div class="orb orb--a" aria-hidden="true"></div>
+      <div class="orb orb--b" aria-hidden="true"></div>
+    </section>
+
+  </main>
+
+  <!-- nav arrows -->
+  <button class="nav nav--prev" aria-label="Previous slide">‹</button>
+  <button class="nav nav--next" aria-label="Next slide">›</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
