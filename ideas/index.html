@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Nine agentic-AI ideas non-developers can build with GitHub Copilot across Microsoft 365 and Atlassian.">
+</head>
+<body>
+<title>Agentic AI You Can Build Yourself</title>
+
+<style>
+  :root{
+    --paper:#F3F5F7;
+    --surface:#FFFFFF;
+    --surface-2:#EAEEF1;
+    --ink:#12161C;
+    --ink-soft:#3A434E;
+    --muted:#5C6873;
+    --line:#D3DAE0;
+    --line-soft:#E1E7EC;
+    --accent:#0E8C8C;
+    --accent-bright:#12A6A6;
+    --accent-ink:#0A6767;
+    --warm:#C77A2E;
+    --good:#2E8B6B;
+    --good-bg:#DCEFE7;
+    --mid:#B9812B;
+    --mid-bg:#F3E7CF;
+    --adv:#8C5AB0;
+    --adv-bg:#EAE0F2;
+    --shadow:0 1px 2px rgba(18,22,28,.06),0 10px 30px -12px rgba(18,22,28,.18);
+
+    --sans:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --mono:"Cascadia Code","Cascadia Mono","SF Mono",ui-monospace,"Roboto Mono",Consolas,monospace;
+    --maxw:1120px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0D1117;
+      --surface:#161B22;
+      --surface-2:#1C232D;
+      --ink:#E9EEF2;
+      --ink-soft:#C2CBD4;
+      --muted:#8B97A3;
+      --line:#2A333E;
+      --line-soft:#232B34;
+      --accent:#2FC1C1;
+      --accent-bright:#48D6D6;
+      --accent-ink:#7FE3E3;
+      --warm:#E0A45E;
+      --good:#4FC79A;
+      --good-bg:#12352A;
+      --mid:#E0B662;
+      --mid-bg:#3A2F14;
+      --adv:#C39BE0;
+      --adv-bg:#2C2038;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F5F7;--surface:#FFFFFF;--surface-2:#EAEEF1;--ink:#12161C;--ink-soft:#3A434E;
+    --muted:#5C6873;--line:#D3DAE0;--line-soft:#E1E7EC;--accent:#0E8C8C;--accent-bright:#12A6A6;
+    --accent-ink:#0A6767;--warm:#C77A2E;--good:#2E8B6B;--good-bg:#DCEFE7;--mid:#B9812B;
+    --mid-bg:#F3E7CF;--adv:#8C5AB0;--adv-bg:#EAE0F2;--shadow:0 1px 2px rgba(18,22,28,.06),0 10px 30px -12px rgba(18,22,28,.18);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0D1117;--surface:#161B22;--surface-2:#1C232D;--ink:#E9EEF2;--ink-soft:#C2CBD4;
+    --muted:#8B97A3;--line:#2A333E;--line-soft:#232B34;--accent:#2FC1C1;--accent-bright:#48D6D6;
+    --accent-ink:#7FE3E3;--warm:#E0A45E;--good:#4FC79A;--good-bg:#12352A;--mid:#E0B662;
+    --mid-bg:#3A2F14;--adv:#C39BE0;--adv-bg:#2C2038;--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px -16px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow:hidden;
+  }
+
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);padding-bottom:clamp(58px,8vh,84px)}
+
+  .slide{
+    position:absolute;inset:clamp(14px,3vw,40px);inset-bottom:clamp(58px,8vh,84px);
+    max-width:var(--maxw);margin:auto;
+    display:flex;flex-direction:column;justify-content:center;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .5s ease,transform .5s ease,visibility .5s;
+    will-change:opacity,transform;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition:opacity .2s ease,visibility .2s;transform:none}
+  }
+
+  /* ---- shared bits ---- */
+  .eyebrow{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:clamp(11px,1.15vw,13px);letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent-ink);font-weight:600;margin-bottom:18px;
+  }
+  .eyebrow .tick{width:22px;height:1.5px;background:var(--accent);display:inline-block}
+  .eyebrow .n{color:var(--muted);font-variant-numeric:tabular-nums}
+
+  h1{font-size:clamp(34px,6.4vw,74px);line-height:1.02;letter-spacing:-.025em;font-weight:700;margin:0;text-wrap:balance}
+  h2{font-size:clamp(26px,3.9vw,46px);line-height:1.06;letter-spacing:-.02em;font-weight:700;margin:0 0 6px;text-wrap:balance}
+  .lede{font-size:clamp(16px,1.7vw,21px);line-height:1.5;color:var(--ink-soft);max-width:62ch;margin:14px 0 0;font-weight:400}
+  p{margin:0}
+  .accent{color:var(--accent-ink)}
+  .warm{color:var(--warm)}
+
+  /* ---- title slide ---- */
+  #s0 canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;z-index:0;pointer-events:none}
+  .title-wrap{position:relative;z-index:1}
+  .brandline{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:26px}
+  .chip{
+    font-family:var(--mono);font-size:12px;letter-spacing:.03em;
+    padding:6px 12px;border:1px solid var(--line);border-radius:999px;
+    background:var(--surface);color:var(--ink-soft);white-space:nowrap;
+  }
+  .chip b{color:var(--accent-ink);font-weight:600}
+  .subhead{font-size:clamp(16px,1.8vw,22px);color:var(--muted);margin-top:20px;max-width:56ch;line-height:1.5}
+
+  /* ---- two-column ---- */
+  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(22px,4vw,60px);align-items:center}
+  @media (max-width:820px){.cols{grid-template-columns:1fr;gap:26px}}
+
+  .vs{display:flex;flex-direction:column;gap:14px}
+  .vs-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .vs-card{border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;background:var(--surface);box-shadow:var(--shadow)}
+  .vs-card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+  .vs-card h4{margin:0 0 6px;font-size:15px;letter-spacing:-.01em}
+  .vs-card .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .vs-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.45;margin-top:8px}
+
+  .steps{display:flex;flex-direction:column;gap:2px;counter-reset:step}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line-soft)}
+  .step:first-child{border-top:0}
+  .step .idx{counter-increment:step;font-family:var(--mono);font-size:13px;color:var(--warm);font-weight:600;padding-top:2px}
+  .step .idx::before{content:counter(step,decimal-leading-zero)}
+  .step h4{margin:0;font-size:16px;letter-spacing:-.01em}
+  .step p{font-size:14px;color:var(--muted);line-height:1.45;margin-top:3px}
+
+  /* ---- toolbox ---- */
+  .stacks{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:820px){.stacks{grid-template-columns:1fr}}
+  .stack{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:20px;box-shadow:var(--shadow)}
+  .stack h3{margin:0 0 4px;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .stack .k{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+  .stack ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+  .stack li{font-size:13px;padding:6px 11px;border-radius:8px;background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line-soft)}
+  .stack.hero{grid-column:1/-1;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow);background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--surface)),var(--surface))}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block}
+  .dot.blue{background:#2C6FE0}.dot.navy{background:#1B4CA8}
+
+  /* ---- idea grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:600px){.grid{grid-template-columns:1fr}}
+  .card{
+    border:1px solid var(--line);border-radius:13px;background:var(--surface);
+    padding:15px 15px 13px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow);
+    transition:transform .18s ease,border-color .18s ease;
+  }
+  .card:hover{transform:translateY(-3px);border-color:var(--accent)}
+  .card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .card h4{margin:0;font-size:15.5px;letter-spacing:-.012em;line-height:1.2}
+  .card p{font-size:12.8px;color:var(--muted);line-height:1.42;flex:1}
+  .apps{display:flex;flex-wrap:wrap;gap:5px}
+  .app{font-family:var(--mono);font-size:10px;letter-spacing:.02em;padding:3px 7px;border-radius:6px;background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line-soft)}
+  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:4px 8px;border-radius:999px;white-space:nowrap}
+  .pill.s{background:var(--good-bg);color:var(--good)}
+  .pill.m{background:var(--mid-bg);color:var(--mid)}
+  .pill.a{background:var(--adv-bg);color:var(--adv)}
+  .grid-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+  .grid-legend span{display:inline-flex;align-items:center;gap:6px}
+  .lg{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .lg.s{background:var(--good)}.lg.m{background:var(--mid)}.lg.a{background:var(--adv)}
+
+  /* ---- deep dive flow ---- */
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
+  @media (max-width:820px){.flow{grid-template-columns:1fr 1fr}}
+  .node{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px;box-shadow:var(--shadow)}
+  .node .num{font-family:var(--mono);font-size:11px;color:var(--warm);font-weight:600}
+  .node h4{margin:6px 0 5px;font-size:14.5px;letter-spacing:-.01em;line-height:1.15}
+  .node p{font-size:12px;color:var(--muted);line-height:1.4}
+  .node .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:9px;display:inline-block;padding:3px 7px;border-radius:6px}
+  .who.ai{background:var(--adv-bg);color:var(--adv)}
+  .who.you{background:var(--good-bg);color:var(--good)}
+  .dd-note{margin-top:18px;border-left:2px solid var(--warm);padding:4px 0 4px 16px;font-size:14px;color:var(--ink-soft);line-height:1.5;max-width:70ch}
+
+  /* ---- roadmap ---- */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:820px){.road{grid-template-columns:1fr}}
+  .phase{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .phase::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
+  .phase .wk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm);font-weight:600}
+  .phase h3{margin:8px 0 12px;font-size:20px;letter-spacing:-.015em}
+  .phase ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:9px}
+  .phase li{font-size:13.5px;color:var(--ink-soft);line-height:1.45}
+
+  /* ---- guardrails ---- */
+  .guards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:820px){.guards{grid-template-columns:1fr}}
+  .guard{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;border:1px solid var(--line);border-radius:13px;background:var(--surface);padding:16px 18px;box-shadow:var(--shadow)}
+  .guard .g-ic{width:38px;height:38px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;color:var(--accent-ink)}
+  .guard h4{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+  .guard p{font-size:13px;color:var(--muted);line-height:1.45}
+  svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---- closing ---- */
+  .close-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{font-family:var(--mono);font-size:13px;letter-spacing:.02em;padding:11px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  :root[data-theme="dark"] .btn.primary,@media (prefers-color-scheme:dark){}
+  .stat-row{display:flex;gap:clamp(20px,5vw,64px);margin-top:30px;flex-wrap:wrap}
+  .stat .v{font-size:clamp(30px,4.4vw,50px);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .v .warm{color:var(--warm)}
+  .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+  /* ---- nav / chrome ---- */
+  .chrome{position:fixed;left:0;right:0;bottom:0;height:clamp(50px,7vh,66px);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3vw,40px);gap:16px;z-index:20;
+    background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--paper) 88%,transparent) 40%,var(--paper));}
+  .brand-tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-tag b{color:var(--accent-ink)}
+  .dots{display:flex;gap:7px;align-items:center}
+  .dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:background .2s,transform .2s}
+  .dots button.on{background:var(--accent);transform:scale(1.35)}
+  .nav-r{display:flex;align-items:center;gap:12px}
+  .counter{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.05em}
+  .counter b{color:var(--ink)}
+  .arrows{display:flex;gap:6px}
+  .arrows button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+  .arrows button:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .arrows button:disabled{opacity:.35;cursor:default}
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:30;transition:width .5s ease}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (max-width:640px){.brand-tag{display:none}}
+</style>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- 0 TITLE -->
+  <section class="slide active" id="s0">
+    <canvas id="net"></canvas>
+    <div class="title-wrap">
+      <div class="eyebrow"><span class="tick"></span> A field guide for non-developers</div>
+      <h1>Agentic AI<br>you can build yourself.</h1>
+      <p class="subhead">Nine practical things your team can build with <b class="accent">GitHub Copilot</b> — no software background required — that plug straight into the tools you already live in.</p>
+      <div class="brandline">
+        <span class="chip">Runs on <b>Microsoft 365</b></span>
+        <span class="chip">Runs on <b>Atlassian</b></span>
+        <span class="chip">Built with <b>GitHub Copilot</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 THE SHIFT -->
+  <section class="slide" id="s1">
+    <div class="eyebrow"><span class="tick"></span> The shift <span class="n">/ why now</span></div>
+    <h2>You no longer write software.<br>You <span class="accent">describe outcomes.</span></h2>
+    <p class="lede">Copilot's <b>agent mode</b> changed the job. You explain what you want in plain English — "every morning, summarise our sprint and post it to Teams" — and Copilot plans the steps, writes the connective code, and explains what it did. Your job shifts from <em>typing code</em> to <em>directing an agent</em> and checking its work.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="v">Plain English</div><div class="l">The only language you need</div></div>
+      <div class="stat"><div class="v"><span class="warm">Review</span>, not write</div><div class="l">Your role in the loop</div></div>
+      <div class="stat"><div class="v">Your apps</div><div class="l">M365 + Atlassian, connected</div></div>
+    </div>
+  </section>
+
+  <!-- 2 WHAT IS AGENTIC -->
+  <section class="slide" id="s2">
+    <div class="eyebrow"><span class="tick"></span> Definitions <span class="n">/ chatbot vs agent</span></div>
+    <div class="cols">
+      <div>
+        <h2>An agent doesn't just answer.<br>It <span class="accent">gets things done.</span></h2>
+        <p class="lede">A chatbot talks. An agent plans a task, uses your real tools to carry it out, checks the result, and comes back when it's done — or when it needs you. That last part is the point: <b>you stay in the loop</b>, approving anything that matters.</p>
+      </div>
+      <div class="vs">
+        <div class="vs-row">
+          <div class="vs-card">
+            <span class="tag">Chatbot</span>
+            <h4>Suggests</h4>
+            <p>"Here's a draft reply you could send."</p>
+          </div>
+          <div class="vs-card on">
+            <span class="tag">Agent</span>
+            <h4>Acts</h4>
+            <p>Drafts the reply, files the Jira ticket, waits for your OK to send.</p>
+          </div>
+        </div>
+        <div class="vs-card">
+          <span class="tag">The four moves every agent makes</span>
+          <h4 style="margin-top:8px">Plan → Use tools → Check → Report back</h4>
+          <p>It breaks the goal into steps, calls into Jira, Outlook or Excel to do the work, verifies the output, and surfaces anything needing a human decision.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 TOOLBOX -->
+  <section class="slide" id="s3">
+    <div class="eyebrow"><span class="tick"></span> Your toolbox <span class="n">/ what connects to what</span></div>
+    <h2>One builder. Two worlds it plugs into.</h2>
+    <p class="lede" style="margin-bottom:22px">Copilot writes the glue; your existing platforms do the work. Everything below is already licensed and running in the company.</p>
+    <div class="stacks">
+      <div class="stack hero">
+        <h3><span class="dot"></span> GitHub Copilot — the builder</h3>
+        <span class="k">// agent mode · Copilot chat · Copilot extensions</span>
+        <ul>
+          <li>Describe a task in chat</li>
+          <li>It writes &amp; explains the code</li>
+          <li>Test in a safe sandbox</li>
+          <li>Connect via Power Automate or REST APIs</li>
+          <li>Ask "why?" at any step</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <h3><span class="dot blue"></span> Microsoft 365</h3>
+        <span class="k">// where your people & documents live</span>
+        <ul><li>Teams</li><li>Outlook</li><li>SharePoint</li><li>Excel</li><li>Word</li><li>OneDrive</li><li>Power Automate</li></ul>
+      </div>
+      <div class="stack">
+        <h3><span class="dot navy"></span> Atlassian</h3>
+        <span class="k">// where your work is tracked</span>
+        <ul><li>Jira</li><li>Confluence</li><li>Bitbucket</li><li>Jira Service Management</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 HOW YOU BUILD -->
+  <section class="slide" id="s4">
+    <div class="eyebrow"><span class="tick"></span> The method <span class="n">/ how a non-dev ships this</span></div>
+    <div class="cols">
+      <div>
+        <h2>How you build it<br>without coding.</h2>
+        <p class="lede">The same five-beat loop works for every idea in this deck. You're never staring at a blank file — Copilot is.</p>
+        <div class="dd-note" style="margin-top:22px">Start small and read-only. Let an agent <em>summarise</em> before you let it <em>send</em>.</div>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="idx"></span><div><h4>Describe the outcome</h4><p>"Turn our meeting notes into Jira tickets." Plain sentence, no jargon.</p></div></div>
+        <div class="step"><span class="idx"></span><div><h4>Let Copilot draft it</h4><p>It writes the flow or script and explains each piece in words.</p></div></div>
+        <div class="step"><span class="idx"></span><div><h4>Test in a sandbox</h4><p>Run it on a throwaway Jira project or a copy of a spreadsheet.</p></div></div>
+        <div class="step"><span class="idx"></span><div><h4>Add a human checkpoint</h4><p>Require your approval before anything is sent, posted, or deleted.</p></div></div>
+        <div class="step"><span class="idx"></span><div><h4>Share &amp; hand off</h4><p>Publish to your team; document it in Confluence so others can reuse it.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 IDEA CATALOG -->
+  <section class="slide" id="s5">
+    <div class="eyebrow"><span class="tick"></span> The ideas <span class="n">/ nine you can start this quarter</span></div>
+    <h2 style="margin-bottom:16px">Nine agents worth building.</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="top"><h4>Confluence Answer Bot</h4><span class="pill s">Starter</span></div>
+        <p>Ask a plain-English question; get an answer cited from your own Confluence spaces — no more hunting through pages.</p>
+        <div class="apps"><span class="app">Confluence</span><span class="app">Teams</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Meeting Notes → Jira</h4><span class="pill s">Starter</span></div>
+        <p>Paste Teams meeting notes; the agent pulls out action items and files them as Jira issues with owners and due dates.</p>
+        <div class="apps"><span class="app">Teams</span><span class="app">Jira</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Outlook Triage Assistant</h4><span class="pill s">Starter</span></div>
+        <p>Sorts your inbox, summarises long threads, and drafts replies for you to approve before anything is sent.</p>
+        <div class="apps"><span class="app">Outlook</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Jira Triage Agent</h4><span class="pill m">Builder</span></div>
+        <p>Reads each new ticket, sets priority, labels and component, and flags likely duplicates for a human to confirm.</p>
+        <div class="apps"><span class="app">Jira</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Sprint Report Generator</h4><span class="pill m">Builder</span></div>
+        <p>Pulls the sprint's Jira data into a clean summary — a Confluence page or a PowerPoint deck — ready for the review.</p>
+        <div class="apps"><span class="app">Jira</span><span class="app">Confluence</span><span class="app">PowerPoint</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Standup Digest</h4><span class="pill m">Builder</span></div>
+        <p>Every morning, posts a Teams message summarising what each person moved in Jira yesterday and what's blocked.</p>
+        <div class="apps"><span class="app">Jira</span><span class="app">Teams</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>SharePoint Finder</h4><span class="pill m">Builder</span></div>
+        <p>Natural-language search across SharePoint and OneDrive that returns the right document <em>and</em> a summary of it.</p>
+        <div class="apps"><span class="app">SharePoint</span><span class="app">OneDrive</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Excel Insight Agent</h4><span class="pill a">Advanced</span></div>
+        <p>Describe the analysis you want; it builds the pivot and formulas, then explains the trend in plain language.</p>
+        <div class="apps"><span class="app">Excel</span></div>
+      </div>
+      <div class="card">
+        <div class="top"><h4>Release Notes Writer</h4><span class="pill a">Advanced</span></div>
+        <p>Turns a sprint's closed Jira issues and Bitbucket changes into a polished Confluence release-notes page.</p>
+        <div class="apps"><span class="app">Jira</span><span class="app">Bitbucket</span><span class="app">Confluence</span></div>
+      </div>
+    </div>
+    <div class="grid-legend">
+      <span><span class="lg s"></span> Starter — a weekend, read-only</span>
+      <span><span class="lg m"></span> Builder — a sprint, writes back</span>
+      <span><span class="lg a"></span> Advanced — needs review &amp; polish</span>
+    </div>
+  </section>
+
+  <!-- 6 DEEP DIVE -->
+  <section class="slide" id="s6">
+    <div class="eyebrow"><span class="tick"></span> Worked example <span class="n">/ Meeting Notes → Jira</span></div>
+    <h2 style="margin-bottom:6px">What "buildable" actually looks like.</h2>
+    <p class="lede" style="margin-bottom:18px">One Starter idea, start to finish — and who does each part.</p>
+    <div class="flow">
+      <div class="node"><span class="num">01</span><h4>Notes land</h4><p>Teams meeting recap drops into a channel or a Word file.</p><span class="who you">You set up</span></div>
+      <div class="node"><span class="num">02</span><h4>Agent reads</h4><p>Copilot-built flow spots decisions and action items in the text.</p><span class="who ai">Agent</span></div>
+      <div class="node"><span class="num">03</span><h4>Drafts tickets</h4><p>Guesses owner, priority and due date for each item.</p><span class="who ai">Agent</span></div>
+      <div class="node"><span class="num">04</span><h4>You approve</h4><p>A Teams card shows the drafts; you tweak and click OK.</p><span class="who you">You decide</span></div>
+      <div class="node"><span class="num">05</span><h4>Files to Jira</h4><p>Approved items become real issues in the right project.</p><span class="who ai">Agent</span></div>
+    </div>
+    <p class="dd-note">The whole thing is a Power Automate flow that Copilot writes for you from the sentence <em>"when a meeting recap is posted, extract the action items and create Jira issues after I approve them."</em> You never open a code file you didn't ask for.</p>
+  </section>
+
+  <!-- 7 GUARDRAILS -->
+  <section class="slide" id="s7">
+    <div class="eyebrow"><span class="tick"></span> Guardrails <span class="n">/ do this before you scale</span></div>
+    <h2 style="margin-bottom:18px">Move fast, but keep the brakes.</h2>
+    <div class="guards">
+      <div class="guard">
+        <div class="g-ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></div>
+        <div><h4>Keep a human on the trigger</h4><p>Agents can draft, sort and summarise freely. Sending, posting, paying or deleting always waits for a person to click approve.</p></div>
+      </div>
+      <div class="guard">
+        <div class="g-ic"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+        <div><h4>Least-privilege access</h4><p>Give each agent its own account with only the permissions that one job needs — not your personal admin rights.</p></div>
+      </div>
+      <div class="guard">
+        <div class="g-ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><h4>Keep company data inside the tenant</h4><p>Use your M365 and Atlassian connections so data never leaves approved systems. Confirm licensing with IT first.</p></div>
+      </div>
+      <div class="guard">
+        <div class="g-ic"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div>
+        <div><h4>Log what it does &amp; name an owner</h4><p>Every agent keeps a run history and has one person responsible. If it drifts, you can see why and switch it off.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 ROADMAP -->
+  <section class="slide" id="s8">
+    <div class="eyebrow"><span class="tick"></span> Start here <span class="n">/ a 30-day path</span></div>
+    <h2 style="margin-bottom:18px">From idea to something people use — in a month.</h2>
+    <div class="road">
+      <div class="phase">
+        <div class="wk">Week 1</div>
+        <h3>Pick &amp; play</h3>
+        <ul>
+          <li>Choose one <b>Starter</b> idea that annoys you weekly.</li>
+          <li>Turn on Copilot agent mode and just describe it.</li>
+          <li>Build it read-only — no writing back yet.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="wk">Weeks 2–3</div>
+        <h3>Make it real</h3>
+        <ul>
+          <li>Add the write-back step and a human approval gate.</li>
+          <li>Test on a sandbox Jira project or a copied file.</li>
+          <li>Run it alongside your manual process for a week.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="wk">Week 4</div>
+        <h3>Share the win</h3>
+        <ul>
+          <li>Hand it to two colleagues and gather feedback.</li>
+          <li>Document it in Confluence so others can copy it.</li>
+          <li>Line up the next idea from the catalog.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 CLOSE -->
+  <section class="slide" id="s9">
+    <div class="eyebrow"><span class="tick"></span> The takeaway</div>
+    <h2>The tools are licensed.<br>The builder is <span class="accent">ready.</span><br>Pick one idea.</h2>
+    <p class="lede">You don't need a developer, a budget line, or a new platform — just an afternoon, a real annoyance, and a plain-English sentence. Start with a Starter, keep a human in the loop, and let the catalog take you the rest of the way.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="v"><span class="warm">9</span></div><div class="l">Ideas to choose from</div></div>
+      <div class="stat"><div class="v">3</div><div class="l">Are weekend-sized</div></div>
+      <div class="stat"><div class="v">0</div><div class="l">New tools to buy</div></div>
+    </div>
+  </section>
+
+</div>
+
+<div class="chrome">
+  <div class="brand-tag">Agentic AI · <b>GitHub Copilot</b> × M365 × Atlassian</div>
+  <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+  <div class="nav-r">
+    <div class="counter" id="counter"><b>01</b> / 10</div>
+    <div class="arrows">
+      <button id="prev" aria-label="Previous slide"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button id="next" aria-label="Next slide"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const prev=document.getElementById('prev');
+  const next=document.getElementById('next');
+  const progress=document.getElementById('progress');
+  let i=0;
+  const pad=n=>String(n).padStart(2,'0');
+
+  slides.forEach((_,n)=>{
+    const b=document.createElement('button');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-label','Go to slide '+(n+1));
+    b.addEventListener('click',()=>go(n));
+    dotsWrap.appendChild(b);
+  });
+  const dots=[...dotsWrap.children];
+
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    counter.innerHTML='<b>'+pad(i+1)+'</b> / '+pad(slides.length);
+    progress.style.width=((i)/(slides.length-1)*100)+'%';
+    prev.disabled=i===0; next.disabled=i===slides.length-1;
+  }
+  prev.addEventListener('click',()=>go(i-1));
+  next.addEventListener('click',()=>go(i+1));
+  window.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(slides.length-1);}
+  });
+  let sx=null;
+  window.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  window.addEventListener('touchend',e=>{
+    if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>50)go(i+(dx<0?1:-1));sx=null;
+  },{passive:true});
+  go(0);
+
+  /* ---- title network canvas ---- */
+  const cv=document.getElementById('net');
+  if(cv){
+    const ctx=cv.getContext('2d');
+    const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    let w,h,nodes,raf,dpr;
+    function ink(){
+      return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#0E8C8C';
+    }
+    function size(){
+      dpr=Math.min(window.devicePixelRatio||1,2);
+      w=cv.clientWidth;h=cv.clientHeight;
+      cv.width=w*dpr;cv.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function init(){
+      size();
+      const count=Math.round(Math.min(46,Math.max(20,w*h/34000)));
+      nodes=Array.from({length:count},()=>({
+        x:Math.random()*w,y:Math.random()*h,
+        vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,
+        r:Math.random()*1.8+1
+      }));
+    }
+    function frame(){
+      ctx.clearRect(0,0,w,h);
+      const c=ink();
+      for(const n of nodes){
+        if(!reduce){n.x+=n.vx;n.y+=n.vy;}
+        if(n.x<0||n.x>w)n.vx*=-1;
+        if(n.y<0||n.y>h)n.vy*=-1;
+      }
+      for(let a=0;a<nodes.length;a++){
+        for(let b=a+1;b<nodes.length;b++){
+          const dx=nodes[a].x-nodes[b].x,dy=nodes[a].y-nodes[b].y;
+          const d=Math.hypot(dx,dy);
+          if(d<128){
+            ctx.globalAlpha=(1-d/128)*.5;
+            ctx.strokeStyle=c;ctx.lineWidth=.7;
+            ctx.beginPath();ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha=.85;ctx.fillStyle=c;
+      for(const n of nodes){ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,6.283);ctx.fill();}
+      ctx.globalAlpha=1;
+      if(!reduce)raf=requestAnimationFrame(frame);
+    }
+    init();frame();
+    let t;window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>{cancelAnimationFrame(raf);init();frame();},150);});
+  }
+})();
+</script>
+</body>
+</html>
