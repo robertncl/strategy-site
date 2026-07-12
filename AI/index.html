@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="A business case for self-hosting open-weight models on Azure AI Foundry and local hardware: fixed-cost inference for token-hungry agentic AI, and resilience against US–China model-access risk." />
+  <title>Own the Weights — Open-Weight AI on Azure Foundry + Local Hardware</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- Brand / slide counter -->
+  <header class="topbar">
+    <span class="topbar__brand"><span class="dot"></span> Own the Weights</span>
+    <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">13</span></span>
+  </header>
+
+  <!-- Dot navigation -->
+  <nav class="dots" aria-label="Slide navigation"></nav>
+
+  <main id="deck" class="deck">
+
+    <!-- 01 — TITLE -->
+    <section class="slide slide--title" id="s1" data-num="01" data-label="Title">
+      <canvas id="traces" aria-hidden="true"></canvas>
+      <div class="wrap">
+        <p class="eyebrow reveal">AI Platform Strategy · Agentic Era</p>
+        <h1 class="reveal">Own the <span class="hl">weights</span>.</h1>
+        <p class="lede reveal">A case for running <b>open-weight models</b> on
+          <b>Azure AI Foundry</b> and <b>local hardware</b> — so agentic AI stops
+          bleeding per-token cost, and no government's export policy sits between
+          us and our own roadmap.</p>
+        <div class="title-meta reveal">
+          <span class="pill">Fixed-cost inference</span>
+          <span class="pill">Data stays in tenant</span>
+          <span class="pill">Jurisdiction-portable</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">Scroll or press → to begin</p>
+      </div>
+    </section>
+
+    <!-- 02 — THE SHIFT -->
+    <section class="slide" id="s2" data-num="02" data-label="The shift">
+      <div class="wrap">
+        <p class="kicker reveal">What changed</p>
+        <h2 class="reveal">Agents changed the token math.</h2>
+        <p class="body reveal">A chat assistant answers one prompt and stops. An agent
+          <b>plans, calls tools, reads the results, and loops</b> — re-feeding its whole
+          context on every step. The same task that cost a few thousand tokens as a chat
+          now costs hundreds of thousands as an agent. And agents don't wait for a human
+          to type: they run in CI, on schedules, in fleets.</p>
+        <div class="stat-row">
+          <div class="stat reveal"><span class="stat__num">10–100×</span><span class="stat__lbl">tokens per task, agent loop vs. a single chat exchange</span></div>
+          <div class="stat reveal"><span class="stat__num">1M+</span><span class="stat__lbl">tokens burned by one long agentic coding session</span></div>
+          <div class="stat reveal"><span class="stat__num">24/7</span><span class="stat__lbl">background agents don't sleep — volume compounds with adoption</span></div>
+        </div>
+        <p class="foot reveal">Token appetite grows with <b>success</b>: the better the agents work,
+          the more work we give them. That's the point — and the problem, if every token is metered.</p>
+      </div>
+    </section>
+
+    <!-- 03 — PROBLEM 1: THE BILL -->
+    <section class="slide" id="s3" data-num="03" data-label="The bill">
+      <div class="wrap">
+        <p class="kicker reveal">Problem 01 · Economics</p>
+        <h2 class="reveal">Per-token pricing turns success into a cost problem.</h2>
+        <div class="grid-2">
+          <ul class="plain reveal">
+            <li data-x><b>Frontier list prices:</b> roughly $3–15 per million input tokens
+              and $15–75 per million output — before agentic loops multiply the volume.</li>
+            <li data-x><b>Linear forever:</b> usage-based pricing means the marginal cost of
+              "thinking" never falls, no matter how much we scale.</li>
+            <li data-x><b>Not in our control:</b> vendors reprice, deprecate models mid-project,
+              and rate-limit exactly when agents need burst capacity.</li>
+            <li data-x><b>Illustrative:</b> a 20-developer team with always-on agents can reach
+              ~2B tokens/month — at a blended $8/M that's <b>$16k/month for one team</b>.</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">The meter is the business model. <em>Our agents are the ones feeding it.</em></p>
+            <p>Renting intelligence by the token is rational for scarce, frontier-grade reasoning.
+               It is a terrible deal for the bulk work — refactors, tests, docs, extraction,
+               triage — that makes up most of what agents actually do all day.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — PROBLEM 2: GEOPOLITICS -->
+    <section class="slide" id="s4" data-num="04" data-label="Geopolitics">
+      <div class="wrap">
+        <p class="kicker reveal">Problem 02 · Access risk</p>
+        <h2 class="reveal">Model access is now a supply-chain risk.</h2>
+        <p class="body reveal">The best closed models sit in two jurisdictions that are actively
+          restricting each other. Access can change with a rule, not a market.</p>
+        <div class="grid-2">
+          <div class="bloc reveal">
+            <div class="bloc__head"><h3>United States</h3><span class="geo">Bloc A</span></div>
+            <ul class="plain">
+              <li data-x>Export-control regimes already treat advanced chips — and frontier
+                <b>model weights</b> — as controlled technology.</li>
+              <li data-x>Federal moves to bar PRC-developed models from government systems;
+                entity lists can extend to customers and regions.</li>
+              <li data-x>US frontier APIs already block service to a growing list of countries.</li>
+            </ul>
+          </div>
+          <div class="bloc reveal">
+            <div class="bloc__head"><h3>China</h3><span class="geo">Bloc B</span></div>
+            <ul class="plain">
+              <li data-x>Generative models require regulatory filing before public use;
+                rules can change what domestic operations may run.</li>
+              <li data-x>US providers restrict or geo-block access from China — teams and
+                subsidiaries there can't rely on the same stack.</li>
+              <li data-x>Data-security law limits what can leave the country — closed
+                foreign APIs are a compliance dead end.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="foot reveal">If a core workflow depends on one closed API in one jurisdiction,
+          the roadmap depends on two governments staying friendly. That is not an engineering plan.</p>
+      </div>
+    </section>
+
+    <!-- 05 — THE EXPOSURE -->
+    <section class="slide" id="s5" data-num="05" data-label="The exposure">
+      <div class="wrap">
+        <p class="kicker reveal">The common thread</p>
+        <h2 class="reveal">A closed API is a <span class="hl">revocable</span> dependency.</h2>
+        <div class="grid-2">
+          <ul class="plain reveal">
+            <li data-x>It can be <b>repriced</b> — and has been, in both directions, on short notice.</li>
+            <li data-x>It can be <b>deprecated</b> — model versions retire on the vendor's schedule, not ours.</li>
+            <li data-x>It can be <b>rate-limited</b> — capacity goes to whoever the vendor prioritizes.</li>
+            <li data-x>It can be <b>geo-blocked</b> — by the vendor's choice or their regulator's order.</li>
+            <li data-x>It sees <b>our data</b> — every prompt crosses a trust boundary we don't control.</li>
+          </ul>
+          <div class="callout reveal">
+            <p class="callout__big">Anything we rent can be taken back. <em>Weights we hold cannot.</em></p>
+            <p>A downloaded open-weight model is a file. It runs in our tenant, on our GPUs,
+               under our license — indifferent to price changes, deprecation schedules,
+               and export rulings made after the download.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 — THE HEDGE: OPEN WEIGHTS -->
+    <section class="slide" id="s6" data-num="06" data-label="Open weights">
+      <div class="wrap">
+        <p class="kicker reveal">The hedge</p>
+        <h2 class="reveal">Open weights closed the gap — from three blocs at once.</h2>
+        <p class="body reveal">Frontier-class open models now ship from the US, China, and the EU
+          under permissive licenses. Sourcing from all three blocs and running them ourselves is
+          the hedge: no single government can switch our stack off.</p>
+        <div class="models">
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">DeepSeek V3 / R1</span><span class="model__origin model__origin--cn">CN</span></div>
+            <span class="model__lic">MIT</span>
+            <p class="model__note">Frontier-class reasoning at open-weight prices; the model that reset expectations.</p>
+          </div>
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">Qwen 3</span><span class="model__origin model__origin--cn">CN</span></div>
+            <span class="model__lic">Apache 2.0</span>
+            <p class="model__note">Strong tool use across sizes from 0.6B to 235B — one family for edge to datacenter.</p>
+          </div>
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">Kimi K2</span><span class="model__origin model__origin--cn">CN</span></div>
+            <span class="model__lic">Modified MIT</span>
+            <p class="model__note">1T-parameter MoE built for agentic tool-calling — a standout on exactly our workload.</p>
+          </div>
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">gpt-oss-120b</span><span class="model__origin model__origin--us">US</span></div>
+            <span class="model__lic">Apache 2.0</span>
+            <p class="model__note">OpenAI's open-weight reasoner; runs on a single 80&nbsp;GB GPU — or a loaded workstation.</p>
+          </div>
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">Llama 4</span><span class="model__origin model__origin--us">US</span></div>
+            <span class="model__lic">Llama license</span>
+            <p class="model__note">The ecosystem default — broadest tooling, quantization, and serving support.</p>
+          </div>
+          <div class="model reveal">
+            <div class="model__row"><span class="model__name">Mistral / Magistral</span><span class="model__origin model__origin--eu">EU</span></div>
+            <span class="model__lic">Apache 2.0</span>
+            <p class="model__note">Efficient European option — a third bloc in the portfolio, strong at its size.</p>
+          </div>
+        </div>
+        <p class="foot reveal">Licenses above are the headline terms of each family's open-weight releases —
+          legal review of the specific checkpoint is part of the adoption gate (slide 11).</p>
+      </div>
+    </section>
+
+    <!-- 07 — TIER 1: AZURE AI FOUNDRY -->
+    <section class="slide" id="s7" data-num="07" data-label="Azure AI Foundry">
+      <div class="wrap">
+        <p class="kicker reveal">The platform · Production tier</p>
+        <h2 class="reveal">Azure AI Foundry: our tenant, our throughput.</h2>
+        <p class="body reveal">Foundry's catalog already carries the open-weight families above —
+          DeepSeek, Qwen, Llama, Mistral, gpt-oss — deployable two ways, behind one endpoint:</p>
+        <div class="grid-2">
+          <div class="card reveal">
+            <h3><span class="tag">Start here</span>Serverless endpoints</h3>
+            <p>Pay-as-you-go per token, zero infrastructure, elastic. Open-weight
+               pricing is a fraction of frontier list price. The on-ramp: prove routing and
+               evals before committing GPU quota.</p>
+          </div>
+          <div class="card reveal">
+            <h3><span class="tag">Scale here</span>Managed compute</h3>
+            <p>Dedicated GPU capacity in our subscription — reserved, flat-rate,
+               no per-token meter and no shared rate limits. The weights run inside our
+               network boundary; utilization is ours to optimize.</p>
+          </div>
+        </div>
+        <ul class="plain reveal" style="margin-top: 22px">
+          <li>Entra ID auth, VNet + Private Link, content-safety filters, observability — the
+              governance we already run on Azure applies to model traffic too.</li>
+          <li>Prompts and outputs stay in <b>our tenant, in the region we choose</b> — nothing
+              transits a model vendor's infrastructure.</li>
+          <li>Model router + versioned deployments: we pin model versions and retire them on
+              <b>our</b> schedule.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 08 — TIER 2: LOCAL HARDWARE -->
+    <section class="slide" id="s8" data-num="08" data-label="Local hardware">
+      <div class="wrap">
+        <p class="kicker reveal">The platform · Edge tier</p>
+        <h2 class="reveal">Local hardware: the free inner loop.</h2>
+        <p class="body reveal">Today's workstations run serious models. A 32&nbsp;GB GPU or a
+          128&nbsp;GB unified-memory machine serves 20–120B-class models locally via
+          <b>Ollama, LM Studio, vLLM, or llama.cpp</b> — the same OpenAI-shaped API as everything else.</p>
+        <div class="grid-3">
+          <div class="card reveal">
+            <h3>What runs on a desk</h3>
+            <p>RTX&nbsp;5090 (32&nbsp;GB), Apple M-series (up to 128&nbsp;GB+), Ryzen&nbsp;AI Max
+               (128&nbsp;GB) — gpt-oss-20b, Qwen 3 mid-sizes, quantized 70B-class models.</p>
+          </div>
+          <div class="card reveal">
+            <h3>What it's for</h3>
+            <p>The high-volume, low-stakes lane: bulk refactors, test generation, commit messages,
+               embeddings, doc drafts, log triage — the tokens that dominate agent volume.</p>
+          </div>
+          <div class="card reveal">
+            <h3>Why it matters</h3>
+            <p>Marginal cost ≈ electricity. Works offline and on planes. Sensitive code
+               never leaves the machine. Latency is a bus ride, not a round trip.</p>
+          </div>
+        </div>
+        <p class="foot reveal">Local isn't a toy tier — it's where agents burn their cheapest tokens,
+          and the proof that the stack survives with the network cable pulled.</p>
+      </div>
+    </section>
+
+    <!-- 09 — ARCHITECTURE -->
+    <section class="slide" id="s9" data-num="09" data-label="Architecture">
+      <div class="wrap">
+        <p class="kicker reveal">How it fits together</p>
+        <h2 class="reveal">One gateway. Four lanes. Policy decides.</h2>
+        <div class="arch reveal">
+          <div class="arch__tier arch__tier--clients">
+            <div class="arch__node"><h4>Coding agents</h4><p>IDE + terminal agents</p></div>
+            <div class="arch__node"><h4>CI &amp; automation</h4><p>pipelines, schedulers, bots</p></div>
+            <div class="arch__node"><h4>Apps &amp; RAG</h4><p>internal products, search</p></div>
+          </div>
+          <div class="arch__bus" aria-hidden="true"></div>
+          <div class="arch__node arch__node--gw">
+            <h4>OpenAI-compatible gateway</h4>
+            <p>LiteLLM / Foundry model router — routes on task class, data classification,
+               cost ceiling, and fallback order</p>
+          </div>
+          <div class="arch__bus" aria-hidden="true"></div>
+          <div class="arch__tier arch__tier--lanes">
+            <div class="arch__node arch__lane" style="--lane: var(--lane-local)">
+              <h4>Local hardware</h4><p>workstations &amp; on-prem · ≈$0 marginal</p>
+            </div>
+            <div class="arch__node arch__lane" style="--lane: var(--lane-managed)">
+              <h4>Foundry managed compute</h4><p>reserved GPUs · flat-rate, private</p>
+            </div>
+            <div class="arch__node arch__lane" style="--lane: var(--lane-serverless)">
+              <h4>Foundry serverless</h4><p>open weights · cheap elastic overflow</p>
+            </div>
+            <div class="arch__node arch__lane arch__lane--optional" style="--lane: var(--lane-frontier)">
+              <h4>Frontier API</h4><p>escape valve · hardest 5% only</p>
+            </div>
+          </div>
+        </div>
+        <p class="arch__foot reveal">Same API shape in every lane → models become swappable. The leverage moves to us.</p>
+      </div>
+    </section>
+
+    <!-- 10 — ECONOMICS -->
+    <section class="slide" id="s10" data-num="10" data-label="Economics">
+      <div class="wrap">
+        <p class="kicker reveal">The numbers</p>
+        <h2 class="reveal">Every open lane is a step-change cheaper per token.</h2>
+        <div class="chart reveal">
+          <p class="chart__title">Illustrative blended cost per million tokens — agentic input/output mix</p>
+          <p class="chart__sub">Directional planning figures, not quotes · hover a bar for assumptions</p>
+          <div class="chart__plot">
+            <div class="chart__grid" aria-hidden="true">
+              <i style="left:0%"></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i>
+            </div>
+            <div class="chart__row">
+              <span class="chart__cat"><b>Frontier closed API</b>rented, metered</span>
+              <div class="chart__track" style="--v:8; --c:var(--lane-frontier)">
+                <div class="chart__bar"
+                     data-tip="Frontier closed API|List-price mix at agentic input:output ratios, ~$8.00/M blended. Prompt caching helps; the meter never goes away."></div>
+                <span class="chart__val chart__val--in">$8.00</span>
+              </div>
+            </div>
+            <div class="chart__row">
+              <span class="chart__cat"><b>Foundry managed compute</b>owned throughput</span>
+              <div class="chart__track" style="--v:2; --c:var(--lane-managed)">
+                <div class="chart__bar"
+                     data-tip="Foundry managed compute|Reserved 8×H100-class node serving a DeepSeek-V3-class MoE at ~65% utilization, ~$2.00/M. Falls as utilization rises — the meter is replaced by a fixed bill."></div>
+                <span class="chart__val">$2.00</span>
+              </div>
+            </div>
+            <div class="chart__row">
+              <span class="chart__cat"><b>Foundry serverless</b>open weights, elastic</span>
+              <div class="chart__track" style="--v:1.1; --c:var(--lane-serverless)">
+                <div class="chart__bar"
+                     data-tip="Foundry serverless (open weights)|DeepSeek-V3-class MaaS blended rate, ~$1.10/M. Cheapest elastic lane; still metered, still in-tenant."></div>
+                <span class="chart__val">$1.10</span>
+              </div>
+            </div>
+            <div class="chart__row">
+              <span class="chart__cat"><b>Local workstation</b>hardware on the desk</span>
+              <div class="chart__track" style="--v:0.05; --c:var(--lane-local)">
+                <div class="chart__bar"
+                     data-tip="Local workstation|Hardware already purchased for development; marginal cost is electricity — effectively ~$0.05/M or less."></div>
+                <span class="chart__val">≈$0.05 marginal</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart__axis" aria-hidden="true">
+            <span></span>
+            <div class="chart__ticks">
+              <span style="left:0%">$0</span><span style="left:25%">$2</span><span style="left:50%">$4</span><span style="left:75%">$6</span><span style="left:100%">$8/M</span>
+            </div>
+          </div>
+        </div>
+        <p class="foot reveal">The strategic point isn't any single number — it's the <b>shape</b>. Metered frontier
+          pricing scales linearly with agent success; owned capacity amortizes toward zero. Route the bulk 95%
+          of tokens through open lanes and the frontier bill becomes a rounding error instead of the roadmap constraint.</p>
+      </div>
+    </section>
+
+    <!-- 11 — TRADE-OFFS -->
+    <section class="slide" id="s11" data-num="11" data-label="Trade-offs">
+      <div class="wrap">
+        <p class="kicker reveal">Eyes open</p>
+        <h2 class="reveal">What we gain — and what it honestly costs.</h2>
+        <div class="tradeoff">
+          <div class="col reveal">
+            <h3>Gains</h3>
+            <ul class="plain">
+              <li><b>Irrevocable capability</b> — weights on our storage can't be repriced, retired, or embargoed.</li>
+              <li><b>Fixed-cost inference</b> — agent volume stops being a budget event.</li>
+              <li><b>Hard data boundary</b> — prompts never leave the tenant or the desk.</li>
+              <li><b>No shared rate limits</b> — burst capacity is ours to schedule.</li>
+              <li><b>Multipolar sourcing</b> — US, CN, and EU model families in one portfolio.</li>
+            </ul>
+          </div>
+          <div class="col col--cost reveal">
+            <h3>Costs</h3>
+            <ul class="plain">
+              <li data-x><b>Operations</b> — serving stacks need tuning and upgrades.
+                <small>Mitigation: Foundry runs the platform; we run policy and evals.</small></li>
+              <li data-x><b>Frontier gap</b> — the hardest reasoning still favors closed leaders.
+                <small>Mitigation: the escape-valve lane routes the hardest ~5% out, by policy.</small></li>
+              <li data-x><b>Commitment risk</b> — reserved GPUs only pay off when utilized.
+                <small>Mitigation: start serverless; reserve only on observed utilization data.</small></li>
+              <li data-x><b>Eval burden</b> — model swaps need regression gates, not vibes.
+                <small>Mitigation: eval suite in CI is phase-one work, not an afterthought.</small></li>
+              <li data-x><b>License &amp; provenance review</b> — per checkpoint, before adoption.
+                <small>Mitigation: a standing review gate; favored set is MIT/Apache.</small></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 — ROADMAP -->
+    <section class="slide" id="s12" data-num="12" data-label="Roadmap">
+      <div class="wrap">
+        <p class="kicker reveal">How we start</p>
+        <h2 class="reveal">A 90-day path from pilot to policy.</h2>
+        <div class="phases">
+          <div class="phase reveal">
+            <p class="phase__label">Days 0–30 · Prove</p>
+            <h3>Stand it up</h3>
+            <ul class="plain">
+              <li>Pick two token-heavy workloads (agentic coding, doc/RAG pipeline).</li>
+              <li>Deploy the gateway; wire Foundry serverless DeepSeek/Qwen + local Ollama.</li>
+              <li>Baseline evals and per-lane cost telemetry from day one.</li>
+            </ul>
+          </div>
+          <div class="phase reveal">
+            <p class="phase__label">Days 31–60 · Route</p>
+            <h3>Move the bulk lane</h3>
+            <ul class="plain">
+              <li>Route bulk agentic traffic to open lanes behind eval gates in CI.</li>
+              <li>Deploy one managed-compute endpoint; harden VNet + Private Link.</li>
+              <li>Measure utilization to size any GPU reservation honestly.</li>
+            </ul>
+          </div>
+          <div class="phase reveal">
+            <p class="phase__label">Days 61–90 · Scale</p>
+            <h3>Make it policy</h3>
+            <ul class="plain">
+              <li>Onboard remaining teams; tune batching, caching, quantization.</li>
+              <li>Publish the cost &amp; sovereignty scorecard vs. the frontier baseline.</li>
+              <li>Set the standing routing policy and the reserve-vs-serverless mix.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 — CLOSE -->
+    <section class="slide slide--close" id="s13" data-num="13" data-label="The ask">
+      <div class="wrap">
+        <p class="eyebrow reveal" style="justify-content:center">The principle</p>
+        <h2 class="reveal">Rent intelligence where it's scarce.<br /><span class="hl">Own it where it's routine.</span></h2>
+        <p class="lede reveal">Agentic AI is about to be most of our token volume. The ask:
+          approve the 90-day pilot — two workloads, a gateway, Foundry serverless plus one
+          managed-compute endpoint, and local runtimes for every developer machine that can carry one.</p>
+        <div class="asks reveal">
+          <span class="pill">Approve the pilot</span>
+          <span class="pill">Grant initial GPU quota</span>
+          <span class="pill">Fund the eval suite</span>
+        </div>
+        <p class="scrollcue reveal" aria-hidden="true">— end —</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
