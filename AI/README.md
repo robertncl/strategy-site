@@ -11,7 +11,9 @@ on **Azure AI Foundry** (serverless + managed compute) and **local hardware** to
 ## Files
 
 - `index.html` + `styles.css` + `app.js` — the deck (13 slides, scroll-snap, keyboard nav)
-- `ai-single.html` — self-contained build (fonts, CSS, JS inlined; works offline)
+- `ai-single.html` — self-contained build of the deck (fonts, CSS, JS inlined; works offline)
+- `onepager.html` — the same pitch as a single scrolling document: self-contained,
+  JS-free, with a light print stylesheet (print to PDF for handouts)
 
 Open `index.html` in a browser, or serve the folder with any static server.
 Regenerate `ai-single.html` after editing the source files by re-inlining
