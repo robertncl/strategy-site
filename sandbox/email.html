@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="color-scheme" content="light dark" />
+<meta name="supported-color-schemes" content="light dark" />
+<title>Where should AI run its code?</title>
+<!--[if mso]>
+<noscript>
+<xml>
+<o:OfficeDocumentSettings>
+<o:PixelsPerInch>96</o:PixelsPerInch>
+</o:OfficeDocumentSettings>
+</xml>
+</noscript>
+<style>
+table { border-collapse: collapse; }
+td, th, div, p, a { font-family: Arial, Helvetica, sans-serif; }
+</style>
+<![endif]-->
+<style>
+  body, table, td { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  img { border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+  body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; }
+  a { text-decoration: none; }
+  @media (max-width: 620px) {
+    .wrap { width: 100% !important; }
+    .px { padding-left: 20px !important; padding-right: 20px !important; }
+    .stack { display: block !important; width: 100% !important; }
+    .h1 { font-size: 26px !important; line-height: 32px !important; }
+  }
+  @media (prefers-color-scheme: dark) {
+    .bg-page { background-color: #101216 !important; }
+    .bg-card { background-color: #1B1E24 !important; }
+    .tx-body { color: #D5D8DD !important; }
+    .tx-muted { color: #9AA1AC !important; }
+    .border-hair { border-color: #30343C !important; }
+  }
+</style>
+</head>
+<body class="bg-page" style="margin:0; padding:0; background-color:#F2F3F5;">
+  <!-- preheader -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#F2F3F5;">
+    Three sandbox surfaces, one shared substrate — GitHub Copilot, Copilot Studio, and Azure AI Foundry, compared for security and fit.
+  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="bg-page" style="background-color:#F2F3F5;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" class="wrap" style="width:600px; max-width:600px;">
+
+          <!-- accent rule -->
+          <tr>
+            <td style="background-color:#C8102E; height:4px; line-height:4px; font-size:0;">&nbsp;</td>
+          </tr>
+
+          <!-- header -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:28px 40px 8px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-family: Arial, Helvetica, sans-serif; font-size:11px; line-height:16px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#C8102E;" class="tx-muted">
+                    Agentic AI &middot; Secure code execution
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- hero -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:8px 40px 24px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="h1 tx-body" style="font-family: Arial, Helvetica, sans-serif; font-size:30px; line-height:37px; font-weight:800; color:#16191F; letter-spacing:-0.3px;">
+                    Where should AI run its code?
+                  </td>
+                </tr>
+                <tr>
+                  <td class="tx-body" style="padding-top:14px; font-family: Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; color:#3A3F47;">
+                    Every agentic feature now writes and executes code on your behalf. The question isn&rsquo;t whether &mdash; it&rsquo;s <b>in which sandbox</b>. Here&rsquo;s how GitHub Copilot, Microsoft Copilot Studio, and Azure AI Foundry isolate that code, side by side.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- stat row -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:0 40px 28px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="33%" class="stack" valign="top" style="padding-right:8px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                      <tr><td align="center" style="padding:16px 8px;">
+                        <div class="tx-body" style="font-family: Arial, Helvetica, sans-serif; font-size:22px; font-weight:800; color:#16191F;">100%</div>
+                        <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; line-height:15px; color:#6B7280; padding-top:4px;">of agentic actions run model-generated code</div>
+                      </td></tr>
+                    </table>
+                  </td>
+                  <td width="33%" class="stack" valign="top" style="padding-right:8px; padding-left:8px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                      <tr><td align="center" style="padding:16px 8px;">
+                        <div class="tx-body" style="font-family: Arial, Helvetica, sans-serif; font-size:22px; font-weight:800; color:#16191F;">3</div>
+                        <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; line-height:15px; color:#6B7280; padding-top:4px;">sandbox surfaces across GitHub + Microsoft</div>
+                      </td></tr>
+                    </table>
+                  </td>
+                  <td width="33%" class="stack" valign="top" style="padding-left:8px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                      <tr><td align="center" style="padding:16px 8px;">
+                        <div class="tx-body" style="font-family: Arial, Helvetica, sans-serif; font-size:22px; font-weight:800; color:#16191F;">1</div>
+                        <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; line-height:15px; color:#6B7280; padding-top:4px;">shared isolation substrate underneath all three</div>
+                      </td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- divider -->
+          <tr><td class="bg-card" style="background-color:#FFFFFF; padding:0 40px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="border-hair" style="border-top:1px solid #E7E9EC; font-size:0; line-height:0;">&nbsp;</td></tr></table></td></tr>
+
+          <!-- three surfaces heading -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:28px 40px 4px 40px;">
+              <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#6B7280;">Three products, one idea</div>
+              <div class="tx-body" style="padding-top:6px; font-family: Arial, Helvetica, sans-serif; font-size:19px; font-weight:700; color:#16191F;">Pick the surface that matches who&rsquo;s building.</div>
+            </td>
+          </tr>
+
+          <!-- card: github copilot -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:16px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                <tr>
+                  <td style="padding:18px 20px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#6B7280;">For developers</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:4px; font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; color:#16191F;">GitHub Copilot &mdash; local &amp; cloud sandboxes</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:8px; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#3A3F47;">
+                          Runs shell commands and repo edits inside a contained box &mdash; on your machine (<span style="font-family:'Courier New', Courier, monospace;">/sandbox enable</span>) or in an ephemeral cloud container (<span style="font-family:'Courier New', Courier, monospace;">copilot --cloud</span>). The coding agent gets one container per task; nothing merges without human review. Public preview as of June 2026.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- card: copilot studio -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:12px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                <tr>
+                  <td style="padding:18px 20px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#6B7280;">For makers</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:4px; font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; color:#16191F;">Copilot Studio &mdash; the code interpreter sandbox</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:8px; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#3A3F47;">
+                          Low-code agents run Python on Excel, Word, PowerPoint, and PDF files inside an isolated, Microsoft-hosted VM &mdash; no external network, no system commands, live-monitored. Off by default; a tenant admin turns it on per environment.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- card: azure ai foundry -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:12px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                <tr>
+                  <td style="padding:18px 20px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#6B7280;">For builders &amp; pros</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:4px; font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; color:#16191F;">Azure AI Foundry &mdash; code interpreter &amp; hosted agents</td>
+                      </tr>
+                      <tr>
+                        <td class="tx-body" style="padding-top:8px; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#3A3F47;">
+                          Code-first agents run Python for analysis, math, and charts on Azure Container Apps dynamic sessions, each behind a Hyper-V boundary with no outbound egress. Sessions run up to 1 hour with a 30-minute idle timeout, pinned to your project&rsquo;s region.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- shared substrate callout -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:24px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F7F8F9; border-left:3px solid #C8102E; border-radius:12px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <div class="tx-body" style="font-family: Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; color:#16191F;">One isolation engine powers all three.</div>
+                    <div class="tx-body" style="padding-top:6px; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#3A3F47;">
+                      Whatever the front door, the untrusted code lands on the same substrate: an ephemeral, Hyper-V-isolated container on Azure Container Apps. Same posture whether the caller is a developer, a maker, or a service.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- comparison mini table -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:28px 40px 4px 40px;">
+              <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#6B7280;">Side by side</div>
+              <div class="tx-body" style="padding-top:6px; font-family: Arial, Helvetica, sans-serif; font-size:19px; font-weight:700; color:#16191F;">The same idea, tuned for three jobs.</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:14px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border:1px solid #E7E9EC; border-radius:12px;">
+                <tr>
+                  <td class="border-hair" style="padding:12px 16px; border-bottom:1px solid #E7E9EC; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#6B7280; width:34%;">Dimension</td>
+                  <td class="border-hair" style="padding:12px 12px; border-bottom:1px solid #E7E9EC; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#6B7280;">GH</td>
+                  <td class="border-hair" style="padding:12px 12px; border-bottom:1px solid #E7E9EC; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#6B7280;">CS</td>
+                  <td class="border-hair" style="padding:12px 12px; border-bottom:1px solid #E7E9EC; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#6B7280;">AF</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#16191F; font-weight:600;">Primary user</td>
+                  <td style="padding:10px 12px; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Devs</td>
+                  <td style="padding:10px 12px; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Makers</td>
+                  <td style="padding:10px 12px; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Pro coders</td>
+                </tr>
+                <tr>
+                  <td class="border-hair" style="padding:10px 16px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#16191F; font-weight:600;">Isolation</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Local / ACA</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Isolated VM</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Hyper-V</td>
+                </tr>
+                <tr>
+                  <td class="border-hair" style="padding:10px 16px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#16191F; font-weight:600;">Network egress</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Policy-gated</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">None</td>
+                  <td class="border-hair" style="padding:10px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">None</td>
+                </tr>
+                <tr>
+                  <td class="border-hair" style="padding:10px 16px 12px 16px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#16191F; font-weight:600;">Maturity</td>
+                  <td class="border-hair" style="padding:10px 12px 12px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">Preview</td>
+                  <td class="border-hair" style="padding:10px 12px 12px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">GA</td>
+                  <td class="border-hair" style="padding:10px 12px 12px 12px; border-top:1px solid #F0F1F2; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#3A3F47;">GA</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- the ask -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:32px 40px 8px 40px;">
+              <div class="tx-muted" style="font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#6B7280;">The ask</div>
+              <div class="tx-body" style="padding-top:6px; font-family: Arial, Helvetica, sans-serif; font-size:19px; font-weight:700; color:#16191F;">Approve a three-track pilot this quarter.</div>
+              <div class="tx-body" style="padding-top:8px; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#3A3F47;">
+                Enable Copilot sandboxes for a developer squad, switch on Copilot Studio&rsquo;s code interpreter for one maker team, and stand up a Foundry project for a code-first use case &mdash; then report adoption, isolation posture, and cost back to this group.
+              </div>
+            </td>
+          </tr>
+
+          <!-- CTA button (bulletproof) -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:20px 40px 32px 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#C8102E" style="border-radius:999px;">
+                    <!--[if mso]>
+                    <a href="index.html" style="height:46px;v-text-anchor:middle;width:240px;" arcsize="50%" stroke="f" fillcolor="#C8102E">
+                    <center>
+                    <![endif]-->
+                    <a href="index.html" style="display:inline-block; padding:13px 28px; font-family: Arial, Helvetica, sans-serif; font-size:14px; font-weight:700; color:#FFFFFF; text-decoration:none; border-radius:999px;">
+                      Review the full comparison
+                    </a>
+                    <!--[if mso]>
+                    </center>
+                    </a>
+                    <![endif]-->
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- fact-check note -->
+          <tr>
+            <td class="bg-card px" style="background-color:#FFFFFF; padding:0 40px 32px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="border-hair" style="border-top:1px solid #E7E9EC;">
+                <tr>
+                  <td style="padding-top:16px; font-family: Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#9AA1AC;" class="tx-muted">
+                    Reflects publicly documented behavior as of June 2026. GitHub Copilot sandboxes are in public preview and may change &mdash; re-verify against current docs before presenting.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- footer -->
+          <tr>
+            <td align="center" style="padding:24px 40px 0 40px;">
+              <div style="font-family: Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#9AA1AC;">
+                You&rsquo;re receiving this because you&rsquo;re part of the platform strategy review.<br />
+                123 Market Street, Suite 400, San Francisco, CA 94105
+              </div>
+              <div style="padding-top:8px;">
+                <a href="https://example.com/unsubscribe" style="font-family: Arial, Helvetica, sans-serif; font-size:12px; color:#2563EB;">Unsubscribe</a>
+              </div>
+            </td>
+          </tr>
+          <tr><td style="height:32px; line-height:32px; font-size:0;">&nbsp;</td></tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
