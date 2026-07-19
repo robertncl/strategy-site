@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="Seven shortlisted AI gateways — Azure APIM AI Gateway, LiteLLM, Portkey, Kong AI Gateway, TrueFoundry, Bifrost, and Cloudflare AI Gateway — compared against Entra ID access control, GitHub Copilot BYOK, and Azure AI Foundry model support." />
+<title>AI Gateway Architecture Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Archivo:wght@700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide/dist/umd/lucide.js"></script>
+<style>
+  :root{
+    --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-300:#CDD2D9;--gray-400:#9AA1AC;--gray-500:#6C7480;
+    --gray-700:#3A404A;--gray-800:#262B33;--gray-900:#16191F;--gray-950:#0C0E12;
+    --red-400:#E05C70;--red-600:#C8102E;
+    --blue-300:#8FB0F5;--blue-400:#5F88EE;--blue-500:#3B82F6;
+    --green-300:#7FD99A;--green-400:#4CBB74;--green-500:#22C55E;
+    --amber-300:#FCD34D;--amber-500:#F59E0B;
+    --font-sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    --font-display:"Archivo","Inter","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--gray-950);color:var(--gray-100);
+    font-family:var(--font-sans);-webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center;padding:clamp(20px,4vw,48px) 16px;
+    overflow-x:auto;
+  }
+  .diagram{width:1400px;max-width:none;}
+  @media (max-width:1460px){
+    body{ padding:24px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="diagram" style="width:1400px;box-sizing:border-box;padding:44px 40px;background:var(--gray-950);font-family:var(--font-sans);color:var(--gray-100);">
+
+  <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.1em;color:var(--red-400);margin-bottom:10px;">Architecture &middot; per-product</div>
+  <h1 style="font:700 36px/1.1 var(--font-display);letter-spacing:-0.01em;color:var(--gray-50);margin:0 0 10px;">AI gateway architecture, by product</h1>
+  <div style="font:400 14.5px/1.55 var(--font-sans);color:var(--gray-400);max-width:960px;">Seven shortlisted gateways, each drawn against the same three requirements: Microsoft Entra ID access control, GitHub Copilot BYOK, and Azure AI Foundry models.</div>
+
+  <div style="display:flex;gap:24px;align-items:center;margin-top:20px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;"><div style="width:22px;height:2px;background:var(--blue-400);"></div><div style="font:500 12px var(--font-sans);color:var(--gray-400);">Request / auth flow</div></div>
+    <div style="display:flex;align-items:center;gap:7px;"><div style="width:11px;height:11px;border-radius:999px;background:color-mix(in oklab, var(--green-500) 30%, transparent);border:1.5px solid var(--green-400);"></div><div style="font:500 12px var(--font-sans);color:var(--gray-400);">Meets requirement natively</div></div>
+    <div style="display:flex;align-items:center;gap:7px;"><div style="width:11px;height:11px;border-radius:999px;background:color-mix(in oklab, var(--amber-500) 30%, transparent);border:1.5px solid var(--amber-300);"></div><div style="font:500 12px var(--font-sans);color:var(--gray-400);">Partial / undocumented path</div></div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:26px 0 0;"></div>
+
+  <!-- ============ PRODUCT 1 — Azure APIM AI Gateway ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="shield" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Azure API Management &middot; AI Gateway</div>
+      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 9px;border-radius:999px;">1 &middot; primary pick</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Azure PaaS &middot; commercial</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (BYOK), internal apps &amp; agents</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">Entra ID token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">JWT validation policy + OAuth credential manager</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">Azure APIM AI Gateway</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Token limiting &amp; semantic caching</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Load balancing across deployments</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Content-safety enforcement</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">One-click Foundry import wizard</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">managed identity</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">GPT, Claude, Llama, Mistral, DeepSeek</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; native</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; native</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 2 — LiteLLM ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="layers" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">LiteLLM</div>
+      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 9px;border-radius:999px;">2 &middot; if OSS control matters</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Self-hosted &middot; OSS + enterprise</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (VS Code override), internal apps</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">OIDC token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">SSO (admin UI) + JWT auth + group sync (enterprise)</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">LiteLLM proxy</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Virtual keys &amp; budgets</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">100+ model providers</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Team management</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Documented Copilot BYOK override</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">Azure AD token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Native azure/ &amp; azure_ai/ providers</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; documented</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; native</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 3 — Portkey ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="shield-check" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Portkey</div>
+      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 9px;border-radius:999px;">3 &middot; if buying, not building</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">SaaS or self-hosted &middot; Apache 2.0 + enterprise</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (BYOK), internal apps &amp; agents</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">Entra ID token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">SSO + SCIM auto-provisioning + JWT (enterprise)</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">Portkey gateway</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Guardrails &amp; PII redaction</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Jailbreak detection</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">1,800+ models</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Audit trails</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">caching, retries, fallback</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Azure Marketplace deploy, native integration</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; native</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 4 — Kong AI Gateway ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="waypoints" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Kong AI Gateway</div>
+      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-300);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 9px;border-radius:999px;">Situational &middot; if Kong already fronts your APIs</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Self-hosted / Konnect &middot; OSS + enterprise</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (BYOK), internal apps &amp; agents</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">OIDC token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">OIDC plugin, scope/role enforcement per route</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">Kong AI Gateway</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">AI Proxy Advanced</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Prompt guards</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">MCP access control</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Official Copilot BYOK cookbook</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">managed identity</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Azure provider, azure_use_managed_identity</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; official</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; yes</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 5 — TrueFoundry ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="boxes" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">TrueFoundry AI Gateway</div>
+      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-300);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 9px;border-radius:999px;">Situational &middot; LLM + MCP + agents on AKS</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Self-hosted (K8s) &middot; commercial</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (BYOK), internal apps &amp; agents</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">OIDC / SAML</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Entra Workload ID &mdash; AKS pods federate to managed identities</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">TrueFoundry gateway (AKS)</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Unified LLM + MCP + agent gateway</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Platform-engineering governance</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">First-party Copilot BYOK docs</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">In-VNet deployment</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">MS backbone</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Azure OpenAI / Foundry endpoints</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; official</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; yes</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 6 — Bifrost ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="zap" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Bifrost (Maxim AI)</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Self-hosted (Go) &middot; Apache 2.0 + enterprise</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (generic OpenAI-compatible), internal apps</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">OIDC token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-check" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">OIDC incl. Entra; SAML+RBAC enterprise; Key Vault secrets</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">validated</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">Bifrost gateway</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">~11&micro;s added latency @ 5k RPS</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Cluster mode, adaptive LB</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Virtual keys &amp; budgets</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">1,000+ models</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">Azure provider</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure AI Foundry</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">One of 20+ supported providers</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; yes</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--amber-500) 18%, var(--gray-900));color:var(--amber-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; generic, undocumented</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; yes</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:8px 0;"></div>
+
+  <!-- ============ PRODUCT 7 — Cloudflare AI Gateway ============ -->
+  <div style="padding:28px 0 8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+      <i data-lucide="cloud" style="width:19px;height:19px;color:var(--blue-400);"></i>
+      <div style="font:700 20px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Cloudflare AI Gateway</div>
+      <div style="font:600 11px var(--font-sans);color:var(--gray-500);background:var(--gray-800);border:1px solid var(--gray-700);padding:4px 10px;border-radius:999px;">Edge SaaS &middot; usage-based</div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <div style="width:172px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="terminal" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Consumers</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Copilot (generic OpenAI-compatible), internal apps</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">gateway token</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--amber-500);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="key" style="width:14px;height:14px;color:var(--amber-300);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Cloudflare Access</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">Entra federated indirectly &mdash; no JWT-role model on AI traffic</div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">forwarded</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="flex:1;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><i data-lucide="waypoints" style="width:15px;height:15px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 14px var(--font-sans);color:var(--gray-50);">Cloudflare AI Gateway (edge)</div></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;">
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Caching &amp; rate limiting</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Automatic retries</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Unified billing across providers</div>
+          <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:8px;padding:7px 9px;font:500 11px/1.3 var(--font-sans);color:var(--gray-300);">Unified REST API</div>
+        </div>
+      </div>
+      <div style="width:88px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 4px;">
+        <div style="font:600 10px/1.25 var(--font-sans);color:var(--blue-300);text-align:center;">Azure OpenAI key</div>
+        <div style="display:flex;align-items:center;"><div style="width:44px;height:2px;background:var(--blue-500);"></div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg></div>
+      </div>
+      <div style="width:196px;flex-shrink:0;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:13px 15px;display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="brain-circuit" style="width:14px;height:14px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 12.5px var(--font-sans);color:var(--gray-50);">Azure OpenAI</div></div>
+        <div style="font:400 11px/1.4 var(--font-sans);color:var(--gray-400);">One of several supported providers</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--amber-500) 18%, var(--gray-900));color:var(--amber-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Entra &middot; partial</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--amber-500) 18%, var(--gray-900));color:var(--amber-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Copilot BYOK &middot; generic</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:color-mix(in oklab, var(--green-500) 16%, var(--gray-900));color:var(--green-300);border-radius:999px;padding:5px 12px;font:600 11px var(--font-sans);">Foundry &middot; yes</div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid var(--gray-800);margin:24px 0 16px;"></div>
+  <div style="font:400 12px/1.5 var(--font-sans);color:var(--gray-500);">Each lane follows the same pattern: consumer (incl. Copilot BYOK) &rarr; identity check &rarr; gateway policy enforcement &rarr; authenticated call to the model backend. Green pills meet a requirement with a supported mechanism; amber pills are partial or undocumented paths.</div>
+
+</div>
+
+
+<script>
+  function renderIcons(){ if (window.lucide) window.lucide.createIcons(); }
+  renderIcons();
+  window.addEventListener('load', renderIcons);
+  setTimeout(renderIcons, 300);
+</script>
+</body>
+</html>
