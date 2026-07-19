@@ -67,6 +67,7 @@ specifics (region availability, pricing, sovereign-cloud coverage) for your tena
 - `index.html` — content + structure (15 slides)
 - `styles.css` — dark theme, scroll-snap slides, glass cards, comparison matrix, selector, reveal styles
 - `app.js` — nav, keyboard, progress, IntersectionObserver reveals, the "which sandbox" selector
+- `email.html` — standalone, table-based HTML email (Outlook/MSO-safe) summarizing the deck and linking back to it; open directly or paste into an email client/ESP
 
 ## Accessibility / robustness
 
