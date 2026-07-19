@@ -3,268 +3,709 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="color-scheme" content="dark" />
-<meta name="description" content="Architecture diagram: Azure API Management fronts every Azure OpenAI call behind one centralized gateway, while Azure API Center governs what gets published without sitting in the request path." />
-<title>Centralized AI Gateway — Architecture</title>
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content="The AI gateway market in 2026 — the top products compared against three enterprise requirements: Microsoft Entra ID access control, GitHub Copilot BYOK integration, and Azure AI Foundry models." />
+<meta name="robots" content="noindex" />
+<title>Choosing an AI Gateway — Market Landscape 2026</title>
+<script>
+  {
+    const stored = localStorage.getItem("color-scheme");
+    if (stored === "light" || stored === "dark") {
+      document.documentElement.style.colorScheme = stored;
+    }
+    const prefersDark = matchMedia("(prefers-color-scheme: dark)");
+    const s = document.documentElement.style.colorScheme;
+    document.documentElement.dataset.theme =
+      (s === "light" || s === "dark") ? s : (prefersDark.matches ? "dark" : "light");
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Archivo:wght@700&display=swap" rel="stylesheet" />
-<script src="https://unpkg.com/lucide/dist/umd/lucide.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Archivo:wght@700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-400:#9AA1AC;--gray-500:#6C7480;
-    --gray-600:#4E5560;--gray-700:#3A404A;--gray-800:#262B33;--gray-900:#16191F;--gray-950:#0C0E12;
-    --red-400:#E05C70;--red-600:#C8102E;
-    --blue-300:#8FB0F5;--blue-400:#5F88EE;--blue-500:#3B82F6;
+    color-scheme: light dark;
+    /* raw values */
+    --gray-950:#0C0E12; --gray-900:#16191F; --gray-850:#1C2028; --gray-800:#262B33;
+    --gray-700:#3A404A; --gray-600:#4E5560; --gray-500:#6C7480; --gray-400:#9AA1AC;
+    --gray-200:#D9DDE3; --gray-100:#F1F3F5; --gray-50:#F8F9FA;
+    --red-600:#C8102E; --red-400:#E05C70;
+    --blue-500:#3B82F6; --blue-400:#5F88EE; --blue-700:#1D4ED8;
+    /* semantic tokens */
+    --bg:            light-dark(var(--gray-50),  var(--gray-950));
+    --bg-raised:     light-dark(#FFFFFF,        var(--gray-900));
+    --bg-inset:      light-dark(var(--gray-100), var(--gray-850));
+    --border:        light-dark(var(--gray-200), var(--gray-800));
+    --border-strong: light-dark(var(--gray-400), var(--gray-700));
+    --ink:           light-dark(var(--gray-900), var(--gray-100));
+    --ink-strong:    light-dark(var(--gray-950), var(--gray-50));
+    --ink-2:         light-dark(var(--gray-600), var(--gray-400));
+    --ink-muted:     light-dark(var(--gray-500), var(--gray-500));
+    --accent:        light-dark(var(--red-600),  var(--red-400));
+    --link:          light-dark(var(--blue-700), var(--blue-400));
+    --good:          light-dark(#006300, #35A835);
+    --warn:          light-dark(#8A5A00, #FAB219);
     --font-sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
     --font-display:"Archivo","Inter","Segoe UI",system-ui,sans-serif;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    margin:0;background:var(--gray-950);color:var(--gray-100);
-    font-family:var(--font-sans);-webkit-font-smoothing:antialiased;
-    display:flex;justify-content:center;padding:clamp(20px,4vw,48px) 16px;
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--font-sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;
   }
-  .diagram{width:900px;max-width:100%;box-sizing:border-box;padding:24px;background:var(--gray-950);font-family:var(--font-sans);color:var(--gray-100);}
+  .shell{max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,32px)}
+  a{color:var(--link)}
+  h1,h2,h3{font-family:var(--font-display);letter-spacing:-0.01em;color:var(--ink-strong);text-wrap:balance}
+  p{max-width:70ch}
+  .skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#fff;padding:8px 14px;border-radius:0 0 8px 0;z-index:99}
+  .skip-link:focus{left:0}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink-strong);font-weight:700}
+  .brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff;flex:none}
+  .brand small{display:block;font-weight:500;color:var(--ink-2);font-size:11px;line-height:1.2}
+  .site-nav{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap}
+  .site-nav a{
+    text-decoration:none;color:var(--ink-2);font-size:13px;font-weight:500;
+    padding:6px 10px;border-radius:8px;
+  }
+  .site-nav a:hover{color:var(--ink-strong);background:var(--bg-inset)}
+  .theme-toggle{
+    border:1px solid var(--border);background:var(--bg-raised);color:var(--ink);
+    width:34px;height:34px;border-radius:9px;cursor:pointer;display:grid;place-items:center;flex:none;
+  }
+  .theme-toggle:hover{border-color:var(--border-strong)}
+  html[data-theme="light"] .icon-sun{display:none}
+  html[data-theme="dark"] .icon-moon{display:none}
+  .scroll-progress{height:2px;background:transparent}
+  .scroll-progress span{display:block;height:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+  @supports (animation-timeline: scroll()){
+    .scroll-progress span{animation:progress linear both;animation-timeline:scroll(root)}
+    @keyframes progress{to{transform:scaleX(1)}}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding-block:clamp(48px,8vw,96px) clamp(40px,6vw,72px);border-bottom:1px solid var(--border);
+    background:
+      radial-gradient(600px 300px at 85% -10%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%),
+      radial-gradient(500px 260px at 10% 110%, color-mix(in oklab, var(--blue-500) 12%, transparent), transparent 70%);
+  }
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin:0 0 14px}
+  .hero h1{font-size:clamp(30px,5.4vw,52px);line-height:1.08;margin:0 0 16px}
+  .hero .lede{font-size:clamp(15px,2vw,18px);color:var(--ink-2);margin:0 0 26px}
+  .req-chips{display:flex;gap:10px;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+  .req-chips li{
+    display:flex;align-items:center;gap:8px;
+    background:var(--bg-raised);border:1px solid var(--border);border-radius:999px;
+    padding:8px 14px;font-size:13px;font-weight:600;color:var(--ink);
+  }
+  .req-chips .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+  .hero-cta{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:14px;
+    padding:10px 18px;border-radius:10px;border:1px solid transparent}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-ghost{border-color:var(--border-strong);color:var(--ink)}
+  .btn-ghost:hover{background:var(--bg-inset)}
+
+  /* ---------- sections ---------- */
+  section{padding-block:clamp(44px,7vw,80px);border-bottom:1px solid var(--border);scroll-margin-top:64px}
+  .kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin:0 0 10px}
+  section h2{font-size:clamp(24px,3.6vw,34px);margin:0 0 12px}
+  .section-lede{color:var(--ink-2);font-size:15px;margin:0 0 30px}
+
+  /* stat tiles */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-block:8px 30px}
+  .stat{background:var(--bg-raised);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+  .stat .label{font-size:13px;color:var(--ink-2);margin:0 0 6px}
+  .stat .value{font-size:clamp(28px,4vw,38px);font-weight:600;color:var(--ink-strong);line-height:1.1}
+  .stat .note{font-size:12px;color:var(--ink-muted);margin-top:6px}
+
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .card{background:var(--bg-raised);border:1px solid var(--border);border-radius:14px;padding:20px}
+  .card h3{font-size:16px;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+  .card p{font-size:14px;color:var(--ink-2);margin:0}
+  .card .glyph{width:30px;height:30px;border-radius:8px;background:var(--bg-inset);display:grid;place-items:center;color:var(--accent);flex:none}
+
+  /* requirements */
+  .req{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+  .req article{background:var(--bg-raised);border:1px solid var(--border);border-radius:14px;padding:22px}
+  .req article h3{font-size:18px;margin:0 0 10px}
+  .req .tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--accent);background:color-mix(in oklab, var(--accent) 12%, transparent);
+    border-radius:6px;padding:3px 8px;margin-bottom:10px}
+  .req ul{margin:10px 0 0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+  .req li{margin-bottom:6px}
+  .req li strong{color:var(--ink)}
+  .callout{
+    border-left:3px solid var(--warn);background:var(--bg-inset);
+    border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--ink-2);margin-top:14px;
+  }
+  .callout strong{color:var(--ink)}
+
+  /* product profiles */
+  .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+  .product{background:var(--bg-raised);border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px}
+  .product.lead{border-color:color-mix(in oklab, var(--accent) 45%, var(--border))}
+  .product header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .product h3{font-size:18px;margin:0}
+  .product .meta{font-size:12px;color:var(--ink-muted)}
+  .product .pick{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .product .desc{font-size:14px;color:var(--ink-2);margin:0}
+  .fit{display:flex;flex-direction:column;gap:8px;margin-top:auto;border-top:1px solid var(--border);padding-top:12px}
+  .fit-row{display:flex;gap:10px;font-size:13px;align-items:baseline}
+  .fit-row .k{flex:none;width:88px;font-weight:600;color:var(--ink-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em}
+  .fit-row .v{color:var(--ink-2)}
+  .yes,.part{font-weight:700;margin-right:4px}
+  .yes{color:var(--good)}
+  .part{color:var(--warn)}
+
+  /* comparison table */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--bg-raised)}
+  table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+  caption{text-align:left;padding:16px 18px 4px;font-weight:600;color:var(--ink-strong)}
+  th,td{padding:12px 16px;text-align:left;vertical-align:top;border-top:1px solid var(--border)}
+  thead th{border-top:none;font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);padding-top:16px}
+  tbody th{font-weight:600;color:var(--ink-strong);white-space:nowrap}
+  td .yes,td .part{display:inline-block}
+  td small{display:block;color:var(--ink-muted);font-weight:400;margin-top:2px}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin-top:12px}
+
+  /* recommendation */
+  .verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:26px}
+  .verdict .card h3{font-size:15px}
+  .verdict .rank{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent)}
+  .pattern{background:var(--bg-inset);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+  .pattern h3{margin:0 0 10px;font-size:16px}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;font-weight:600}
+  .flow .node{background:var(--bg-raised);border:1px solid var(--border-strong);border-radius:10px;padding:8px 14px}
+  .flow .node.hot{border-color:var(--accent);color:var(--accent)}
+  .flow .arrow{color:var(--ink-muted)}
+  .pattern p{font-size:13.5px;color:var(--ink-2);margin:12px 0 0}
+
+  /* sources */
+  .sources{columns:2;column-gap:32px;font-size:13px;padding-left:18px;margin:0}
+  .sources li{margin-bottom:8px;break-inside:avoid}
+  @media (max-width:720px){.sources{columns:1}}
+
+  footer{padding-block:28px;font-size:12.5px;color:var(--ink-muted)}
+  footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  /* reveal on scroll — decorative, progressive enhancement */
+  @media (prefers-reduced-motion: no-preference){
+    @supports ((animation-timeline: view()) and (animation-range: entry)){
+      .stat,.card,.product,.req article{
+        animation:rise auto linear backwards;
+        animation-timeline:view();
+        animation-range:entry 0% entry 40%;
+      }
+      @keyframes rise{from{opacity:0.2;transform:translateY(14px)}}
+    }
+  }
 </style>
 </head>
 <body>
+<a href="#content" class="skip-link">Skip to main content</a>
 
-<div class="diagram">
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="#top" aria-label="AI Gateway — back to top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+      </span>
+      <span>AI Gateway<small>Market landscape · 2026</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#market">Market</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#products">Products</a>
+      <a href="#comparison">Comparison</a>
+      <a href="#recommendation">Recommendation</a>
+      <a href="architecture.html">Architecture&nbsp;↗</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" type="button" title="Toggle light / dark theme">
+      <span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Toggle light or dark theme</span>
+      <svg class="icon-sun" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+</header>
 
-  <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.1em;color:var(--red-400);margin-bottom:10px;">Architecture &middot; engineering review</div>
-  <h1 style="font:700 40px/1.1 var(--font-display);letter-spacing:-0.01em;color:var(--gray-50);margin:0 0 10px;">Centralized AI gateway</h1>
-  <div style="font:400 15px/1.5 var(--font-sans);color:var(--gray-400);max-width:100%;">Azure API Management fronts every Azure OpenAI call behind one gateway. Azure API Center governs what gets published &mdash; without sitting in the request path.</div>
+<main id="content" tabindex="-1">
 
-  <div style="display:flex;gap:28px;align-items:center;margin-top:22px;flex-wrap:wrap;">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:26px;height:2px;background:var(--blue-400);"></div>
-      <div style="font:500 12px var(--font-sans);color:var(--gray-400);">Runtime request flow</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:26px;height:0;border-top:2px dashed var(--blue-400);"></div>
-      <div style="font:500 12px var(--font-sans);color:var(--gray-400);">Design-time governance flow</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:13px;height:13px;background:var(--red-600);border-radius:3px;"></div>
-      <div style="font:500 12px var(--font-sans);color:var(--gray-400);">Centralized gateway &mdash; the one path all AI traffic takes</div>
+  <!-- ============================ HERO ============================ -->
+  <div class="hero" id="top">
+    <div class="shell">
+      <p class="eyebrow">Internal · Market research · July 2026</p>
+      <h1>Choosing an AI gateway:<br />the 2026 market, scored against our stack</h1>
+      <p class="lede">
+        Every serious AI platform now puts a gateway between apps and models — one control
+        point for identity, spend, and governance. This deck maps the top products and scores
+        them against the three requirements that matter here:
+      </p>
+      <ul class="req-chips">
+        <li><span class="dot" aria-hidden="true"></span>Enterprise access control with Microsoft Entra ID</li>
+        <li><span class="dot" aria-hidden="true"></span>GitHub Copilot integration (BYOK)</li>
+        <li><span class="dot" aria-hidden="true"></span>Azure AI Foundry models</li>
+      </ul>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#comparison">Jump to the comparison
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="architecture.html">View the target architecture</a>
+      </div>
     </div>
   </div>
 
-  <div style="border-top:1px solid var(--gray-800);margin:28px 0 32px;"></div>
+  <!-- ============================ MARKET ============================ -->
+  <section id="market">
+    <div class="shell">
+      <p class="kicker">Why now</p>
+      <h2>The gateway layer became standard infrastructure</h2>
+      <p class="section-lede">
+        Industry surveys through 2026 consistently show the AI/LLM gateway moving from
+        nice-to-have to default: a single OpenAI-compatible front door that owns identity,
+        budgets, routing, and audit for every model call.
+      </p>
 
-  <!-- CONSUMERS -->
-  <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-500);text-align:center;margin-bottom:14px;">Consumers</div>
-  <div style="display:flex;justify-content:center;gap:14px;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="app-window" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Web &amp; mobile apps</div>
+      <div class="stats">
+        <div class="stat">
+          <p class="label">Enterprises already running an AI middleware / gateway layer</p>
+          <p class="value">~42%</p>
+          <p class="note">2026 buyer's-guide surveys (Maxim AI)</p>
+        </div>
+        <div class="stat">
+          <p class="label">Projected LLM-gateway market growth (CAGR to 2034)</p>
+          <p class="value">~50%</p>
+          <p class="note">Reported 49.6% CAGR</p>
+        </div>
+        <div class="stat">
+          <p class="label">Faster token-spend growth for teams without a gateway</p>
+          <p class="value">30–40%</p>
+          <p class="note">Ungoverned keys, no caching or budgets</p>
+        </div>
       </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Customer-facing chat and search UIs &middot; REST/SSE</div>
-    </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="message-square" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Internal copilot services</div>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>One API, many models</h3>
+          <p>Apps and agents call one OpenAI-compatible endpoint; the gateway routes to Foundry, OpenAI, Anthropic, or self-hosted models without code changes.</p>
+        </div>
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3 5 7v8c0 6.1 4.4 10.7 11 13"/><path d="M12 11l2 2 4-4"/></svg></span>Identity &amp; access</h3>
+          <p>SSO for humans, OIDC/JWT for workloads, per-team virtual keys — no raw provider keys in app code, ever.</p>
+        </div>
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 7H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H6"/></svg></span>Budgets &amp; quotas</h3>
+          <p>Token limits, rate limits, and cost attribution per user, team, and application — chargeback becomes a query, not a project.</p>
+        </div>
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Observability</h3>
+          <p>Every prompt, completion, latency, and cost in one audit trail — the evidence base for governance and incident response.</p>
+        </div>
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><rect x="3" y="4" width="18" height="16" rx="3"/></svg></span>Guardrails</h3>
+          <p>PII redaction, content safety, jailbreak detection, and policy checks applied in-line at the choke point rather than per app.</p>
+        </div>
+        <div class="card">
+          <h3><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg></span>Resilience</h3>
+          <p>Retries, fallbacks across deployments and regions, load balancing, and semantic caching — reliability engineering done once.</p>
+        </div>
       </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Line-of-business assistants &middot; streaming completions</div>
     </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="workflow" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Batch &amp; data pipelines</div>
+  </section>
+
+  <!-- ============================ REQUIREMENTS ============================ -->
+  <section id="requirements">
+    <div class="shell">
+      <p class="kicker">Our bar</p>
+      <h2>Three requirements, and what “good” looks like</h2>
+      <p class="section-lede">These are the filters applied to every product in this deck.</p>
+
+      <div class="req">
+        <article>
+          <span class="tag">Requirement 1</span>
+          <h3>Enterprise access control with Microsoft Entra ID</h3>
+          <p style="font-size:14px;color:var(--ink-2);margin:0">
+            Entra must govern both planes of the gateway — the people who administer it and
+            the workloads that call it.
+          </p>
+          <ul>
+            <li><strong>Control plane:</strong> SSO (OIDC/SAML) into the gateway console, ideally with SCIM provisioning and Entra-group-to-team mapping.</li>
+            <li><strong>Data plane:</strong> JWT validation of Entra-issued tokens on model traffic, so access is role-based rather than static-API-key-based.</li>
+            <li><strong>Backend:</strong> managed identity from the gateway to Azure model endpoints — no provider keys stored anywhere.</li>
+          </ul>
+        </article>
+
+        <article>
+          <span class="tag">Requirement 2</span>
+          <h3>GitHub Copilot integration (BYOK)</h3>
+          <p style="font-size:14px;color:var(--ink-2);margin:0">
+            Since 2025 Copilot supports <em>bring-your-own-key</em>: pointing chat and agent
+            sessions at your own model endpoint — Azure OpenAI, Microsoft Foundry, Anthropic, or
+            <strong>any OpenAI-compatible gateway</strong>. In June 2026 GitHub extended BYOK to the
+            Copilot coding-agent app, and an enterprise-grade BYOK policy for organizations is in
+            public preview. Routing Copilot through the gateway gives you audit, budgets, and
+            data-boundary control over IDE AI traffic.
+          </p>
+          <ul>
+            <li><strong>Good:</strong> a first-party, documented Copilot BYOK integration (Kong and TrueFoundry publish one; LiteLLM documents the VS Code proxy-override pattern).</li>
+            <li><strong>Acceptable:</strong> any spec-faithful OpenAI-compatible endpoint — Copilot BYOK accepts a custom base URL and key.</li>
+          </ul>
+          <div class="callout">
+            <strong>Caveat:</strong> Copilot still applies strict hostname validation for some
+            provider types, which can block gateway-fronted endpoints that impersonate a specific
+            provider API; an open GitHub community discussion tracks relaxing this for regulated,
+            zero-trust architectures. The OpenAI-compatible path is the reliable one today.
+          </div>
+        </article>
+
+        <article>
+          <span class="tag">Requirement 3</span>
+          <h3>Azure AI Foundry models</h3>
+          <p style="font-size:14px;color:var(--ink-2);margin:0">
+            Foundry (which absorbed Azure OpenAI) is where our models live — GPT, Claude,
+            Llama, Mistral, DeepSeek and the rest of the catalog. The gateway must treat it as a
+            first-class provider.
+          </p>
+          <ul>
+            <li><strong>Native provider support</strong> for Foundry model deployments, not a generic HTTP passthrough.</li>
+            <li><strong>Managed-identity authentication</strong> to Foundry endpoints.</li>
+            <li><strong>Notable:</strong> Foundry now ships a built-in “AI Gateway” configuration that is Azure API Management under the hood — Microsoft's own answer to this requirement.</li>
+          </ul>
+        </article>
       </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Bulk scoring, embeddings, ETL jobs &middot; async batch API</div>
     </div>
+  </section>
+
+  <!-- ============================ PRODUCTS ============================ -->
+  <section id="products">
+    <div class="shell">
+      <p class="kicker">The field</p>
+      <h2>Top products in the 2026 gateway market</h2>
+      <p class="section-lede">
+        Seven products dominate enterprise shortlists this year. Each profile below notes how it
+        meets — or misses — the three requirements.
+      </p>
+
+      <div class="products">
+        <article class="product lead">
+          <header><h3>Azure API Management · AI Gateway</h3><span class="pick">Best Azure fit</span></header>
+          <p class="meta">Microsoft · Azure PaaS · commercial</p>
+          <p class="desc">
+            APIM's GenAI gateway capabilities — token limiting, token metrics, semantic caching,
+            load balancing across deployments, content-safety enforcement — applied to AI APIs.
+            It is the engine behind Foundry's built-in AI Gateway, and the architecture we already
+            drew up: <a href="architecture.html">see the diagram</a>.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Native.</span>Entra everywhere: JWT validation policies, OAuth credential manager, managed identity to backends.</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="yes">✓ Yes.</span>Exposes an OpenAI-compatible endpoint Copilot BYOK can target; same Microsoft support chain.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Native.</span>One-click Foundry API import wizard; powers Foundry's own gateway feature.</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>LiteLLM</h3></header>
+          <p class="meta">BerriAI · self-hosted proxy · OSS core + enterprise tier</p>
+          <p class="desc">
+            The most widely adopted open-source gateway: an OpenAI-compatible proxy over 100+
+            providers with virtual keys, budgets, and team management. Huge community; Python-based.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Yes.</span>Entra SSO for the admin UI, JWT/OIDC auth on the data plane, Entra-group-to-team sync (enterprise).</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="yes">✓ Documented.</span>Community-proven VS Code override + BYOK base-URL pattern; also proxies Copilot's own models.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Native.</span>First-class <code>azure/</code> and <code>azure_ai/</code> providers incl. Foundry agents; Azure AD token auth.</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>Portkey</h3></header>
+          <p class="meta">Portkey AI · SaaS or self-hosted · gateway open-sourced (Apache 2.0, Mar 2026)</p>
+          <p class="desc">
+            Production-safety-focused gateway: guardrails, PII redaction, jailbreak detection, and
+            audit trails built in. 1,800+ models; deployable from the Azure Marketplace.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Yes.</span>Strongest IdP story of the SaaS field: Entra SSO + SCIM auto-provisioning, JWT gateway auth (enterprise plan).</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="yes">✓ Yes.</span>OpenAI-compatible endpoint works as a Copilot BYOK target.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Native.</span>Azure OpenAI and Foundry integrations with caching, retries, fallbacks, observability.</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>Kong AI Gateway</h3></header>
+          <p class="meta">Kong Inc. · self-hosted / Konnect SaaS · OSS + enterprise</p>
+          <p class="desc">
+            AI plugins on the battle-tested Kong API gateway: AI Proxy Advanced, prompt guards,
+            and MCP access control. The natural pick where Kong already fronts your APIs.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Yes.</span>Mature OIDC plugin with documented Entra configuration; scope/role enforcement per route.</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="yes">✓ Official.</span>Publishes a dedicated “GitHub Copilot BYOK custom endpoint” cookbook.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Yes.</span>Azure provider in AI Proxy with managed-identity auth (<code>azure_use_managed_identity</code>).</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>TrueFoundry AI Gateway</h3></header>
+          <p class="meta">TrueFoundry · self-hosted on Kubernetes/AKS · commercial</p>
+          <p class="desc">
+            Unified LLM + MCP + agent gateway with strong platform-engineering governance;
+            positions as the enterprise control plane for agentic AI.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Yes.</span>OIDC/SAML with Entra; on AKS it uses Entra Workload ID — pods federate to managed identities, no stored keys.</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="yes">✓ Official.</span>First-party GitHub Copilot BYOK integration docs.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Yes.</span>Azure OpenAI/Foundry over the Microsoft backbone from in-VNet deployments.</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>Bifrost</h3></header>
+          <p class="meta">Maxim AI · self-hosted (Go) · Apache 2.0 core + enterprise</p>
+          <p class="desc">
+            The performance play: ~11&nbsp;µs added latency at 5k&nbsp;RPS, cluster mode, adaptive load
+            balancing, 1,000+ models. Governance with virtual keys, teams, and budgets.
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="yes">✓ Yes.</span>OIDC including Entra; SAML + RBAC in the enterprise edition; Azure Key Vault for secrets.</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="part">◐ Generic.</span>OpenAI-compatible endpoint should work for BYOK; no dedicated integration docs yet.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Yes.</span>Azure provider among 20+ supported.</span></div>
+          </div>
+        </article>
+
+        <article class="product">
+          <header><h3>Cloudflare AI Gateway</h3></header>
+          <p class="meta">Cloudflare · edge SaaS · usage-based</p>
+          <p class="desc">
+            Zero-infrastructure gateway at Cloudflare's edge: caching, rate limiting, retries,
+            unified billing across providers, and a unified REST API (May 2026).
+          </p>
+          <div class="fit">
+            <div class="fit-row"><span class="k">Entra</span><span class="v"><span class="part">◐ Partial.</span>Gateway auth is its own token header; Entra only indirectly via Cloudflare Access federation — no SCIM/JWT-role model on AI traffic.</span></div>
+            <div class="fit-row"><span class="k">Copilot</span><span class="v"><span class="part">◐ Generic.</span>OpenAI-compatible unified endpoint; no dedicated Copilot story.</span></div>
+            <div class="fit-row"><span class="k">Foundry</span><span class="v"><span class="yes">✓ Yes.</span>Azure OpenAI among supported providers.</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ COMPARISON ============================ -->
+  <section id="comparison">
+    <div class="shell">
+      <p class="kicker">Side by side</p>
+      <h2>Requirement scorecard</h2>
+      <p class="section-lede">✓ = meets the requirement today · ◐ = partial or undocumented path. Labels state the mechanism, so no cell relies on the mark alone.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>AI gateways vs. our three requirements (July 2026)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Entra ID access control</th>
+              <th scope="col">GitHub Copilot (BYOK)</th>
+              <th scope="col">Azure AI Foundry models</th>
+              <th scope="col">Deployment</th>
+              <th scope="col">Licensing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Azure APIM AI Gateway</th>
+              <td><span class="yes">✓ Native</span><small>JWT policies, credential manager, managed identity</small></td>
+              <td><span class="yes">✓ Yes</span><small>OpenAI-compatible endpoint</small></td>
+              <td><span class="yes">✓ Native</span><small>Foundry import wizard; powers Foundry's gateway</small></td>
+              <td>Azure PaaS</td>
+              <td>Commercial (Azure)</td>
+            </tr>
+            <tr>
+              <th scope="row">LiteLLM</th>
+              <td><span class="yes">✓ Yes</span><small>SSO + JWT auth + group sync (enterprise)</small></td>
+              <td><span class="yes">✓ Documented</span><small>VS Code override / BYOK base URL</small></td>
+              <td><span class="yes">✓ Native</span><small>azure/ &amp; azure_ai/ providers</small></td>
+              <td>Self-hosted</td>
+              <td>OSS + enterprise</td>
+            </tr>
+            <tr>
+              <th scope="row">Portkey</th>
+              <td><span class="yes">✓ Yes</span><small>Entra SSO + SCIM + JWT (enterprise plan)</small></td>
+              <td><span class="yes">✓ Yes</span><small>OpenAI-compatible endpoint</small></td>
+              <td><span class="yes">✓ Native</span><small>Azure Marketplace deploy; 1,800+ models</small></td>
+              <td>SaaS or self-hosted</td>
+              <td>Apache 2.0 + enterprise</td>
+            </tr>
+            <tr>
+              <th scope="row">Kong AI Gateway</th>
+              <td><span class="yes">✓ Yes</span><small>OIDC plugin, documented Entra config</small></td>
+              <td><span class="yes">✓ Official</span><small>Copilot BYOK cookbook</small></td>
+              <td><span class="yes">✓ Yes</span><small>Azure provider + managed identity</small></td>
+              <td>Self-hosted / Konnect</td>
+              <td>OSS + enterprise</td>
+            </tr>
+            <tr>
+              <th scope="row">TrueFoundry</th>
+              <td><span class="yes">✓ Yes</span><small>OIDC/SAML + Entra Workload ID on AKS</small></td>
+              <td><span class="yes">✓ Official</span><small>First-party Copilot docs</small></td>
+              <td><span class="yes">✓ Yes</span><small>Azure OpenAI over MS backbone</small></td>
+              <td>Self-hosted (K8s)</td>
+              <td>Commercial</td>
+            </tr>
+            <tr>
+              <th scope="row">Bifrost (Maxim)</th>
+              <td><span class="yes">✓ Yes</span><small>OIDC incl. Entra; SAML/RBAC enterprise</small></td>
+              <td><span class="part">◐ Generic</span><small>OpenAI-compatible; undocumented</small></td>
+              <td><span class="yes">✓ Yes</span><small>Azure provider</small></td>
+              <td>Self-hosted</td>
+              <td>Apache 2.0 + enterprise</td>
+            </tr>
+            <tr>
+              <th scope="row">Cloudflare AI Gateway</th>
+              <td><span class="part">◐ Partial</span><small>Own token header; Entra via CF Access only</small></td>
+              <td><span class="part">◐ Generic</span><small>Unified OpenAI-compatible API</small></td>
+              <td><span class="yes">✓ Yes</span><small>Azure OpenAI provider</small></td>
+              <td>Edge SaaS</td>
+              <td>Usage-based</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span><span class="yes">✓</span> Meets requirement with a supported mechanism</span>
+        <span><span class="part">◐</span> Works in principle; weaker or undocumented</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ RECOMMENDATION ============================ -->
+  <section id="recommendation">
+    <div class="shell">
+      <p class="kicker">Verdict</p>
+      <h2>Recommendation</h2>
+      <p class="section-lede">
+        Five products clear all three requirements. For an Entra-governed, Foundry-hosted,
+        Copilot-consuming estate, the shortlist orders itself:
+      </p>
+
+      <div class="verdict">
+        <div class="card">
+          <p class="rank">1 · Primary</p>
+          <h3>Azure APIM AI Gateway</h3>
+          <p>Azure-native on all three requirements with zero new vendors; it is literally the engine of Foundry's own gateway feature — and the architecture we've already designed.</p>
+        </div>
+        <div class="card">
+          <p class="rank">2 · If OSS control matters</p>
+          <h3>LiteLLM</h3>
+          <p>Deepest provider coverage and community; Entra SSO, JWT auth and group sync at enterprise tier. Run it behind APIM or standalone in AKS.</p>
+        </div>
+        <div class="card">
+          <p class="rank">3 · If buying, not building</p>
+          <h3>Portkey</h3>
+          <p>Best managed enterprise story: Azure Marketplace deploy, Entra SSO + SCIM, built-in guardrails and audit. Enterprise plan required for the identity features.</p>
+        </div>
+        <div class="card">
+          <p class="rank">Situational</p>
+          <h3>Kong / TrueFoundry</h3>
+          <p>Both publish official Copilot BYOK integrations — first choice if Kong already fronts your APIs, or if you want one gateway spanning LLM + MCP + agents on AKS.</p>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <h3>The pattern, whichever product wins</h3>
+        <div class="flow" role="img" aria-label="Flow: GitHub Copilot BYOK and internal apps and agents call the AI gateway, which authenticates callers with Entra ID and forwards via managed identity to Azure AI Foundry models.">
+          <span class="node">Copilot (BYOK) · apps · agents</span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="node">Entra ID token</span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="node hot">AI Gateway</span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="node">managed identity</span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="node">Azure AI Foundry models</span>
+        </div>
+        <p>
+          Callers — including Copilot pointed at the gateway's OpenAI-compatible endpoint —
+          authenticate with Entra-issued credentials; the gateway enforces roles, budgets, and
+          guardrails, then reaches Foundry with a managed identity. No raw model keys leave the
+          platform team. Watch two moving parts: GitHub's enterprise BYOK policy (public preview)
+          and the hostname-validation limits on provider-impersonating endpoints.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SOURCES ============================ -->
+  <section id="sources">
+    <div class="shell">
+      <p class="kicker">Evidence</p>
+      <h2>Sources</h2>
+      <ul class="sources">
+        <li><a href="https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities">Microsoft Learn — AI gateway capabilities in Azure API Management</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/foundry/configuration/enable-ai-api-management-gateway-portal">Microsoft Learn — Configure AI Gateway in Foundry resources</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/api-management/azure-ai-foundry-api">Microsoft Learn — Import a Microsoft Foundry API into APIM</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/azure-openai-gateway-custom-authentication">Azure Architecture Center — Custom authentication to Foundry models through a gateway</a></li>
+        <li><a href="https://github.blog/changelog/2026-06-23-github-copilot-app-support-for-byok/">GitHub Changelog — Copilot app support for BYOK (June 2026)</a></li>
+        <li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-byok-models">GitHub Docs — Using your own LLM models in Copilot CLI</a></li>
+        <li><a href="https://github.com/orgs/community/discussions/179954">GitHub Community — Enterprise-grade BYOK for Copilot (public preview)</a></li>
+        <li><a href="https://github.com/orgs/community/discussions/198472">GitHub Community — Gateway-fronted BYOK endpoints &amp; hostname validation</a></li>
+        <li><a href="https://docs.litellm.ai/docs/tutorials/msft_sso">LiteLLM Docs — Microsoft Entra SSO: sync groups &amp; members</a></li>
+        <li><a href="https://docs.litellm.ai/docs/proxy/jwt_auth_arch">LiteLLM Docs — Model access control with OIDC (Entra/Azure AD)</a></li>
+        <li><a href="https://docs.litellm.ai/docs/providers/azure/">LiteLLM Docs — Azure OpenAI / Azure AI providers</a></li>
+        <li><a href="https://portkey.ai/for/azure">Portkey — GenAI apps on Azure (Entra SSO/SCIM, Foundry)</a></li>
+        <li><a href="https://marketplace.microsoft.com/en-us/product/saas/portkey.enterprise-saas?tab=overview">Azure Marketplace — Portkey Enterprise</a></li>
+        <li><a href="https://developer.konghq.com/cookbooks/github-copilot-byok/">Kong Docs — GitHub Copilot BYOK custom endpoint cookbook</a></li>
+        <li><a href="https://developer.konghq.com/plugins/openid-connect/examples/azure-ad/">Kong Docs — OpenID Connect with Azure AD/Entra</a></li>
+        <li><a href="https://developer.konghq.com/ai-gateway/ai-providers/azure/">Kong Docs — Azure OpenAI provider</a></li>
+        <li><a href="https://www.truefoundry.com/docs/ai-gateway/github-copilot">TrueFoundry Docs — GitHub Copilot integration</a></li>
+        <li><a href="https://www.truefoundry.com/blog/architecting-truefoundry-on-azure-control-plane-and-compute-integration">TrueFoundry — Architecture on Azure (Entra Workload ID)</a></li>
+        <li><a href="https://github.com/maximhq/bifrost">Bifrost (Maxim AI) — GitHub repository</a></li>
+        <li><a href="https://www.getmaxim.ai/bifrost/enterprise">Bifrost Enterprise — SSO &amp; governance</a></li>
+        <li><a href="https://developers.cloudflare.com/ai-gateway/configuration/authentication/">Cloudflare Docs — Authenticated Gateway</a></li>
+        <li><a href="https://www.getmaxim.ai/articles/top-5-llm-gateways-in-2026-a-production-ready-comparison/">Maxim AI — Top 5 LLM gateways in 2026</a></li>
+        <li><a href="https://www.truefoundry.com/blog/best-ai-gateway">TrueFoundry — 5 best AI gateways for enterprises in 2026</a></li>
+        <li><a href="https://www.braintrust.dev/articles/best-llm-gateways-2026">Braintrust — 6 best LLM gateways for developers in 2026</a></li>
+        <li><a href="https://www.flotorch.ai/blogs/llm-gateway-comparison-2026">FloTorch — LLM gateway comparison 2026: enterprise buyer's guide</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell">
+    <span>AI Gateway market landscape · research compiled July 2026 · internal draft</span>
+    <span><a href="../index.html">← All decks</a> · <a href="architecture.html">Target architecture</a></span>
   </div>
-
-  <!-- CONNECTOR 1 -->
-  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0;">
-    <div style="font:600 12px/1.3 var(--font-sans);color:var(--blue-300);text-align:center;max-width:520px;">&#9312; Request over HTTPS &mdash; subscription key + Entra ID bearer token</div>
-    <div style="width:2px;height:22px;background:var(--blue-500);"></div>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
-  </div>
-
-  <!-- ENTRA ID -->
-  <div style="display:flex;justify-content:center;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--blue-300);margin-bottom:2px;">Identity</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="shield-check" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Microsoft Entra ID</div>
-      </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Issues and validates OAuth 2.0 / OIDC tokens for every caller</div>
-    </div>
-  </div>
-
-  <!-- CONNECTOR 2 -->
-  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0;">
-    <div style="font:600 12px/1.3 var(--font-sans);color:var(--blue-300);text-align:center;max-width:520px;">&#9313; Token validated &mdash; claims forwarded to the gateway</div>
-    <div style="width:2px;height:22px;background:var(--blue-500);"></div>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
-  </div>
-
-  <!-- MIDDLE ROW: GOVERNANCE | APIM | MONITORING -->
-  <div style="display:flex;align-items:center;justify-content:center;">
-
-    <!-- GOVERNANCE STACK -->
-    <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">
-      <div style="font:700 9.5px/1.2 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-500);margin-bottom:10px;text-align:center;">Governance &middot; design-time</div>
-
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <i data-lucide="file-code" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
-          <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">API spec authored</div>
-        </div>
-        <div style="font:400 10.5px/1.35 var(--font-sans);color:var(--gray-400);">Team defines the AI API contract as OpenAPI</div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:6px 0;">
-        <div style="width:2px;height:12px;background:var(--gray-600);"></div>
-        <div style="font:600 9.5px var(--font-sans);text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);">register</div>
-        <div style="width:2px;height:12px;background:var(--gray-600);"></div>
-      </div>
-
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <i data-lucide="layout-grid" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
-          <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">Azure API Center</div>
-        </div>
-        <div style="font:400 10.5px/1.35 var(--font-sans);color:var(--gray-400);">&ndash; Inventory of every API, AI and otherwise</div>
-        <div style="font:400 10.5px/1.35 var(--font-sans);color:var(--gray-400);">&ndash; Discovery portal for app teams</div>
-        <div style="font:400 10.5px/1.35 var(--font-sans);color:var(--gray-400);">&ndash; Versioning, deprecation &amp; compliance metadata</div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:6px 0;">
-        <div style="width:2px;height:12px;background:var(--gray-600);"></div>
-        <div style="font:600 9.5px var(--font-sans);text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);">approved</div>
-        <div style="width:2px;height:12px;background:var(--gray-600);"></div>
-      </div>
-
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <i data-lucide="git-branch" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
-          <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">CI/CD pipeline</div>
-        </div>
-        <div style="font:400 10.5px/1.35 var(--font-sans);color:var(--gray-400);">Lints, tests and deploys the API definition and policies</div>
-      </div>
-    </div>
-
-    <!-- CONNECTOR LEFT (dashed) -->
-    <div style="width:80px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 4px;">
-      <div style="font:600 10.5px/1.3 var(--font-sans);color:var(--blue-300);text-align:center;">Publish &amp; sync API definition + policies</div>
-      <div style="display:flex;align-items:center;">
-        <div style="width:40px;height:0;border-top:2px dashed var(--blue-500);"></div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg>
-      </div>
-    </div>
-
-    <!-- APIM CENTER BOX -->
-    <div style="flex:1;max-width:392px;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.45);">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        <i data-lucide="shield" style="width:17px;height:17px;color:var(--blue-400);flex-shrink:0;"></i>
-        <div style="font:700 16px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Azure API Management</div>
-      </div>
-      <div style="font:700 9px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 8px;border-radius:999px;white-space:nowrap;display:inline-block;margin-bottom:8px;">Runtime &middot; centralized gateway</div>
-      <div style="font:400 11.5px var(--font-sans);color:var(--gray-400);margin-bottom:12px;">Single ingress for all Azure OpenAI traffic</div>
-
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="gauge" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Rate limiting &amp; quota</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Per-subscription token &amp; request caps</div>
-        </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shuffle" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Load balancing &amp; failover</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Weighted routing + health probes across regions</div>
-        </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="zap" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Semantic caching</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Reuses responses for near-duplicate prompts</div>
-        </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-alert" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Content safety &amp; redaction</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Filters unsafe content &amp; PII in and out</div>
-        </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="receipt" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Usage metering &amp; chargeback</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Meters tokens per team &amp; cost center</div>
-        </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
-          <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="key" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Auth &amp; policy enforcement</div></div>
-          <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Validates Entra ID tokens &amp; subscription keys</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONNECTOR RIGHT (solid) -->
-    <div style="width:80px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 4px;">
-      <div style="font:600 10.5px/1.3 var(--font-sans);color:var(--blue-300);text-align:center;">Telemetry &mdash; latency, tokens, errors, cost</div>
-      <div style="display:flex;align-items:center;">
-        <div style="width:40px;height:2px;background:var(--blue-500);"></div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-2px;"><path d="M9 6l6 6-6 6"></path></svg>
-      </div>
-    </div>
-
-    <!-- MONITORING STACK -->
-    <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">
-      <div style="font:700 9.5px/1.2 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-500);margin-bottom:10px;text-align:center;">Observability</div>
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <i data-lucide="activity" style="width:16px;height:16px;color:var(--blue-400);"></i>
-          <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Monitoring &amp; observability</div>
-        </div>
-        <div style="font:400 12px/1.4 var(--font-sans);color:var(--gray-400);">&ndash; Application Insights &mdash; distributed tracing</div>
-        <div style="font:400 12px/1.4 var(--font-sans);color:var(--gray-400);">&ndash; Log Analytics &mdash; request &amp; policy logs</div>
-        <div style="font:400 12px/1.4 var(--font-sans);color:var(--gray-400);">&ndash; Dashboards &amp; alerts &mdash; cost, latency, error-rate SLOs</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- CONNECTOR 3 -->
-  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0;">
-    <div style="font:600 12px/1.3 var(--font-sans);color:var(--blue-300);text-align:center;max-width:620px;">&#9314; Route to healthy backend &mdash; weighted round-robin + automatic failover</div>
-    <div style="width:2px;height:22px;background:var(--blue-500);"></div>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue-500)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
-  </div>
-
-  <!-- BACKENDS -->
-  <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-500);text-align:center;margin-bottom:14px;">Model backends &middot; Azure OpenAI</div>
-  <div style="display:flex;justify-content:center;gap:14px;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">East US &mdash; primary</div>
-      </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">gpt-4o &middot; gpt-4o-mini &middot; text-embedding-3-large</div>
-    </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Sweden Central &mdash; secondary</div>
-      </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">gpt-4o &middot; gpt-4o-mini</div>
-    </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(0,0,0,0.35);">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
-        <div style="font:700 14px var(--font-sans);color:var(--gray-50);">West US &mdash; tertiary / failover</div>
-      </div>
-      <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">gpt-4o-mini &middot; text-embedding-3-large</div>
-    </div>
-  </div>
-
-  <div style="border-top:1px solid var(--gray-800);margin:32px 0 18px;"></div>
-  <div style="font:400 12px/1.5 var(--font-sans);color:var(--gray-500);">Legend: solid line = runtime request path &middot; dashed line = design-time governance &amp; publishing &middot; red = centralized gateway, the one path all AI traffic takes.</div>
-
-</div>
+</footer>
 
 <script>
-  function renderIcons(){ if (window.lucide) window.lucide.createIcons(); }
-  renderIcons();
-  window.addEventListener('load', renderIcons);
-  setTimeout(renderIcons, 300);
+  {
+    const btn = document.getElementById("theme-toggle");
+    const root = document.documentElement;
+    const prefersDark = matchMedia("(prefers-color-scheme: dark)");
+    const effective = () => {
+      const s = root.style.colorScheme;
+      return (s === "light" || s === "dark") ? s : (prefersDark.matches ? "dark" : "light");
+    };
+    btn.addEventListener("click", () => {
+      const next = effective() === "dark" ? "light" : "dark";
+      root.style.colorScheme = next;
+      root.dataset.theme = next;
+      localStorage.setItem("color-scheme", next);
+    });
+    prefersDark.addEventListener("change", () => { root.dataset.theme = effective(); });
+  }
 </script>
 </body>
 </html>
