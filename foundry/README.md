@@ -59,6 +59,12 @@ model) are mentioned qualitatively on slide 2; tune the talk track to your contr
 - `index.html` — content + structure
 - `styles.css` — dark theme, scroll-snap slides, glass cards, reveal styles
 - `app.js` — nav, keyboard, progress, IntersectionObserver reveals, calculator
+- `foundry-single.html` — the same 14-slide deck as one self-contained file
+- `pitch-deck.html` — a leaner, self-contained 9-slide rendition styled as literal
+  16:9 presentation slides (scroll-snap between slides, dot rail, keyboard nav);
+  drops the calculator/governance/architecture/rollout/risks slides down to the
+  core narrative — title, budget, bottleneck, idea, models, cost, routing, at
+  scale, the ask
 
 ## Accessibility / robustness
 

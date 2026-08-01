@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="A landscape and threat map for teams running GitHub Copilot's agentic surfaces: what AI gateways, MCP gateways, sandboxes, harnesses and GitHub-native controls each cover, and where the documented gaps sit." />
+<title>Controlling GitHub Copilot — AI Agent Security Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<style>
+:root {
+  --color-bg: #161826;
+  --color-surface: #232532;
+  --color-text: #e9e9ed;
+  --color-accent: #9184d9;
+  --color-accent-2: #a7a1db;
+  --color-divider: color-mix(in srgb, #e9e9ed 16%, transparent);
+
+  --color-neutral-100: #f3f5fe;
+  --color-neutral-800: #3f424d;
+  --color-neutral-900: #292b31;
+
+  --color-accent-100: #f5f4ff;
+  --color-accent-200: #e7e5fe;
+  --color-accent-300: #d2cefd;
+  --color-accent-800: #423a6a;
+
+  --color-accent-2-100: #f5f4ff;
+  --color-accent-2-800: #423e5d;
+
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-heading-weight: 500;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --space-1: 2.8px;
+  --space-2: 5.6px;
+  --space-3: 8.4px;
+  --space-4: 11.2px;
+  --space-6: 16.8px;
+  --space-8: 22.4px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 0 0 1px #3f424d;
+  --shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgba(0,0,0,0.55);
+  --shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgba(0,0,0,0.65);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: var(--font-heading-weight); }
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-size: 15px; line-height: 1.55; font-weight: 400; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 var(--space-2);
+}
+p { margin: 0 0 var(--space-3); }
+img { display: block; max-width: 100%; }
+code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+
+html, body { background: var(--color-bg); color: var(--color-text); }
+body { text-wrap: pretty; }
+a { color: var(--color-accent-300); text-decoration: none; }
+a:hover { color: var(--color-accent-200); }
+sup a { border-bottom: 0; }
+
+/* — cards — */
+.card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface);
+}
+.card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
+.card-title {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 17px; line-height: 1.2;
+}
+.card-body { margin: 0; font-size: 13px; opacity: 0.8; flex: 1; }
+
+/* — tags — */
+.tag {
+  display: inline-flex; align-items: center; font-size: 11px;
+  letter-spacing: 0.02em; padding: 3px 10px;
+  border-radius: calc(var(--radius-md) * 0.75);
+}
+.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); }
+.tag-accent-2 { background: var(--color-accent-2-800); color: var(--color-accent-2-100); }
+.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); }
+.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+/* — tables — */
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th {
+  text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  padding: var(--space-2); border-bottom: 1px solid transparent;
+}
+.table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid transparent;
+}
+.table thead tr {
+  background: linear-gradient(to right,
+    transparent, var(--color-divider) 48px,
+    var(--color-divider) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px;
+}
+.table tbody tr {
+  background: linear-gradient(to right,
+    transparent, color-mix(in srgb, var(--color-text) 8%, transparent) 48px,
+    color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px;
+}
+.table tbody tr:hover {
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-text) 4%, transparent),
+                    color-mix(in srgb, var(--color-text) 4%, transparent)) no-repeat 0 0 / 100% 100%,
+    linear-gradient(to right,
+      transparent, color-mix(in srgb, var(--color-text) 8%, transparent) 48px,
+      color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - 48px), transparent) no-repeat bottom / 100% 1px;
+}
+
+@media (max-width: 760px) {
+  section[style*="grid-template-columns:180px"] { grid-template-columns: 1fr !important; gap: 16px !important; }
+  header[data-screen-label="Masthead"] { padding-left: 0; }
+  div[style*="max-width:1180px"] { padding: 0 24px !important; }
+  h1 { font-size: 40px !important; }
+}
+</style>
+</head>
+<body>
+<div style="background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);min-height:100vh;padding:0 0 96px">
+
+<div style="max-width:1180px;margin:0 auto;padding:0 64px">
+
+<header data-screen-label="Masthead" style="padding:88px 0 40px;display:flex;flex-wrap:wrap;gap:48px;align-items:flex-end">
+  <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px;max-width:840px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:28px;height:2px;background:var(--color-accent)"></div>
+      <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent)">Research report &middot; Agent security</div>
+    </div>
+    <h1 style="font-size:64px;line-height:1.03;letter-spacing:-0.025em;margin:0">Controlling GitHub Copilot: what gateways, sandboxes and harnesses actually cover</h1>
+    <p style="font-size:20px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 78%, transparent);margin:0;max-width:720px">A landscape and threat map for teams running Copilot's agentic surfaces. Between October 2025 and July 2026, working exploits were demonstrated against Copilot Chat, the Copilot cloud agent and its peers &mdash; and the controls that vendors ship for them each stop short in a documented, specific place.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:4px">
+      <span class="tag tag-outline">Prompt injection</span>
+      <span class="tag tag-neutral">AI gateway</span>
+      <span class="tag tag-neutral">Sandbox isolation</span>
+      <span class="tag tag-neutral">Agent harness</span>
+      <span class="tag tag-neutral">MCP</span>
+      <span class="tag tag-neutral">GitHub-native policy</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent);padding-bottom:8px">
+    <div style="height:1px;background:linear-gradient(to right, var(--color-divider), transparent)"></div>
+    <div>Compiled 31 July 2026</div>
+    <div>Sources current as of the dates cited; vendor documentation read 31 July 2026</div>
+    <div>38 sources &middot; primary vendor docs, one CSA research note, one researcher disclosure, secondary trade press</div>
+    <div>Stance: neutral. No architecture is recommended.</div>
+  </div>
+</header>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="Takeaways" style="padding:64px 0">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:40px">
+    <h2 style="font-size:15px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent);margin:0">Headline takeaways</h2>
+    <div style="flex:1;height:1px;background:linear-gradient(to right, var(--color-divider), transparent)"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:40px 56px">
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">01</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">The injection surface is the collaboration surface</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Pull request titles, issue bodies and review comments are attacker-writable and agent-readable. The April 2026 &ldquo;Comment and Control&rdquo; disclosure confirmed hijacks of Claude Code Security Review, Gemini CLI Action and the GitHub Copilot Agent through exactly those fields, with credentials exfiltrated back through GitHub itself &mdash; no attacker server required.<sup><a href="#s6">6</a><a href="#s8">,8</a></sup></p>
+      <span class="tag tag-accent" style="align-self:flex-start">Established &mdash; researcher disclosure + CSA note</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">02</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">Copilot's firewall is scoped narrower than most teams assume</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">GitHub's own documentation states the agent firewall applies only to processes the agent starts via its Bash tool &mdash; not to MCP servers, not to configured setup steps, and only inside the Actions appliance. It also warns that sophisticated attacks may bypass it.<sup><a href="#s1">1</a></sup></p>
+      <span class="tag tag-accent" style="align-self:flex-start">Established &mdash; vendor documentation</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">03</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">Three control planes, three different units of traffic</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">An LLM gateway governs model calls; an MCP gateway governs tool calls; a sandbox governs syscalls and egress; a harness governs the agent loop. They are not substitutes, and coverage gaps sit at the seams between them &mdash; which is where every confirmed 2026 exploit landed.<sup><a href="#s23">24</a></sup></p>
+      <span class="tag tag-accent-2" style="align-self:flex-start">Established framing + our inference on the seams</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">04</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">Isolation moved off the shared kernel</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">By February 2026 the practitioner consensus reported across sandbox vendors and researchers was that Docker/runc isolation is not the right default for AI-generated code; microVMs (Firecracker, Kata) and gVisor are.<sup><a href="#s18">18</a></sup> GitHub's own answer &mdash; local and cloud sandboxes for Copilot CLI &mdash; is still public preview.<sup><a href="#s3">3</a></sup></p>
+      <span class="tag tag-accent-2" style="align-self:flex-start">Contested &mdash; &ldquo;consensus&rdquo; asserted by secondary sources</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">05</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">Your CVE feed will not warn you</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Anthropic, Google and Microsoft each paid a bounty for the Comment and Control findings and shipped limited mitigations. None assigned a CVE or published an advisory, so dependency scanners and CVE-triggered update tooling see nothing.<sup><a href="#s6">6</a><a href="#s9">,9</a></sup></p>
+      <span class="tag tag-accent" style="align-self:flex-start">Established &mdash; CSA note, corroborated by trade press</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--color-accent);letter-spacing:0.1em">06</div>
+      <h3 style="font-size:22px;margin:0;line-height:1.2">Defaults are permissive by design</h3>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 80%, transparent)">Org-level firewall settings arrived in April 2026, but all three ship as &ldquo;Let repositories decide&rdquo; to preserve existing behaviour &mdash; so an untouched organization has not enforced anything.<sup><a href="#s4">4</a><a href="#s1">,1</a></sup></p>
+      <span class="tag tag-accent" style="align-self:flex-start">Established &mdash; changelog + documentation</span>
+    </div>
+
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="01 Method" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">00</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">Scope and method</div>
+  </div>
+  <div style="max-width:760px;display:flex;flex-direction:column;gap:16px">
+    <h2 style="font-size:30px;margin:0 0 4px">What this report is, and what it is not</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The subject is GitHub Copilot &mdash; its cloud agent, its CLI, its code review agent and the policy surfaces GitHub exposes around them. Everything else (gateways, sandbox primitives, harness designs, MCP) appears as context for controlling Copilot, not as a market survey in its own right.</p>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Load-bearing claims are taken from primary sources where one exists: vendor documentation, changelog entries, the researchers' own disclosure, and the Cloud Security Alliance research note that reproduces its detail. Where only secondary reporting or a vendor blog exists, the claim is labelled as such and the disagreement is left visible rather than averaged away. Product capability statements were read from vendor documentation on 31 July 2026; agentic tooling changes weekly, so verify anything you intend to rely on as a control.</p>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">No architecture is recommended. Section 06 lists what we could not establish.</p>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="02 Incidents" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">01</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">The incident record</div>
+    <span class="tag tag-accent" style="align-self:flex-start;margin-top:4px">Primary sources</span>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:24px">
+    <h2 style="font-size:30px;margin:0">Nine months of working exploits</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The pattern across these incidents is consistent: the agent reads attacker-controlled text, treats it as instruction, and uses a legitimate channel to move data out. Network egress controls that look for unusual destinations see nothing, because the exfiltration route is the same GitHub API the agent uses for all normal work.<sup><a href="#s6">6</a></sup></p>
+
+    <div style="overflow-x:auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date</th><th>Incident</th><th>Product</th><th>Mechanism</th><th>Identifier / outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="white-space:nowrap">Aug&ndash;Oct 2025</td>
+            <td>CamoLeak</td>
+            <td>Copilot Chat</td>
+            <td>Injection in repository content; exfiltration disguised as image loads via GitHub's Camo proxy, bypassing CSP</td>
+            <td><span class="tag tag-accent">CVE-2025-59145 &middot; CVSS 9.6</span></td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">Late 2025</td>
+            <td>Codex branch-name injection</td>
+            <td>OpenAI Codex cloud</td>
+            <td>Command injection through a GitHub branch name parameter, exposing GitHub credentials in the task environment</td>
+            <td>BeyondTrust disclosure</td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">15 Apr 2026</td>
+            <td>Comment and Control</td>
+            <td>Copilot Agent, Claude Code Security Review, Gemini CLI Action</td>
+            <td>Indirect injection via PR titles, issue bodies and comments; agent fires automatically on the GitHub event; secrets posted back as comments or via the GitHub API</td>
+            <td><span class="tag tag-outline">No CVE assigned</span></td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">Feb&ndash;Mar 2026</td>
+            <td>Trivy &rarr; LiteLLM cascade</td>
+            <td>LiteLLM CI</td>
+            <td>Compromised Trivy binary consumed by an unpinned CI step; credential-stealing malware reached an AI-gateway project's pipeline</td>
+            <td>Patched same day; advisories from Microsoft, Kaspersky, Aqua</td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">May 2026</td>
+            <td>Semantic Kernel RCE</td>
+            <td>Microsoft Semantic Kernel</td>
+            <td>Two critical vulnerabilities disclosed by Microsoft's own research into the agent framework</td>
+            <td><span class="tag tag-accent">CVE-2026-25592 + 1</span></td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">May 2026</td>
+            <td>nginx-ui MCP endpoint</td>
+            <td>MCP integration</td>
+            <td>Message endpoint failed to authenticate command-execution requests at all</td>
+            <td><span class="tag tag-accent">CVE-2026-33032 &middot; CVSS 9.8</span></td>
+          </tr>
+          <tr>
+            <td style="white-space:nowrap">8 Jul 2026</td>
+            <td>Agentic-workflow exploitation advisory</td>
+            <td>GitHub Actions AI agents</td>
+            <td>Prompt injection against AI-powered developer tooling in CI/CD, reported as exploited in the wild</td>
+            <td>Not listed in CISA KEV at time of publication</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Sources: <a href="#s10">10</a>, <a href="#s11">11</a>, <a href="#s6">6</a>, <a href="#s7">7</a>, <a href="#s16">16</a>, <a href="#s30">34</a>, <a href="#s25">27</a>, <a href="#s15">15</a>. CVSS values as scored by the assigning party.</div>
+
+    
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:16px">
+      <h3 style="font-size:22px;margin:0">How the Copilot Agent exploit got through three layers</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Of the three agents, Copilot required the most work, because GitHub had already shipped three runtime defences: environment-variable filtering, secret scanning on agent output, and the network firewall. Per the CSA reconstruction of the disclosure, the payload was hidden in an HTML comment &mdash; concealed in GitHub's rendered Markdown but read raw by the agent &mdash; and each layer was defeated separately: variables were read through an alternative mechanism, the scanner was defeated by encoding the values into a shape its patterns did not match, and the firewall was sidestepped by exfiltrating through GitHub's own API endpoints rather than an external host.<sup><a href="#s6">6</a></sup></p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:4px 0">
+        <div class="card" style="box-shadow:var(--shadow-sm)">
+          <div class="card-kicker">Layer bypassed</div>
+          <div class="card-title">Env-var filtering</div>
+          <p class="card-body">Secrets read through an alternative mechanism</p>
+        </div>
+        <div class="card" style="box-shadow:var(--shadow-sm)">
+          <div class="card-kicker">Layer bypassed</div>
+          <div class="card-title">Secret scanning</div>
+          <p class="card-body">Values encoded past the pattern matcher</p>
+        </div>
+        <div class="card" style="box-shadow:var(--shadow-sm)">
+          <div class="card-kicker">Layer bypassed</div>
+          <div class="card-title">Agent firewall</div>
+          <p class="card-body">Exfiltration routed via GitHub's own API</p>
+        </div>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Confirmed exfiltration targets across the three agents included <code style="font-size:14px;color:var(--color-accent-300)">ANTHROPIC_API_KEY</code>, <code style="font-size:14px;color:var(--color-accent-300)">GITHUB_TOKEN</code>, <code style="font-size:14px;color:var(--color-accent-300)">GEMINI_API_KEY</code>, <code style="font-size:14px;color:var(--color-accent-300)">GITHUB_COPILOT_API_TOKEN</code>, <code style="font-size:14px;color:var(--color-accent-300)">COPILOT_JOB_NONCE</code> and any other secret provisioned to the runner.<sup><a href="#s6">6</a></sup></p>
+    </div>
+    
+
+    <div style="padding:32px 0 8px;display:flex;flex-direction:column;gap:12px;max-width:640px">
+      <div style="width:32px;height:2px;background:var(--color-accent)"></div>
+      <div style="font-size:44px;line-height:1.05;letter-spacing:-0.02em;color:var(--color-accent-300)">$100 &middot; $1,337 &middot; $500</div>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Bounties paid by Anthropic, Google and Microsoft respectively for the Comment and Control findings. Anthropic internally rated its finding 9.4. No CVE, no public advisory, and no notification to organizations running pinned versions.<sup><a href="#s6">6</a><a href="#s9">,9</a></sup></p>
+    </div>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="03 Control planes" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">02</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">The four control planes</div>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:24px">
+    <h2 style="font-size:30px;margin:0">What each layer can see</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">&ldquo;Gateway, sandbox, harness&rdquo; is not a stack in which the outer layer contains the inner one. Each intercepts a different unit of traffic, and a control can only enforce policy on traffic it sees. An LLM gateway's unit is a model call; an MCP gateway's is a tool call; a sandbox's is a syscall and a packet; a harness's is a step in the agent loop.<sup><a href="#s23">24</a><a href="#s21">,21</a></sup></p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Model plane</div>
+        <div style="font-size:17px">LLM gateway</div>
+        <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees prompts, completions, tokens, spend. Enforces routing, budgets, redaction, jailbreak filters.</div>
+        <div style="font-size:12px;color:var(--color-accent-300)">Blind to: what the agent then does locally</div>
+      </div>
+      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Tool plane</div>
+        <div style="font-size:17px">MCP gateway</div>
+        <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees tool invocations. Enforces per-tool RBAC, identity propagation, allowlists, immutable audit.</div>
+        <div style="font-size:12px;color:var(--color-accent-300)">Blind to: shell commands and file writes</div>
+      </div>
+      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Execution plane</div>
+        <div style="font-size:17px">Sandbox</div>
+        <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees syscalls, filesystem, egress. Enforces the blast radius when generated code runs.</div>
+        <div style="font-size:12px;color:var(--color-accent-300)">Blind to: intent &mdash; a hijacked agent inside a perfect sandbox still acts</div>
+      </div>
+      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Decision plane</div>
+        <div style="font-size:17px">Harness</div>
+        <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees the loop: context assembly, tool exposure, approvals, hooks. The only layer that can refuse before an action exists.</div>
+        <div style="font-size:12px;color:var(--color-accent-300)">Blind to: anything outside its own process</div>
+      </div>
+    </div>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent)">The &ldquo;blind to&rdquo; lines are our reading of each layer's documented scope, not vendor statements.</p>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="04 GitHub-native" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">03</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">GitHub-native controls</div>
+    <span class="tag tag-accent" style="align-self:flex-start;margin-top:4px">Vendor documentation</span>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:28px">
+    <h2 style="font-size:30px;margin:0">What GitHub already gives you</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">More than most teams have turned on. GitHub documents a substantial set of guardrails for the cloud agent, and the interesting part is not the list but the boundary conditions attached to each item.<sup><a href="#s2">2</a></sup></p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px 40px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Who can start an agent</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Only users with write access can trigger the cloud agent; comments from users without write access are never presented to it. Automations ignore events from non-write users by default.<sup><a href="#s2">2</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">What it can write</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">A single branch, subject to branch protection. It cannot run <code style="font-size:14px;color:var(--color-accent-300)">git push</code> directly, cannot mark its own PR ready for review, and cannot approve or merge. The person who asked for the PR cannot approve it either.<sup><a href="#s2">2</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Workflow execution</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Actions workflows do not run on agent PRs until a write-access human clicks &ldquo;Approve and run workflows&rdquo; &mdash; which also breaks automation-triggers-automation chains. This is optional and can be disabled.<sup><a href="#s2">2</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Traceability</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Commits are authored by Copilot with the requesting human as co-author, signed and shown as Verified, and each commit message links to the session log. Session logs and audit-log events are available to administrators.<sup><a href="#s2">2</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Generated-code checks</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">CodeQL, Advisory Database checks on new dependencies, and secret scanning run by default on the agent's own output, without requiring a GitHub Advanced Security licence &mdash; and each can be switched off.<sup><a href="#s2">2</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Injection filtering</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">GitHub documents filtering hidden characters before user input reaches the agent, giving HTML comments in issues as the example.<sup><a href="#s2">2</a></sup> Note the tension with section 01: the April 2026 exploit used precisely a hidden HTML comment.</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <h3 style="font-size:22px;margin:0">The agent firewall, and its four documented edges</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Internet access is limited by default, with a recommended allowlist covering OS package repositories, container registries, language package registries, certificate authorities and Playwright browser downloads. Blocked requests surface as a warning on the pull request showing the address and the command that tried it.<sup><a href="#s1">1</a><a href="#s5">,5</a></sup> As of April 2026, organization owners can set <em>Enable firewall</em>, <em>Recommended allowlist</em> and <em>Allow repository custom rules</em> at org level and maintain an org custom allowlist that repositories cannot delete from &mdash; and each of those three settings defaults to &ldquo;Let repositories decide.&rdquo;<sup><a href="#s4">4</a><a href="#s1">,1</a></sup></p>
+      <div style="padding:var(--space-8);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">From GitHub's own limitations section</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 85%, transparent)">
+          <div>&mdash; Applies only to processes the agent starts via its Bash tool. Not MCP servers. Not configured setup steps.</div>
+          <div>&mdash; Operates only inside the GitHub Actions appliance environment.</div>
+          <div>&ldquo;Sophisticated attacks may bypass the firewall, potentially allowing unauthorized network access and data exfiltration.&rdquo;</div>
+          <div>&mdash; Disabling it lets Copilot connect to any host.</div>
+        </div>
+        <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Quoted and paraphrased from GitHub Docs, read 31 July 2026.<sup><a href="#s1">1</a></sup></div>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Two consequences follow directly, and both are ours rather than GitHub's. First, MCP traffic needs its own control &mdash; the firewall will not cover it. Second, because the firewall lives inside the Actions appliance, it is not a substitute for enterprise egress policy on developer machines or self-hosted runners.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <h3 style="font-size:22px;margin:0">MCP: policy exists, per-server granularity is newer</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">GitHub now documents MCP management, an MCP registry, MCP server access configuration and MCP allowlist enforcement as administrative surfaces, and Visual Studio 2026 reads an allowlist of approved MCP servers configured through Copilot enterprise policy &mdash; connections to servers not on the list are blocked in the editor.<sup><a href="#s27">30</a><a href="#s1">,1</a></sup> Community guidance from the 2025 preview period describes the older situation, when the practical route to &ldquo;only these servers&rdquo; was an on/off MCP policy combined with firewall and perimeter egress allowlisting.<sup><a href="#s32">37</a></sup> If you are writing policy now, check which of these applies to your plan rather than trusting either account.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <h3 style="font-size:22px;margin:0">Copilot's own sandboxes &mdash; useful, and labelled preview</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">GitHub ships two isolation options for Copilot CLI. <strong style="font-weight:500">Local sandboxing</strong> (<code style="font-size:14px;color:var(--color-accent-300)">/sandbox enable</code>) restricts filesystem, network and system capability access on the developer's own machine; it runs on macOS and Linux, with Windows on Insiders builds, and isolation behaviour differs per platform because each OS uses a different backend. Policies can be centrally enforced through Intune or another MDM. <strong style="font-weight:500">Cloud sandboxing</strong> (<code style="font-size:14px;color:var(--color-accent-300)">copilot --cloud</code>) runs sessions in isolated ephemeral Linux environments built on Azure Container Apps Sandboxes, with GitHub supplying identity, policy and billing; an org or enterprise owner must enable the Cloud Sandbox access policy, and cloud sandbox policy shares configuration with cloud agent policy. Local sandboxing is included in the seat; cloud sandboxing is metered on compute-seconds, GiB-seconds of memory and GiB-months of snapshot storage.<sup><a href="#s3">3</a></sup></p>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The documentation carries a public-preview notice. Independent commentary in July 2026 made the same point in operational terms: usable, but not something to present as a settled compliance boundary without verifying current behaviour for your own OS and CLI build.<sup><a href="#s26">29</a></sup></p>
+    </div>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="05 Gateways" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">04</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">AI gateways and MCP gateways</div>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:24px">
+    <h2 style="font-size:30px;margin:0">The gateway layer</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">An AI gateway is a single entry point in front of model providers that reasons in AI-native terms: it budgets and rate-limits by tokens rather than requests, routes across providers, caches semantically similar prompts, and inspects prompts and completions for safety.<sup><a href="#s21">21</a></sup> For agent control specifically, the useful properties are the boring ones &mdash; a chokepoint where every model call is attributable to a team, capped, logged, and screened.</p>
+
+    
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h3 style="font-size:20px;margin:0">Where the options differ</h3>
+      <div style="overflow-x:auto">
+        <table class="table">
+          <thead><tr><th>Gateway</th><th>Licence / hosting</th><th>Reported strength</th><th>Reported limitation</th></tr></thead>
+          <tbody>
+            <tr><td>LiteLLM</td><td>MIT, self-hosted</td><td>Open-source default for routing; virtual keys and budgets; full control of deployment and data flow</td><td>You own infrastructure, scaling and availability; observability basic by default</td></tr>
+            <tr><td>Portkey</td><td>MIT gateway + hosted control plane</td><td>Governance, guardrails and deep observability; integrates external content-safety and jailbreak-detection engines at the gateway</td><td>Enterprise governance features sit in higher tiers; heavier than a prototype needs</td></tr>
+            <tr><td>Kong AI Gateway</td><td>Proprietary, self-managed or Konnect</td><td>AI traffic under the same API management, plugins and PII redaction as the rest of your APIs</td><td>Mismatched to AI-first teams with no existing Kong estate</td></tr>
+            <tr><td>Cloudflare AI Gateway</td><td>Proprietary, managed edge</td><td>Near-zero-ops caching, observability and fallbacks at the edge</td><td>Weaker value outside the Cloudflare ecosystem; lighter feature set</td></tr>
+            <tr><td>Envoy AI Gateway</td><td>Apache-2.0, self-hosted</td><td>Kubernetes and Envoy primitives for AI traffic &mdash; infrastructure layer, not product layer</td><td>Not a product-level control plane on its own</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Synthesised from comparison write-ups <a href="#s21">21</a>, <a href="#s22">22</a>, <a href="#s12b">23</a> and vendor documentation. Several of these comparisons are published by gateway vendors themselves; read the strength and limitation columns as claims, not measurements.</div>
+    </div>
+    
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <h3 style="font-size:20px;margin:0">The Copilot-specific catch</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">A gateway can only govern traffic you can point at it. With Copilot on GitHub's own model endpoints, the model call is GitHub's to make, not yours to proxy. GitHub does document bring-your-own-key paths &mdash; &ldquo;use your own API keys&rdquo; at organization and enterprise level, and BYOK model providers for Copilot CLI, the Copilot app and the SDK &mdash; which is the documented seam through which model traffic could be routed to a provider endpoint you control.<sup><a href="#s1">1</a></sup> Whether that yields gateway-level enforcement for your plan and surfaces is exactly the question to put to GitHub in writing; we could not establish it from public documentation.</p>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Separately, GitHub documents allowlist guidance for Copilot endpoints behind a corporate firewall or proxy, plus subscription-based network routing for attributing Copilot traffic to an enterprise &mdash; perimeter controls rather than gateway controls, and explicitly incomplete on their own: allowlisting the Copilot URLs is not enough if the network blocks GitHub more broadly.<sup><a href="#s5">5</a></sup></p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <h3 style="font-size:20px;margin:0">MCP gateways: the tool plane</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">An MCP gateway proxies between agents and MCP servers, enforcing authentication, per-tool RBAC, allow/deny lists, rate limits on tool invocations and structured audit before a call reaches a downstream system.<sup><a href="#s56">25</a></sup> The threats it addresses are protocol-specific and not covered by a generic API gateway: tool poisoning through instructions hidden in tool descriptions, tool redefinition after approval (&ldquo;rug pull&rdquo;), and cross-server shadowing where a malicious server impersonates a trusted one.<sup><a href="#s62">28</a></sup></p>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Two transport facts matter for policy writing. Per the MCP specification's 2025-11-25 revision, SSE is deprecated in favour of streamable HTTP, and stdio &mdash; appropriate for local developer use &mdash; provides no network-level authentication to bind a call to an identity, so it should not be the production transport for shared servers; streamable HTTP with OAuth 2.1 and PKCE is the supported remote path.<sup><a href="#s24">26</a></sup> The failure mode is not hypothetical: <span style="color:var(--color-accent-300)">CVE-2026-33032</span> (CVSS 9.8, May 2026) was an MCP message endpoint that did not authenticate command-execution requests at all.<sup><a href="#s25">27</a></sup></p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Caveat on this subsection: most available MCP-gateway comparisons are published by MCP-gateway vendors. The threat categories are consistent across them and match the OWASP taxonomy; specific product capabilities should be verified independently.</p>
+    </div>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="06 Sandboxes" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">05</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">Isolation primitives</div>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:24px">
+    <h2 style="font-size:30px;margin:0">Sandboxing, concretely</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">&ldquo;Sandboxed&rdquo; is not one property. A shared-kernel container, a gVisor sandbox and a microVM have materially different security boundaries, and the practitioner and vendor commentary through early 2026 converged on the view that shared-kernel containers are the wrong default for untrusted, model-generated code.<sup><a href="#s18">18</a><a href="#s17">,17</a></sup> That framing is asserted rather than measured &mdash; treat it as the field's prevailing opinion.</p>
+
+    <div style="overflow-x:auto">
+      <table class="table">
+        <thead><tr><th>Primitive</th><th>Boundary</th><th>Reported start-up</th><th>Fit for coding agents</th></tr></thead>
+        <tbody>
+          <tr><td>Hardened container</td><td>Shared kernel; namespaces, cgroups, seccomp, dropped capabilities</td><td>Milliseconds</td><td>Trusted, reviewed automation only</td></tr>
+          <tr><td>gVisor</td><td>User-space kernel intercepting syscalls before the host kernel</td><td>Low overhead, no KVM required</td><td>Compute-bound work with limited I/O; powers GKE Agent Sandbox</td></tr>
+          <tr><td>Firecracker microVM</td><td>Hardware virtualisation; own kernel per session</td><td>~125&nbsp;ms</td><td>Untrusted or syscall-heavy code; strongest of the four</td></tr>
+          <tr><td>Kata Containers</td><td>MicroVM per pod behind a standard OCI/CRI API</td><td>~200&nbsp;ms</td><td>VM isolation with Kubernetes workflows</td></tr>
+          <tr><td>V8 isolates</td><td>Per-script heap, no kernel boundary</td><td>Sub-millisecond</td><td>High-frequency short tool calls; Cloudflare Dynamic Workers entered open beta April 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Sources <a href="#s18">18</a>, <a href="#s17">17</a>, <a href="#s20">20</a>. Start-up figures are as reported by those write-ups, not independently benchmarked.</div>
+
+    
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <h3 style="font-size:20px;margin:0">What shipped for developer machines</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The isolation question moved onto the laptop in January 2026, when Docker Desktop 4.58 began giving each agent its own microVM through the native hypervisor &mdash; virtualization.framework on macOS, Hyper-V on Windows &mdash; with a private Docker daemon and network isolation, listing Claude Code, Codex, Copilot, Gemini and Kiro among supported agents.<sup><a href="#s19">19</a></sup> Anthropic's Claude Code takes a different route, backing its sandboxed bash tool with Seatbelt or bubblewrap plus a network proxy.<sup><a href="#s20">20</a></sup> For teams standardising on devcontainers, the same inventory notes the dev-container spec as the common wrapper.<sup><a href="#s20">20</a></sup></p>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The limit of this layer is worth stating plainly, because it is where sandbox marketing tends to over-promise: isolation bounds what escapes the environment. It does not bound what a hijacked agent does <em>with</em> the authority it legitimately holds inside that environment. The Comment and Control exfiltration route &mdash; the GitHub API the agent is supposed to use &mdash; would survive a perfect sandbox.</p>
+    </div>
+    
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="07 Harness" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">06</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">Harness and permissions</div>
+  </div>
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:24px">
+    <h2 style="font-size:30px;margin:0">The harness is the enforcement point</h2>
+    <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The harness is the software around the model that assembles context, exposes tools, executes tool calls, manages the agent loop and feeds results back &mdash; the layer GitHub described in its May 2026 write-up of the Copilot harness in VS Code, and which it argued in June 2026 is now the unit of competition, with one shared harness behind Copilot CLI, the Copilot app, code review and SDK experiences.<sup><a href="#s29">32</a></sup> For security purposes the relevant point is narrower: the harness is the only layer that can decline an action before it exists.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px 40px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Copilot CLI's permission surface</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Trusted directories, tool approvals, path permissions, URL permissions, hooks, secret redaction and sandboxing. The CLI reached GA in February 2026 and ships updates constantly, so flags and behaviour move.<sup><a href="#s26">29</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Hooks beat prompts</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">A <code style="font-size:14px;color:var(--color-accent-300)">preToolUse</code> hook is your code running at a fixed point in the loop with the final word &mdash; the practical enforcement point for rules like &ldquo;never write to production&rdquo; or &ldquo;never push from an agent.&rdquo; Permission prompts route the decision through the model; hooks do not.<sup><a href="#s26">29</a><a href="#s38">,31</a></sup> GitHub documents hooks for the cloud agent, the CLI and the SDK.<sup><a href="#s1">1</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Permission modes, as a comparison</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">Claude Code uses allow/ask/deny rules with six modes (default, acceptEdits, plan, auto, dontAsk, bypassPermissions). Its auto mode, introduced March 2026, routes borderline actions through a background classifier that sees the user request and the tool call but not the main model's prose &mdash; a deliberate design against the model talking the gate open.<sup><a href="#s28">33</a></sup></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h4 style="margin:0;font-size:18px">Least agency, not just least privilege</h4>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 78%, transparent)">OWASP's framing for agentic systems limits not only what an agent can reach but how far it may act without checking back, paired with observability tied to a verified agent identity. Autonomy is earned rather than granted by default.<sup><a href="#s14">14</a></sup></p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
+      <h3 style="font-size:20px;margin:0">Identity and secrets: the CI/CD hardening that actually paid off</h3>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The CSA note's recommendations after Comment and Control are unglamorous and specific: audit workflows triggered by <code style="font-size:14px;color:var(--color-accent-300)">pull_request</code>, <code style="font-size:14px;color:var(--color-accent-300)">issues</code>, <code style="font-size:14px;color:var(--color-accent-300)">issue_comment</code> and <code style="font-size:14px;color:var(--color-accent-300)">pull_request_review_comment</code> that pass event content into a model call; remove service API keys from runner environments where they are not strictly required and scope them where they are; restrict <code style="font-size:14px;color:var(--color-accent-300)">GITHUB_TOKEN</code> with an explicit <code style="font-size:14px;color:var(--color-accent-300)">permissions:</code> block, dropping write access for agent steps that only read; pin actions to full commit SHAs; gate agent workflows on team membership or maintainer approval for first-time contributors; scan agent-posted output, not just repository content; and rotate credentials that were exposed to affected agents.<sup><a href="#s6">6</a></sup> Independent advisories through 2026 repeat the same pinning and <code style="font-size:14px;color:var(--color-accent-300)">pull_request_target</code> guidance.<sup><a href="#s15">15</a></sup></p>
+      <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">The pattern OWASP-aligned teams push toward &mdash; a distinct agent identity rather than a borrowed human session, scoped time-bound revocable permissions, and provable attribution after the fact &mdash; is the same conclusion arrived at from the incident side. Most of these failures are authorization problems wearing an AI costume.<sup><a href="#s14">14</a></sup></p>
+    </div>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="08 Threat matrix" style="padding:64px 0">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
+    <h2 style="font-size:15px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent);margin:0">Threat &rarr; control matrix</h2>
+    <div style="flex:1;height:1px;background:linear-gradient(to right, var(--color-divider), transparent)"></div>
+  </div>
+  <p style="margin:0 0 28px;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 78%, transparent);max-width:820px">Threats are drawn from the OWASP Top 10 for Agentic Applications (ASI01&ndash;ASI10, published December 2025) and from the incidents in section 01.<sup><a href="#s12">12</a><a href="#s13">,13</a></sup> Coverage ratings are ours: <span class="tag tag-accent" style="margin:0 2px">Primary</span> the layer where the control is normally enforced, <span class="tag tag-accent-2" style="margin:0 2px">Partial</span> helps but has documented gaps, <span class="tag tag-neutral" style="margin:0 2px">None</span> structurally cannot see it. The residual column is the point of the table.</p>
+  <div style="overflow-x:auto">
+    <table class="table">
+      <thead>
+        <tr><th style="min-width:190px">Threat</th><th>LLM gateway</th><th>MCP gateway</th><th>Sandbox</th><th>Harness</th><th>GitHub-native</th><th style="min-width:220px">Residual gap</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Indirect prompt injection via PR/issue content (ASI01/ASI02)</td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td>No layer distinguishes operator instruction from ingested data; filtering raises cost, not certainty</td>
+        </tr>
+        <tr>
+          <td>Credential exfiltration through a trusted channel</td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td>Egress controls cannot flag the platform's own API; output scanning is pattern-based and was encoded past</td>
+        </tr>
+        <tr>
+          <td>Tool poisoning / rug pull / server shadowing</td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td>Copilot's agent firewall explicitly excludes MCP servers</td>
+        </tr>
+        <tr>
+          <td>Supply-chain compromise of actions and dependencies</td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td>SHA pinning is a manual discipline; the Trivy&rarr;LiteLLM chain began with one unpinned step</td>
+        </tr>
+        <tr>
+          <td>Excessive agency &mdash; unreviewed writes and merges (ASI03)</td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td>Strong by default on GitHub &mdash; and several of those defaults are switchable</td>
+        </tr>
+        <tr>
+          <td>Host or kernel escape from generated code</td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td>Copilot's own sandboxes are public preview; local isolation differs per OS</td>
+        </tr>
+        <tr>
+          <td>Untraceable agent activity / weak attribution</td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td>Signed commits and session logs cover GitHub surfaces; local CLI and IDE activity needs its own telemetry</td>
+        </tr>
+        <tr>
+          <td>Shadow AI &mdash; unapproved models, keys, spend</td>
+          <td><span class="tag tag-accent">Primary</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-neutral">None</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td><span class="tag tag-accent-2">Partial</span></td>
+          <td>A gateway only governs traffic you can route to it; first-party Copilot model calls are not yours to proxy</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="09 Evidence gaps" style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:56px;padding:56px 0;align-items:start">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent)">07</div>
+    <div style="width:24px;height:2px;background:var(--color-accent)"></div>
+    <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 55%, transparent);line-height:1.4">Where the evidence is thin</div>
+  </div>
+  <div style="max-width:800px;display:flex;flex-direction:column;gap:20px">
+    <h2 style="font-size:30px;margin:0">What we could not establish</h2>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">Quantified sandbox benefit</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">A claim that sandboxed agents see roughly 90% fewer security incidents circulates attributed to &ldquo;2026 infrastructure research.&rdquo;<sup><a href="#s31">35</a></sup> We found no primary study, methodology or population behind it. Do not put it in a business case.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">MCP adoption figures</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">Figures such as 78% enterprise MCP adoption and 9,400+ registry servers appear in vendor buyers' guides without methodology.<sup><a href="#s59">36</a></sup> Directionally plausible, not citable.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">A live contradiction on HTML-comment filtering</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">GitHub documents that hidden characters, HTML comments included, are filtered before reaching the cloud agent.<sup><a href="#s2">2</a></sup> The April 2026 research reports a hidden HTML comment payload working against the Copilot Agent.<sup><a href="#s6">6</a></sup> Both may be true at different versions or on different surfaces; the researchers note vendors did not notify users of pinned versions, so version scope is unresolved. We are reporting the disagreement rather than resolving it.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">The &ldquo;RoguePilot&rdquo; disclosure</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">A February 2026 Copilot/Codespaces prompt-injection finding attributed to Orca Research, reportedly patched before disclosure on 24 February 2026, reached us only through secondary write-ups.<sup><a href="#s2b">38</a></sup> We could not read a primary advisory and have deliberately left it out of the incident table.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">Whether BYOK gives you real gateway enforcement</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">GitHub documents bring-your-own-key paths for several Copilot surfaces, but we could not establish from public documentation which surfaces route all model traffic through a customer-controlled endpoint, or whether completions and agent calls behave the same way. This is the single highest-value question to resolve before designing a gateway-centred control.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px">Exploitation in the wild</div>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 75%, transparent)">A July 2026 advisory describes active exploitation of prompt injection in GitHub agentic workflows while noting the issue is not in the CISA KEV catalogue.<sup><a href="#s15">15</a></sup> Absent KEV listing or vendor confirmation, treat &ldquo;widely reported&rdquo; as weaker than &ldquo;confirmed.&rdquo;</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="height:1px;background:linear-gradient(to right, transparent, var(--color-divider) 48px, var(--color-divider) calc(100% - 48px), transparent)"></div>
+
+<section data-screen-label="10 Sources" style="padding:56px 0 0">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:28px">
+    <h2 style="font-size:15px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent);margin:0">Sources</h2>
+    <div style="flex:1;height:1px;background:linear-gradient(to right, var(--color-divider), transparent)"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px 48px;font-size:14px;line-height:1.55">
+
+    <div id="s1" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">1</span><span>GitHub Docs, <a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-firewall" target="_blank" rel="noreferrer">Customizing or disabling the firewall for GitHub Copilot cloud agent</a> &mdash; read 31 Jul 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s2" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">2</span><span>GitHub Docs, <a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations" target="_blank" rel="noreferrer">Risks and mitigations for GitHub Copilot cloud agent</a> &mdash; read 31 Jul 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s3" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">3</span><span>GitHub Docs, <a href="https://docs.github.com/en/copilot/concepts/about-cloud-and-local-sandboxes" target="_blank" rel="noreferrer">About cloud and local sandboxes for GitHub Copilot</a> (public preview) &mdash; read 31 Jul 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s4" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">4</span><span>GitHub Changelog, <a href="https://github.blog/changelog/2026-04-03-organization-firewall-settings-for-copilot-cloud-agent/" target="_blank" rel="noreferrer">Organization firewall settings for Copilot cloud agent</a>, 3 Apr 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s5" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">5</span><span>GitHub Docs, <a href="https://docs.github.com/en/copilot/reference/copilot-allowlist-reference" target="_blank" rel="noreferrer">Copilot allowlist reference</a> &mdash; read 31 Jul 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s6" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">6</span><span>Cloud Security Alliance AI Safety Initiative, <a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-comment-control-github-prompt-injection-20/" target="_blank" rel="noreferrer">Comment and Control: GitHub AI Agents as Credential Exfiltrators</a>, 17 Apr 2026. <span class="tag tag-outline">Research note</span></span></div>
+
+    <div id="s7" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">7</span><span>A. Guan, Z. Liu, G. Zhong, <a href="https://oddguan.com/blog/comment-and-control-prompt-injection-credential-theft-claude-code-gemini-cli-github-copilot/" target="_blank" rel="noreferrer">Comment and Control &mdash; original disclosure</a>, 15 Apr 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s8" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">8</span><span>SecurityWeek, <a href="https://www.securityweek.com/claude-code-gemini-cli-github-copilot-agents-vulnerable-to-prompt-injection-via-comments/" target="_blank" rel="noreferrer">Claude Code, Gemini CLI, GitHub Copilot Agents Vulnerable to Prompt Injection via Comments</a>, Apr 2026.</span></div>
+
+    <div id="s9" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">9</span><span>The Register, <a href="https://www.theregister.com/2026/04/15/claude_gemini_copilot_agents_hijacked/" target="_blank" rel="noreferrer">Agents hooked into GitHub can steal creds &mdash; but vendors haven't warned users</a>, 15 Apr 2026.</span></div>
+
+    <div id="s10" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">10</span><span>Meterpreter, <a href="https://meterpreter.org/github-copilot-zero-click-camoleak-exposed-cve-2025-59145-cvss-9-6-allowed-silent-data-theft-from-private-repos/" target="_blank" rel="noreferrer">CamoLeak: CVE-2025-59145 (CVSS 9.6)</a>, Oct 2025.</span></div>
+
+    <div id="s11" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">11</span><span>BeyondTrust, <a href="https://www.beyondtrust.com/blog/entry/openai-codex-command-injection-vulnerability-github-token" target="_blank" rel="noreferrer">OpenAI Codex command injection vulnerability</a>, 2025.</span></div>
+
+    <div id="s12" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">12</span><span>OWASP GenAI Security Project, <a href="https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/" target="_blank" rel="noreferrer">Top 10 Risks and Mitigations for Agentic AI Security</a>, 9 Dec 2025. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s13" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">13</span><span>Cycode, <a href="https://cycode.com/blog/owasp-top-10-agentic-applications/" target="_blank" rel="noreferrer">OWASP Top 10 for Agentic Applications 2026 explained</a>, 2026.</span></div>
+
+    <div id="s14" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">14</span><span>Lineation, <a href="https://lineation.ai/owasp-top-10-agentic/" target="_blank" rel="noreferrer">OWASP Top 10 for Agentic Applications &mdash; least agency and observability</a>, 2026.</span></div>
+
+    <div id="s15" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">15</span><span>Rescana, <a href="https://www.rescana.com/post/active-exploitation-alert-prompt-injection-vulnerability-in-github-agentic-workflows-threatens-software-supply-chain-sec" target="_blank" rel="noreferrer">Active exploitation alert: prompt injection in GitHub agentic workflows</a>, 8 Jul 2026.</span></div>
+
+    <div id="s16" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">16</span><span>Lumenova, <a href="https://www.lumenova.ai/blog/agentic-ai-risks-owasp-nist/" target="_blank" rel="noreferrer">Agentic AI risks: OWASP Top 10 and real-world incidents</a> (Trivy&rarr;LiteLLM chain), Apr 2026.</span></div>
+
+    <div id="s17" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">17</span><span>Northflank, <a href="https://northflank.com/blog/how-to-sandbox-ai-agents" target="_blank" rel="noreferrer">How to sandbox AI agents in 2026</a>. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s18" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">18</span><span>Zylos Research, <a href="https://zylos.ai/research/2026-04-04-ai-agent-sandboxing-security-isolation/" target="_blank" rel="noreferrer">AI agent sandboxing and security isolation</a>, 4 Apr 2026.</span></div>
+
+    <div id="s19" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">19</span><span><a href="https://emirb.github.io/blog/microvm-2026/" target="_blank" rel="noreferrer">Your container is not a sandbox: the state of microVM isolation in 2026</a>, Mar 2026.</span></div>
+
+    <div id="s20" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">20</span><span>W. Chatelain, <a href="https://gist.github.com/wincent/2752d8d97727577050c043e4ff9e386e" target="_blank" rel="noreferrer">List of coding agent sandboxes</a>, May 2026.</span></div>
+
+    <div id="s21" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">21</span><span>API7, <a href="https://api7.ai/ai-gateway-comparison" target="_blank" rel="noreferrer">AI gateway comparison 2026</a>. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s22" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">22</span><span>D. Gupta, <a href="https://guptadeepak.com/tools/top-5-ai-gateways-2026/" target="_blank" rel="noreferrer">Top 5 AI gateways 2026</a>, 15 May 2026.</span></div>
+
+    <div id="s12b" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">23</span><span>Portkey, <a href="https://portkey.ai/buyers-guide/ai-gateway-solutions" target="_blank" rel="noreferrer">Best AI gateway solutions</a>. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s23" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">24</span><span>Particula, <a href="https://particula.tech/blog/mcp-gateway-comparison-govern-agent-tool-access" target="_blank" rel="noreferrer">MCP gateways compared: model plane vs tool plane</a>, Jul 2026.</span></div>
+
+    <div id="s56" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">25</span><span>TrueFoundry, <a href="https://www.truefoundry.com/blog/best-mcp-security-tools" target="_blank" rel="noreferrer">Best MCP security tools in 2026</a>, Jun 2026. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s24" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">26</span><span>systemprompt.io, <a href="https://systemprompt.io/guides/mcp-gateway-security-enterprise" target="_blank" rel="noreferrer">Enterprise MCP gateway deployment guide</a> (MCP spec 2025-11-25 revision), 2026.</span></div>
+
+    <div id="s25" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">27</span><span>ITECS, <a href="https://itecsonline.com/post/mcp-tool-poisoning-enterprise-ai-agent-security-2026" target="_blank" rel="noreferrer">MCP tool poisoning: enterprise AI agent security in 2026</a> (MCPTox; CVE-2026-33032), May 2026.</span></div>
+
+    <div id="s62" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">28</span><span>Obot, <a href="https://obot.ai/blog/the-13-best-mcp-gateways-for-enterprise-teams/" target="_blank" rel="noreferrer">The 13 best MCP gateways for enterprise teams</a>, Jun 2026. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s26" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">29</span><span>DevLeader, <a href="https://www.devleader.ca/2026/07/21/the-github-copilot-cli-permission-model-what-it-can-and-cant-touch" target="_blank" rel="noreferrer">The GitHub Copilot CLI permission model</a>, 21 Jul 2026.</span></div>
+
+    <div id="s27" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">30</span><span>Microsoft Learn, <a href="https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-github-copilot-admin?view=visualstudio" target="_blank" rel="noreferrer">Admin controls for GitHub Copilot in Visual Studio</a> (MCP allowlist). <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s38" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">31</span><span>R. Hightower, <a href="https://medium.com/@richardhightower/claude-agent-sdk-hooks-permissions-ask-the-model-for-permission-hooks-do-not-ask-anyone-f0baf89dd0b9" target="_blank" rel="noreferrer">Hooks vs permissions in the Claude Agent SDK</a>, Jun 2026.</span></div>
+
+    <div id="s29" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">32</span><span>NxCode, <a href="https://www.nxcode.io/resources/news/github-copilot-agentic-harness-token-efficiency-2026" target="_blank" rel="noreferrer">GitHub Copilot agentic harness</a> (summarising GitHub's May and June 2026 posts), Jun 2026.</span></div>
+
+    <div id="s28" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">33</span><span>WaveSpeed, <a href="https://wavespeed.ai/blog/posts/claude-code-agent-harness-architecture/" target="_blank" rel="noreferrer">Claude Code agent harness architecture</a>, Apr 2026. Note: its three-tier framing is community analysis, not vendor documentation.</span></div>
+
+    <div id="s30" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">34</span><span>Microsoft Security Blog, <a href="https://www.microsoft.com/en-us/security/blog/2026/05/07/prompts-become-shells-rce-vulnerabilities-ai-agent-frameworks/" target="_blank" rel="noreferrer">When prompts become shells: RCE in AI agent frameworks</a>, 7 May 2026. <span class="tag tag-outline">Primary</span></span></div>
+
+    <div id="s31" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">35</span><span>Zylos Research, <a href="https://zylos.ai/research/2026-02-21-ai-agent-sandbox-execution-isolation/" target="_blank" rel="noreferrer">AI agent sandbox &amp; code execution isolation</a>, 21 Feb 2026. Source of the unverified ~90% figure.</span></div>
+
+    <div id="s59" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">36</span><span>Maxim AI, <a href="https://www.getmaxim.ai/articles/top-5-enterprise-mcp-gateway-solutions-in-2026/" target="_blank" rel="noreferrer">Top 5 enterprise MCP gateway solutions in 2026</a>, May 2026. <span class="tag tag-neutral">Vendor</span></span></div>
+
+    <div id="s32" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">37</span><span>GitHub Community, <a href="https://github.com/orgs/community/discussions/169533" target="_blank" rel="noreferrer">Feature request: organization/enterprise allowlist for MCP servers</a>, 2025.</span></div>
+
+    <div id="s2b" style="display:flex;gap:12px"><span style="color:var(--color-accent);min-width:22px">38</span><span>Secondary write-up of the &ldquo;RoguePilot&rdquo; Copilot/Codespaces finding attributed to Orca Research, Feb&ndash;Mar 2026. <span class="tag tag-neutral">Unverified &mdash; no primary advisory located</span></span></div>
+
+  </div>
+  <p style="margin:32px 0 0;font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 55%, transparent);max-width:820px">Where a claim rests on a single secondary source it is marked in the text. CVSS scores are as published by the assigning party. This report describes documented product behaviour as of 31 July 2026 and is not a substitute for testing the controls in your own environment.</p>
+</section>
+
+</div>
+</div>
+</body>
+</html>
