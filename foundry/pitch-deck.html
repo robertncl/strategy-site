@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content="Presentation-style pitch deck: supplement GitHub Copilot with Azure AI Foundry models (DeepSeek, MiniMax, Kimi) to do more inside the same $30/developer/month AI budget." />
+<title>Stretch the $30 — Pitch Deck</title>
+<style>
+/* ============================================================
+   Stretch the $30 — pitch-deck rendition
+   Framework-free. Scroll-snap sections, each holding a 16:9
+   presentation slide sized in cqi so type scales with the slide.
+   ============================================================ */
+
+:root{
+  --canvas:#F3F0E7;--surface:#EBE7D9;--surface-raised:#FCFBF7;
+  --border:#E0DBC9;--border-strong:#CFC8B2;
+  --text:#1B1911;--text-muted:#5C5648;--text-subtle:#6B6554;
+  --primary:#B4573C;--on-primary:#FCFBF7;--accent:#93422B;
+  --info:#305875;--info-soft:#EDF1F4;--info-soft-text:#274860;
+  --gray-0:#FCFBF7;--gray-100:#EBE7D9;--gray-400:#A8A08B;--gray-500:#6B6554;
+  --gray-950:#12100B;--clay-300:#DDA588;
+  --shadow-sm:0 1px 2px rgb(28 25 17 / 0.06);
+  --font-sans:"Styrene B","Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --font-display:"Tiempos Headline","Copernicus",Georgia,"Times New Roman",ui-serif,serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  --r: 12px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --canvas:#12100B;--surface:#1B1911;--surface-raised:#2C291F;
+    --border:#454034;--border-strong:#5C5648;
+    --text:#EBE7D9;--text-muted:#A8A08B;--text-subtle:#A8A08B;
+    --primary:#B4573C;--on-primary:#FCFBF7;--accent:#DDA588;
+    --info:#8DB0C9;
+    --info-soft: color-mix(in oklab, #5C87A6 20%, #1B1911);
+    --info-soft-text: #8DB0C9;
+    --shadow-sm:0 1px 2px rgb(0 0 0 / 0.35);
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden; /* deck owns the scroll */
+}
+
+/* ---------- DECK / SCROLL SNAP ---------- */
+.deck {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.deck::-webkit-scrollbar { display: none; }
+
+.slide-section {
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vh, 40px) clamp(12px, 3vw, 40px);
+}
+
+/* ---------- THE SLIDE ITSELF (16:9, cqi-scaled) ---------- */
+.slide {
+  container-type: inline-size;
+  width: min(1400px, 92vw, 177.7dvh);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  overflow: hidden;
+  background: var(--canvas);
+  color: var(--text);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.slide__frame { flex:1; min-inline-size:0; display:flex; flex-direction:column; padding: 5cqi 6cqi; }
+.slide__kicker { font:700 1.8cqi/1.2 var(--font-sans); text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin:0 0 1.5cqi; }
+.slide__title { font:700 4cqi/1.15 var(--font-display); letter-spacing:-.02em; margin:0 0 2cqi; }
+.slide--hero .slide__title { font-size:6cqi; margin-block-end:1cqi; }
+.slide__body { font-size:2.2cqi; line-height:1.5; color:var(--text-muted); max-inline-size:66cqi; margin:0; }
+.slide__bullets { margin:0; padding-inline-start:2.5cqi; display:grid; gap:1.5cqi; font-size:2.2cqi; line-height:1.35; max-inline-size:66cqi; }
+.slide__bullets li::marker { color:var(--accent); }
+.slide__footer { margin-block-start:auto; padding-block-start:2cqi; display:flex; align-items:center; gap:2cqi; font-size:1.4cqi; color:var(--text-subtle); }
+.slide__footer-num { margin-inline-start:auto; font-variant-numeric:tabular-nums; }
+
+.slide--dark { background:var(--gray-950); color:var(--gray-100); }
+.slide--dark .slide__body { color:var(--gray-400); }
+.slide--dark .slide__footer { color:var(--gray-500); }
+.slide--dark .slide__kicker { color:var(--clay-300); }
+.slide--dark .slide__bullets li::marker { color:var(--clay-300); }
+
+/* ---------- BADGE ---------- */
+.badge {
+  display:inline-flex; align-items:center; gap:.35em;
+  padding:.5em 1.1em; border-radius:999px;
+  font:600 1.5cqi/1.4 var(--font-sans);
+  background: var(--surface); color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.slide--dark .badge { background: rgba(255,255,255,.08); color: var(--gray-100); border-color: rgba(255,255,255,.14); }
+.badge--info { background: var(--info-soft); color: var(--info-soft-text); border-color: transparent; }
+.slide--dark .badge--info { background: color-mix(in oklab, var(--clay-300) 20%, transparent); color: var(--clay-300); border-color: transparent; }
+
+/* ---------- CARD ---------- */
+.card {
+  display:flex; flex-direction:column;
+  border:1px solid var(--border); border-radius:10px;
+  background: var(--surface-raised); box-shadow: var(--shadow-sm);
+  overflow:hidden;
+}
+.card__body { padding: 2.2cqi 2.4cqi; flex:1; }
+
+/* ---------- ALERT ---------- */
+.alert {
+  display:flex; gap:1.2cqi; padding:1.8cqi 2cqi;
+  border:1px solid var(--border); border-inline-start:3px solid var(--text-muted);
+  border-radius:8px; background: var(--surface); font-size:1.6cqi;
+}
+.alert__title { font-weight:700; margin:0 0 .4cqi; font-size:1.7cqi; }
+.alert p { margin:0; color: var(--text-muted); line-height:1.5; }
+
+/* ---------- STAT TILES ---------- */
+.fp-stats { display:flex; gap:1.6cqi; margin: 1cqi 0 1.8cqi; }
+.fp-stat { background: var(--surface-raised); border:1px solid var(--border); border-radius:var(--r); box-shadow: var(--shadow-sm); padding: 2.6cqi 2.8cqi; flex:1; }
+.fp-stat__num { font-family: var(--font-display); font-weight:700; font-size:5.2cqi; color: var(--text); line-height:1; font-variant-numeric: tabular-nums; }
+.fp-stat__label { font-size:1.7cqi; color: var(--text-muted); margin-top:.8cqi; }
+
+/* ---------- TABLE ---------- */
+.slide table.fp-table { width:100%; border-collapse:collapse; font-size:1.6cqi; }
+.fp-table th { text-align:start; font-size:1.2cqi; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); padding:1cqi 1.4cqi; border-block-end:1px solid var(--border-strong); }
+.fp-table td { padding:1.2cqi 1.4cqi; border-block-end:1px solid var(--border); color: var(--text-muted); }
+.fp-table td:first-child { color: var(--text); font-weight: 600; }
+
+/* ---------- COST BARS ---------- */
+.fp-bar-row { display:flex; align-items:center; gap:1cqi; margin-bottom: 1.2cqi; }
+.fp-bar-row__lbl { width:17cqi; font-size:1.5cqi; color: var(--text-muted); flex-shrink:0; }
+.fp-bar-row__track { flex:1; background: var(--surface); border-radius:8px; height:3.6cqi; position:relative; }
+.fp-bar-row__fill { height:100%; border-radius:8px; display:flex; align-items:center; justify-content:flex-end; padding-inline-end:1cqi; background: var(--gray-500); }
+.fp-bar-row__fill--accent { background: var(--accent); min-inline-size:8cqi; }
+.fp-bar-row__fill b { color: var(--gray-0); font-family: var(--font-mono); font-size:1.4cqi; white-space:nowrap; }
+
+/* ---------- TOP BAR + PROGRESS ---------- */
+.progress {
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 50;
+  background: var(--border);
+}
+.progress__bar { display:block; height:100%; width:0; background: var(--primary); transition: width .25s var(--ease); }
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px clamp(16px, 3vw, 40px);
+  font-size: .82rem; pointer-events: none;
+  color: var(--text);
+}
+.topbar__brand { display:flex; align-items:center; gap:.55em; font-weight:700; letter-spacing:-.01em; font-family: var(--font-display); }
+.topbar__count { color: var(--text-subtle); font-variant-numeric: tabular-nums; }
+.topbar__count b { color: var(--text); }
+.dot { width:9px; height:9px; border-radius:50%; background: var(--primary); }
+
+/* ---------- DOT NAV ---------- */
+.dots {
+  position: fixed; right: clamp(10px, 2vw, 22px); top: 50%;
+  transform: translateY(-50%); z-index: 45;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.dots button {
+  width: 10px; height: 10px; padding: 0; border-radius: 50%;
+  border: 1px solid var(--border-strong); background: transparent;
+  cursor: pointer; transition: all .25s var(--ease); position: relative;
+}
+.dots button:hover { background: var(--border-strong); }
+.dots button[aria-current="true"] { background: var(--primary); border-color: var(--primary); transform: scale(1.35); }
+.dots button span {
+  position:absolute; right: 18px; top:50%; transform: translateY(-50%);
+  white-space:nowrap; font-size:.72rem; color: var(--text);
+  background: var(--surface-raised); border:1px solid var(--border); padding:3px 9px; border-radius:7px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.dots button:hover span { opacity:1; }
+
+/* ---------- NAV ARROWS ---------- */
+.nav {
+  position: fixed; bottom: 18px; z-index: 45;
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--border-strong); background: var(--surface-raised);
+  color: var(--text); font-size: 1.4rem; line-height: 1; cursor: pointer;
+  display: grid; place-items: center; transition: all .2s var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+.nav:hover { border-color: var(--primary); color: var(--primary); }
+.nav:disabled { opacity: .35; cursor: default; }
+.nav--prev { right: 72px; }
+.nav--next { right: 18px; }
+
+@media (max-width: 640px){
+  .nav--prev { right: auto; left: 18px; }
+  .dots { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+<header class="topbar">
+  <span class="topbar__brand"><span class="dot"></span> Stretch the $30</span>
+  <span class="topbar__count"><b id="slideNow">01</b> / <span id="slideTotal">9</span></span>
+</header>
+
+<nav class="dots" aria-label="Slide navigation"></nav>
+
+<main id="deck" class="deck">
+
+  <!-- 01 — TITLE -->
+  <section class="slide-section" id="s1" data-label="Title">
+    <div class="slide slide--dark slide--hero">
+      <div class="slide__frame">
+        <p class="slide__kicker">Engineering productivity &middot; Cost strategy</p>
+        <h1 class="slide__title">Stretch the <span style="color: var(--accent);">$30</span>.</h1>
+        <p class="slide__body">Supplement GitHub Copilot with Azure AI Foundry models &mdash; <b style="color: var(--gray-0);">DeepSeek</b>, <b style="color: var(--gray-0);">MiniMax</b> and <b style="color: var(--gray-0);">Kimi</b> &mdash; to do more engineering inside the same $30 / developer / month budget.</p>
+        <div style="display:flex; gap:1cqi; flex-wrap:wrap; margin-top:2cqi;">
+          <span class="badge">Multi-model routing</span>
+          <span class="badge">Enterprise governance</span>
+          <span class="badge">Lower $ per request</span>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — THE BUDGET -->
+  <section class="slide-section" id="s2" data-label="The budget">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The starting point</p>
+        <h2 class="slide__title">The budget everyone already has.</h2>
+        <p class="slide__body" style="max-inline-size:70cqi;">Every developer gets a real, finite <b>$30/month</b> AI envelope. The question isn't whether to use AI &mdash; it's how much useful engineering each dollar buys before the month runs out.</p>
+        <div class="fp-stats">
+          <div class="fp-stat"><div class="fp-stat__num">$30</div><div class="fp-stat__label">per developer, per month</div></div>
+          <div class="fp-stat"><div class="fp-stat__num">$0.04</div><div class="fp-stat__label">per Copilot premium request (overage)</div></div>
+          <div class="fp-stat"><div class="fp-stat__num">~750</div><div class="fp-stat__label">premium requests, if spent on overage alone</div></div>
+        </div>
+        <div class="alert">
+          <div><p class="alert__title">Model multipliers compound the burn</p><p>A single call to a top-tier model can cost 1&times;&ndash;50&times; of the allowance &mdash; the budget burns faster than the request count suggests.</p></div>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">02</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — THE BOTTLENECK -->
+  <section class="slide-section" id="s3" data-label="The bottleneck">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The problem</p>
+        <h2 class="slide__title">Power users hit the wall mid-month.</h2>
+        <div style="display:flex; gap:3cqi; align-items:stretch; flex:1; min-block-size:0;">
+          <ul class="slide__bullets" style="flex:1; max-inline-size:none;">
+            <li>Premium allowance exhausted by week 2&ndash;3 for power users</li>
+            <li>Agentic and long-context tasks burn multipliers fastest</li>
+            <li>Bulk work &mdash; refactors, tests, docs &mdash; wastes premium calls</li>
+            <li>Overage either blows the budget or gets blocked</li>
+          </ul>
+          <div class="card" style="flex:1; align-self:center;">
+            <div class="card__body">
+              <p style="font-family: var(--font-display); font-weight:700; font-size:2.6cqi; color: var(--text); line-height:1.3; margin:0 0 1.4cqi;">One model tier for every task is the inefficiency.</p>
+              <p style="font-size:1.7cqi; color: var(--text-muted); line-height:1.5; margin:0;">A premium frontier model answering &ldquo;rename this variable across the repo&rdquo; is top-rate pay for routine work.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">03</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — THE IDEA -->
+  <section class="slide-section" id="s4" data-label="The idea">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The idea</p>
+        <h2 class="slide__title">Add a cheaper second lane.</h2>
+        <p class="slide__body" style="max-inline-size:74cqi;">Keep GitHub Copilot for what it's best at &mdash; inline completions and tightly integrated chat. Add Azure AI Foundry for the high-volume, long-context work. Send each task to the model that does it best, for the least money.</p>
+        <div style="display:flex; gap:1.6cqi; align-items:stretch; flex:1; min-block-size:0;">
+          <div class="card" style="flex:1;"><div class="card__body">
+            <span class="badge">Lane 1 &middot; Keep</span>
+            <h3 style="font-family: var(--font-display); font-size:2cqi; font-weight:700; color: var(--text); margin:1.2cqi 0 0.6cqi;">GitHub Copilot</h3>
+            <p style="font-size:1.6cqi; color: var(--text-muted); line-height:1.5; margin:0;">Inline completion, quick chat, IDE-native flow. Reserve premium requests for high-value, interactive moments.</p>
+          </div></div>
+          <div style="display:flex; align-items:center; justify-content:center; font-size:3cqi; color: var(--text-subtle); font-weight:700;">+</div>
+          <div class="card" style="flex:1;"><div class="card__body">
+            <span class="badge badge--info">Lane 2 &middot; Add</span>
+            <h3 style="font-family: var(--font-display); font-size:2cqi; font-weight:700; color: var(--text); margin:1.2cqi 0 0.6cqi;">Azure AI Foundry</h3>
+            <p style="font-size:1.6cqi; color: var(--text-muted); line-height:1.5; margin:0;">DeepSeek &middot; MiniMax &middot; Kimi for bulk generation, agentic loops, refactors and long-context reasoning &mdash; at a fraction of the cost.</p>
+          </div></div>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">04</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — THE MODELS -->
+  <section class="slide-section" id="s5" data-label="The models">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The supplement</p>
+        <h2 class="slide__title">Three frontier-class models, one Azure tenant.</h2>
+        <div style="display:flex; gap:1.6cqi; margin:1cqi 0 1.6cqi;">
+          <div class="card" style="flex:1;"><div class="card__body">
+            <h3 style="font-family: var(--font-display); font-size:1.9cqi; font-weight:700; color: var(--text); margin:0 0 0.8cqi;">DeepSeek</h3>
+            <span class="badge badge--info">Reasoning &middot; Code</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); line-height:1.5; margin:1cqi 0 0;">Strong reasoning and coding for refactors, tests and debugging &mdash; at open-model token prices.</p>
+          </div></div>
+          <div class="card" style="flex:1;"><div class="card__body">
+            <h3 style="font-family: var(--font-display); font-size:1.9cqi; font-weight:700; color: var(--text); margin:0 0 0.8cqi;">MiniMax</h3>
+            <span class="badge badge--info">Long context &middot; Agentic</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); line-height:1.5; margin:1cqi 0 0;">Built for high-throughput, agentic work &mdash; a workhorse for codebase-wide tasks and multi-step automation.</p>
+          </div></div>
+          <div class="card" style="flex:1;"><div class="card__body">
+            <h3 style="font-family: var(--font-display); font-size:1.9cqi; font-weight:700; color: var(--text); margin:0 0 0.8cqi;">Kimi</h3>
+            <span class="badge badge--info">Massive context &middot; Code</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); line-height:1.5; margin:1cqi 0 0;">Huge context paired with strong coding &mdash; ideal for reasoning over whole services and large PRs in one pass.</p>
+          </div></div>
+        </div>
+        <p style="font-size:1.5cqi; color: var(--text-subtle); margin:0;">All three run behind Azure AI Foundry endpoints &mdash; your tenant, your network, your governance.</p>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">05</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — COST -->
+  <section class="slide-section" id="s6" data-label="Cost">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The economics</p>
+        <h2 class="slide__title">Same task, a fraction of the cost.</h2>
+        <div style="display:flex; gap:3cqi; flex:1; min-block-size:0;">
+          <div style="flex:1.1; display:flex; flex-direction:column; gap:0; justify-content:center;">
+            <div class="fp-bar-row">
+              <span class="fp-bar-row__lbl">Copilot premium (overage)</span>
+              <div class="fp-bar-row__track"><div class="fp-bar-row__fill" style="width:100%;"><b>$0.040</b></div></div>
+            </div>
+            <div class="fp-bar-row">
+              <span class="fp-bar-row__lbl">DeepSeek-V3 (Foundry)</span>
+              <div class="fp-bar-row__track"><div class="fp-bar-row__fill fp-bar-row__fill--accent" style="width:8%;"><b>$0.0030</b></div></div>
+            </div>
+            <div class="fp-bar-row">
+              <span class="fp-bar-row__lbl">Kimi K2 (Foundry)</span>
+              <div class="fp-bar-row__track"><div class="fp-bar-row__fill fp-bar-row__fill--accent" style="width:9%;"><b>$0.0036</b></div></div>
+            </div>
+            <div class="fp-bar-row">
+              <span class="fp-bar-row__lbl">MiniMax (Foundry)</span>
+              <div class="fp-bar-row__track"><div class="fp-bar-row__fill fp-bar-row__fill--accent" style="width:6%;"><b>$0.0024</b></div></div>
+            </div>
+            <p style="font-size:1.3cqi; color: var(--text-subtle); margin:1cqi 0 0;">Cost per request, &asymp;4K input + 1K output tokens. Figures are illustrative &mdash; validate against current pricing.</p>
+          </div>
+          <div class="card" style="flex:0.8; align-self:center;"><div class="card__body">
+            <div style="font-family: var(--font-display); font-size:4.6cqi; font-weight:700; color: var(--accent); line-height:1;">10&ndash;15&times;</div>
+            <p style="font-size:1.6cqi; color: var(--text-muted); line-height:1.5; margin:1.2cqi 0 0;">cheaper per request for routine, high-volume work &mdash; refactors, tests, docs, bulk generation.</p>
+          </div></div>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">06</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 — ROUTING -->
+  <section class="slide-section" id="s7" data-label="Routing">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">The routing logic</p>
+        <h2 class="slide__title">Right task &rarr; right model.</h2>
+        <table class="fp-table">
+          <thead><tr><th>Workload</th><th>Best lane</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Inline completion / quick chat</td><td><span class="badge">Copilot</span></td><td>IDE-native, lowest latency, already paid for</td></tr>
+            <tr><td>Bulk refactor across repo</td><td><span class="badge badge--info">DeepSeek</span></td><td>Strong code edits at token prices, not per-request</td></tr>
+            <tr><td>Agentic multi-step tasks</td><td><span class="badge badge--info">MiniMax</span></td><td>Tool-use throughput without burning multipliers</td></tr>
+            <tr><td>Reason over whole service / big PR</td><td><span class="badge badge--info">Kimi</span></td><td>Massive context in a single pass</td></tr>
+            <tr><td>High-stakes, customer-facing answer</td><td><span class="badge">Copilot premium</span></td><td>Spend premium where quality matters most</td></tr>
+          </tbody>
+        </table>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">07</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 — AT SCALE -->
+  <section class="slide-section" id="s8" data-label="At scale">
+    <div class="slide">
+      <div class="slide__frame">
+        <p class="slide__kicker">At scale, in-tenant</p>
+        <h2 class="slide__title">Savings that scale with the org.</h2>
+        <div class="fp-stats" style="margin:1cqi 0 2cqi;">
+          <div class="fp-stat"><div class="fp-stat__num">~3&times;</div><div class="fp-stat__label">more requests inside the same $30</div></div>
+          <div class="fp-stat"><div class="fp-stat__num">$0</div><div class="fp-stat__label">extra budget required to start</div></div>
+          <div class="fp-stat"><div class="fp-stat__num">$25k+</div><div class="fp-stat__label">est. annual saving per 100 developers</div></div>
+        </div>
+        <div style="display:flex; gap:1.6cqi;">
+          <div style="flex:1; display:flex; gap:1cqi; align-items:flex-start;">
+            <span class="badge badge--info">Tenant</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); margin:0; line-height:1.4;">Data stays in your Azure subscription. No training on your prompts or code.</p>
+          </div>
+          <div style="flex:1; display:flex; gap:1cqi; align-items:flex-start;">
+            <span class="badge badge--info">Network</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); margin:0; line-height:1.4;">Private endpoints and managed identity &mdash; no public egress.</p>
+          </div>
+          <div style="flex:1; display:flex; gap:1cqi; align-items:flex-start;">
+            <span class="badge badge--info">Billing</span>
+            <p style="font-size:1.5cqi; color: var(--text-muted); margin:0; line-height:1.4;">One Azure invoice, cost tags, budgets and alerts per team.</p>
+          </div>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">08</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 — THE ASK -->
+  <section class="slide-section" id="s9" data-label="The ask">
+    <div class="slide slide--dark slide--hero">
+      <div class="slide__frame">
+        <p class="slide__kicker">The ask</p>
+        <h2 class="slide__title">Approve a <span style="color: var(--accent);">two-week pilot</span> with one squad.</h2>
+        <p class="slide__body">No new budget. We add an Azure AI Foundry lane next to Copilot, route the high-volume work to DeepSeek, MiniMax and Kimi, and report back cost-per-task and quota relief.</p>
+        <div style="display:flex; gap:1cqi; flex-wrap:wrap; margin-top:2cqi;">
+          <span class="badge badge--info">Same $30 budget</span>
+          <span class="badge badge--info">More engineering per dollar</span>
+          <span class="badge badge--info">In your Azure tenant</span>
+        </div>
+        <div class="slide__footer"><span>Foundry proposal</span><span class="slide__footer-num">09</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="nav nav--prev" aria-label="Previous slide">&lsaquo;</button>
+<button class="nav nav--next" aria-label="Next slide">&rsaquo;</button>
+
+<script>
+(() => {
+  "use strict";
+
+  const deck    = document.getElementById("deck");
+  const slides  = Array.from(document.querySelectorAll(".slide-section"));
+  const dotsNav = document.querySelector(".dots");
+  const prevBtn = document.querySelector(".nav--prev");
+  const nextBtn = document.querySelector(".nav--next");
+  const bar     = document.querySelector(".progress__bar");
+  const nowEl   = document.getElementById("slideNow");
+  const totalEl = document.getElementById("slideTotal");
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+
+  slides.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", `Go to slide ${i + 1}: ${s.dataset.label || ""}`);
+    const tip = document.createElement("span");
+    tip.textContent = s.dataset.label || `Slide ${i + 1}`;
+    b.appendChild(tip);
+    b.addEventListener("click", () => goTo(i));
+    dotsNav.appendChild(b);
+  });
+  const dots = Array.from(dotsNav.children);
+  if (totalEl) totalEl.textContent = String(slides.length).padStart(2, "0");
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides[i].scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  function setActive(i) {
+    if (i === current) return;
+    current = i;
+    dots.forEach((d, n) => d.setAttribute("aria-current", n === i ? "true" : "false"));
+    if (nowEl) nowEl.textContent = String(i + 1).padStart(2, "0");
+    const pct = slides.length > 1 ? (i / (slides.length - 1)) * 100 : 100;
+    if (bar) bar.style.width = pct + "%";
+    if (prevBtn) prevBtn.disabled = i === 0;
+    if (nextBtn) nextBtn.disabled = i === slides.length - 1;
+  }
+
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+          setActive(slides.indexOf(e.target));
+        }
+      });
+    },
+    { root: deck, threshold: [0.5] }
+  );
+  slides.forEach((s) => spy.observe(s));
+
+  prevBtn?.addEventListener("click", () => goTo(current - 1));
+  nextBtn?.addEventListener("click", () => goTo(current + 1));
+
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+      if (e.target.tagName === "INPUT") return;
+      e.preventDefault(); goTo(current + 1);
+    } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+      e.preventDefault(); goTo(current - 1);
+    } else if (e.key === "Home") { e.preventDefault(); goTo(0); }
+    else if (e.key === "End")  { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  setActive(0);
+  dots[0]?.setAttribute("aria-current", "true");
+  if (prevBtn) prevBtn.disabled = true;
+})();
+</script>
+</body>
+</html>
