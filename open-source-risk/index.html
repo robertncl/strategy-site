@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/tokens/acme.css">
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/styles.css">
+<script src="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/_ds_bundle.js"></script>
+<style>
+:root{
+  --sans:"Styrene B","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --display:"Tiempos Headline",Georgia,ui-serif,serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --accent:#93422B; --accent-dark:#DDA588;
+  --type-hero:104px; --type-title:64px; --type-subtitle:44px; --type-body:34px;
+  --type-small:28px; --type-kicker:24px; --type-stat:120px; --type-numeral:300px;
+  --pad-top:96px; --pad-bottom:88px; --pad-x:120px;
+  --gap-title:48px; --gap-item:28px;
+}
+body{margin:0;background:#12100B;}
+a{color:#93422B;text-decoration:none;}
+a:hover{color:#75341F;}
+</style>
+</helmet>
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%">
+
+<section data-label="Title" data-screen-label="01 Title" data-speaker-notes="Frame the session: this is a shared-understanding briefing, not a budget ask. We'll spend twenty minutes on where open source risk comes from, how it reaches production, what it costs, and what a working program looks like." style="box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <x-import component-from-global-scope="ACMEDesignSystem_739be1.Wordmark" href="#" dc-props="{{ wordmarkLg }}" hint-size="200px,40px"></x-import>
+  <div style="display:flex;flex-direction:column;gap:32px;max-width:1400px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-dark);">Security briefing · August 2026</p>
+    <h1 style="margin:0;font:700 var(--type-hero)/1.02 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">Open source risk in the enterprise</h1>
+    <p style="margin:0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#A8A08B;max-width:1150px;text-wrap:pretty;">What we inherit with every build, what it costs when it goes wrong, and what a working program looks like.</p>
+  </div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid #454034;padding-top:28px;">
+    <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#A8A08B;">Security &amp; platform engineering leadership</p>
+    <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#6B6554;">20 minutes</p>
+  </div>
+</section>
+
+<section data-label="Agenda" data-screen-label="02 Agenda" data-speaker-notes="Four parts. The first three build the picture; the fourth is what we do about it. Hold questions on tooling until part four — most of them are answered there." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Agenda</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">What we'll cover</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px 80px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">01</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">Where the risk comes from</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">How much of our software we did not write, and how fast that share is growing.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">02</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">How it reaches production</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Known vulnerabilities, deliberate supply chain attacks, maintainers, licences.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">03</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">What it costs</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Breach economics, remediation drag, and the regulatory clock already running.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">04</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">What good looks like</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Five controls that do the work, and a first ninety days.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="01 Divider" data-screen-label="03 Divider 01" data-speaker-notes="Part one. Before we talk about threats, we need agreement on scale — how much of what we ship is code we did not write and cannot see." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">01</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part one</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">Where the risk comes from</h2>
+  </div>
+</section>
+
+<section data-label="Dependency baseline" data-screen-label="04 Baseline" data-speaker-notes="Three numbers from Black Duck's 2026 audit of 947 commercial codebases. The point is not that open source is bad — it is that it is the majority of the product, and the share is still climbing." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Scale</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Our dependency baseline</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-stat)/0.9 var(--display);letter-spacing:-0.03em;">98%</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);">of commercial codebases contain open source</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Effectively every application inherits third-party risk.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-stat)/0.9 var(--display);letter-spacing:-0.03em;">84,000</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);">files in the average codebase</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Four times what it was five years ago.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-stat)/0.9 var(--display);letter-spacing:-0.03em;">+30%</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);">open source components, year over year</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">The surface grows faster than any review process.</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck, Open Source Security and Risk Analysis 2026 — 947 commercial codebases, 17 industries.</p>
+</section>
+
+<section data-label="2026 inflection" data-screen-label="05 Vulnerability trend" data-speaker-notes="Mean vulnerabilities per codebase went from 280 to 581 in one year — the largest jump the report has recorded in twenty years. Volume of code is the driver: files up 74 percent, components up 30 percent." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Trend</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Known vulnerabilities per codebase doubled in a year</h2>
+  <div style="display:grid;grid-template-columns:1080px 1fr;gap:88px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:40px;">
+      <div style="display:flex;align-items:center;gap:28px;">
+        <p style="margin:0;flex:0 0 200px;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">2025 report</p>
+        <div style="flex:0 0 auto;height:76px;width:337px;background:#5C5648;"></div>
+        <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);font-variant-numeric:tabular-nums;color:#5C5648;">280</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:28px;">
+        <p style="margin:0;width:200px;font:700 var(--type-small)/1.2 var(--sans);">2026 report</p>
+        <div style="height:76px;width:880px;background:#B4573C;"></div>
+        <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);font-variant-numeric:tabular-nums;color:#93422B;">581</p>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Mean open source vulnerabilities found per audited codebase.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">87%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">of codebases carried at least one vulnerability</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">44%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">carried a critical-risk vulnerability</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">+74%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">growth in files per codebase, year over year</p>
+      </div>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck OSSRA 2026.</p>
+</section>
+
+<section data-label="Direct vs transitive" data-screen-label="06 Transitive" data-speaker-notes="This is the blind spot. A team reviews the package it adds. Nobody reviews the hundreds that arrive underneath it, and nobody is notified when those change hands. An SBOM is what turns the lower bar from unknown into inventory." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Blind spot</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Direct versus transitive dependencies</h2>
+  <div style="display:grid;grid-template-columns:1fr 560px;gap:88px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Chosen by a person, reviewed at some point</p>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="height:72px;width:150px;background:#5C5648;"></div>
+          <p style="margin:0;font:500 var(--type-body)/1.2 var(--sans);">Direct dependencies</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Installed automatically, reviewed by no one</p>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="height:72px;width:900px;background:#B4573C;"></div>
+          <p style="margin:0;font:700 var(--type-body)/1.2 var(--sans);color:#93422B;">Transitive dependencies</p>
+        </div>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Illustrative proportions. In most package ecosystems the majority of shipped components are pulled in indirectly.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:28px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">Three consequences</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">No approval gate — the decision was made by a manifest file, not a reviewer.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">No owner — when it breaks, there is no team name attached to it.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">No signal — a maintainer change or a new owner reaches us silently.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="02 Divider" data-screen-label="07 Divider 02" data-speaker-notes="Part two. Four routes into production, and they need different defences: known vulnerabilities, deliberate attacks, abandoned components, and licences." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">02</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part two</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">How it reaches production</h2>
+  </div>
+</section>
+
+<section data-label="Two problems" data-screen-label="08 CVE vs attack" data-speaker-notes="Most programs are built entirely for the left column. Scanners find published CVEs. They do not find a package that was malicious the day it was published — 65 percent of organisations were hit by a supply chain attack last year, and two thirds of those attacks were purpose-built malicious packages." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Threat model</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Two problems, not one</h2>
+  <div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:0 64px;margin-top:var(--gap-title);">
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">&nbsp;</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-body)/1.3 var(--display);">Known vulnerabilities</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-body)/1.3 var(--display);">Supply chain attacks</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">What it is</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">A published flaw in a component we already ship</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Code written to reach us — typosquats, hijacked packages, poisoned builds</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">How we find it</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Scanners, against a public CVE feed</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Provenance checks, behaviour analysis, and luck</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">The clock</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Disclosure to exploitation, often days</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Already in the build when we learn of it</p>
+
+    <p style="margin:0;padding:28px 0;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">Last twelve months</p>
+    <p style="margin:0;padding:28px 0;font:400 var(--type-small)/1.4 var(--sans);">581 mean findings per codebase</p>
+    <p style="margin:0;padding:28px 0;font:700 var(--type-small)/1.4 var(--sans);color:#93422B;">65% of organisations were hit at least once</p>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck OSSRA 2026 — of those attacks, 66% used purpose-built malicious packages, 34% hijacked legitimate ones.</p>
+</section>
+
+<section data-label="Three incidents" data-screen-label="09 Incidents" data-speaker-notes="Three well-documented cases, chosen because they failed in three different ways. Log4Shell was an inventory failure. event-stream was a trust failure. xz was a people failure, and it was found by accident by an engineer investigating slow logins." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Case studies</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Three incidents, three failure modes</h2>
+  <div style="display:grid;grid-template-columns:420px 1fr 1fr;gap:0 64px;margin-top:var(--gap-title);">
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">Incident</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">How it got in</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">What it exposed</p>
+
+    <div style="padding:32px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">Log4Shell</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2021 · Apache Log4j</p>
+    </div>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">A logging library sitting several layers deep in almost every Java service</p>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">Weeks of emergency work went into answering one question: where do we run it?</p>
+
+    <div style="padding:32px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">event-stream</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2018 · npm</p>
+    </div>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">A tired maintainer handed the package to a volunteer, who shipped a wallet stealer</p>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">Ownership can change hands with no notice to anyone downstream</p>
+
+    <div style="padding:32px 0;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">xz utils backdoor</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2024 · CVE-2024-3094</p>
+    </div>
+    <p style="margin:0;padding:32px 0;font:400 var(--type-small)/1.45 var(--sans);">Two years of patient social engineering against one overloaded solo maintainer</p>
+    <p style="margin:0;padding:32px 0;font:700 var(--type-small)/1.45 var(--sans);color:#93422B;">A near-miss: found by an engineer chasing a half-second delay, not by a scanner</p>
+  </div>
+</section>
+
+<section data-label="Maintainers" data-screen-label="10 Maintainers" data-speaker-notes="This is the part that surprises boards. There is no vendor behind most of these components. Over ninety percent of codebases carry significant maintenance debt — components a year or more out of date, or with no development activity at all." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Sustainability</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The maintainer problem</h2>
+  <div style="display:grid;grid-template-columns:1fr 700px;gap:96px;margin-top:var(--gap-title);align-items:center;">
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <p style="margin:0;font:700 200px/0.85 var(--display);letter-spacing:-0.04em;color:#93422B;">90%</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);max-width:640px;text-wrap:pretty;">of codebases carry components that are out of date, unmaintained, or both.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:32px;">
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Critical libraries are often maintained by one unpaid person, in their own time.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Burnout is an attack surface — the xz operation targeted exactly that.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">When a component stops moving, there is no vendor to escalate to. The options are fund it, fork it, or replace it.</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck OSSRA 2026.</p>
+</section>
+
+<section data-label="AI-assisted development" data-screen-label="11 AI code" data-speaker-notes="AI assistants changed the volume and the review path at the same time. Three quarters of organisations check generated code for security. Only a quarter check security, licence, IP and quality together — and generated code pulls in dependencies the same way a person does." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">New input</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">AI-assisted development</h2>
+  <p style="margin:24px 0 0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#5C5648;max-width:1400px;text-wrap:pretty;">More code, arriving faster, with dependencies chosen by a model. Governance has not moved at the same rate.</p>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:56px;margin-top:56px;">
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 96px/0.9 var(--display);letter-spacing:-0.03em;">76%</p>
+      <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">check AI-generated code for security risk</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 96px/0.9 var(--display);letter-spacing:-0.03em;">56%</p>
+      <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">check it for quality</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 96px/0.9 var(--display);letter-spacing:-0.03em;">54%</p>
+      <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">check it for IP and licence risk</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #93422B;padding-top:28px;">
+      <p style="margin:0;font:700 96px/0.9 var(--display);letter-spacing:-0.03em;color:#93422B;">24%</p>
+      <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#454034;">do all four checks together</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck OSSRA 2026.</p>
+</section>
+
+<section data-label="Licence exposure" data-screen-label="12 Licence" data-speaker-notes="The legal exposure moved faster than the security exposure this year: licence conflicts jumped from 56 to 68 percent, the largest single-year rise on record. Two thirds of audited codebases now have at least one. This is the slide that gets attention in M&A diligence." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Legal</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Licence and IP exposure</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:96px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:40px;">
+      <div style="display:flex;align-items:flex-end;gap:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+          <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);color:#5C5648;">56%</p>
+          <div style="width:170px;height:280px;background:#5C5648;"></div>
+          <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">2025</p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+          <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);color:#93422B;">68%</p>
+          <div style="width:170px;height:340px;background:#B4573C;"></div>
+          <p style="margin:0;font:700 var(--type-small)/1.2 var(--sans);">2026</p>
+        </div>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;max-width:620px;text-wrap:pretty;">Share of audited codebases containing at least one licence conflict — the largest single-year rise on record.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:32px;">
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Copyleft obligations reach proprietary code through components nobody chose deliberately.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Models can reproduce GPL- and AGPL-governed code without attribution or a licence trail.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Findings surface at the worst moment: acquisition diligence, enterprise deals, customer audits.</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Black Duck OSSRA 2026.</p>
+</section>
+
+<section data-label="03 Divider" data-screen-label="13 Divider 03" data-speaker-notes="Part three. Two costs: the breach, and the compliance clock that is already running whether or not we are ready." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">03</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part three</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">What it costs</h2>
+  </div>
+</section>
+
+<section data-label="Cost of inaction" data-screen-label="14 Cost" data-speaker-notes="IBM's 2026 figures. The headline average is $4.99M, up 12 percent. The relevant detail for us is the supply chain line: second most common initial vector, the longest lifecycle at 258 days, and the single largest cost amplifier of the thirty factors measured." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Economics</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The cost of inaction</h2>
+  <div style="display:grid;grid-template-columns:820px 1fr;gap:96px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <p style="margin:0;font:700 180px/0.85 var(--display);letter-spacing:-0.04em;color:#93422B;">$4.99M</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);">global average cost of a data breach in 2026 — a record, up 12% in a year</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Driven by detection, escalation and lost business, not by fines.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">2nd</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">most common initial attack vector: supply chain compromise</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">258 days</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">to identify and contain one — tied for the longest lifecycle measured</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">+$227,250</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">added to the average breach when a partner or supply chain is involved — the largest of 30 cost factors</p>
+      </div>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: IBM Cost of a Data Breach Report 2026 (Ponemon Institute, 602 organisations).</p>
+</section>
+
+<section data-label="Regulatory clock" data-screen-label="15 Regulation" data-speaker-notes="The CRA reporting obligation is next month: 24 hours to an early warning, 72 to a full notification, for any actively exploited vulnerability in a product on the EU market. You cannot report what you cannot see, which makes the SBOM a compliance artefact, not just a security one." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Compliance</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The regulatory clock</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;margin-top:56px;">
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">In force now</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">SEC disclosure</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Material cybersecurity incidents reported on Form 8-K within four business days.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">In force now</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">NIST SSDF</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Secure development attestation required to sell software to US federal agencies.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #93422B;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#93422B;">11 Sep 2026</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);color:#93422B;">EU CRA, Article 14</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#454034;">Actively exploited vulnerabilities reported to ENISA and the national CSIRT: early warning in 24 hours, full notification in 72.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">11 Dec 2027</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">EU CRA, full application</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Vulnerability handling, SBOMs and conformity assessment for products on the EU market.</p>
+    </div>
+  </div>
+  <p style="margin:56px 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">Every one of these assumes we can answer a single question quickly: which of our products contains this component?</p>
+</section>
+
+<section data-label="04 Divider" data-screen-label="16 Divider 04" data-speaker-notes="Part four. Nothing exotic here — five controls, and the order matters. Inventory first; everything else depends on it." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">04</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part four</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">What good looks like</h2>
+  </div>
+</section>
+
+<section data-label="Five controls" data-screen-label="17 Controls" data-speaker-notes="Five controls. One and two are inventory, three is the operating agreement, four is the pipeline, five is the exit path for components nobody maintains. Most organisations have partial coverage of one and four and nothing on five." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Controls</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Five controls that matter</h2>
+  <div style="display:flex;flex-direction:column;gap:0;margin-top:48px;">
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">01</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">An SBOM for every build</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Generated in the pipeline, stored, and queryable in minutes — not assembled by hand during an incident.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">02</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">An owner for every critical component</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">A named team for the components that carry the business, transitive ones included.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">03</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">Upgrade SLAs by severity</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Agreed with engineering, funded as ordinary work, and measured — patching is a capacity decision, not a virtue.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">04</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">A hardened build pipeline</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Pinned versions, verified provenance, scoped tokens, and no unreviewed install scripts.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">05</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">A plan for unmaintained code</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">For each end-of-life dependency: pay for support, fund the maintainer, fork it, or replace it.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="First 90 days" data-screen-label="18 Plan" data-speaker-notes="A sequence that fits in existing capacity. Thirty days to see the estate, thirty to rank it, thirty to wire the reporting path before the CRA date. Nothing here requires new tooling spend to start." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Sequence</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The first ninety days</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #93422B;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 1–30</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">See the estate</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Generate SBOMs for the twenty systems that carry revenue. Name one accountable owner for the programme.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 31–60</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">Rank the exposure</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Sort by internet-facing, critical severity, and unmaintained. Agree upgrade SLAs with engineering leadership.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 61–90</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">Close the loop</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Wire the CRA reporting path end to end. Report coverage and mean time to upgrade to the board each quarter.</p>
+    </div>
+  </div>
+  <p style="margin:auto 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">Two metrics tell us whether this is working: what share of builds produce an SBOM, and how long a critical fix takes to reach production.</p>
+</section>
+
+<section data-label="Close" data-screen-label="19 Close" data-speaker-notes="Close on the three decisions, not on the fear. Ask for the owner in the room today; the SLA and the funding can follow in writing next week." style="box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <div style="display:flex;flex-direction:column;gap:36px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-dark);">Next</p>
+    <h2 style="margin:0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">Where we go from here</h2>
+    <p style="margin:0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#A8A08B;max-width:1300px;text-wrap:pretty;">Three decisions to take out of this room.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;">
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">01</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">Who owns the component inventory</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">02</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">What the upgrade SLA is, by severity</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">03</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">What we fund for unmaintained dependencies</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid #454034;padding-top:28px;">
+    <x-import component-from-global-scope="ACMEDesignSystem_739be1.Wordmark" href="#" dc-props="{{ wordmarkSm }}" hint-size="160px,32px"></x-import>
+    <p data-source="true" style="margin:0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Sources: Black Duck OSSRA 2026 · IBM Cost of a Data Breach 2026 · European Commission, CRA reporting obligations</p>
+  </div>
+</section>
+
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#93422B&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#93422B&quot;,&quot;#B4573C&quot;,&quot;#75341F&quot;],&quot;section&quot;:&quot;Style&quot;},&quot;titleSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:64,&quot;min&quot;:52,&quot;max&quot;:80,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Style&quot;},&quot;showSources&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this.apply(); }
+  componentDidUpdate() { this.apply(); }
+  apply() {
+    const root = document.documentElement;
+    root.dataset.theme = 'light';
+    root.style.setProperty('--accent', this.props.accent ?? '#93422B');
+    root.style.setProperty('--type-title', (this.props.titleSize ?? 64) + 'px');
+    const show = this.props.showSources ?? true;
+    document.querySelectorAll('[data-source]').forEach(el => { el.style.display = show ? '' : 'none'; });
+  }
+  renderVals() {
+    return {
+      wordmarkLg: { style: { fontSize: '30px', color: '#FCFBF7', alignSelf: 'flex-start' } },
+      wordmarkSm: { style: { fontSize: '24px', color: '#FCFBF7', alignSelf: 'flex-start' } }
+    };
+  }
+}
+</script>
+</body>
+</html>
