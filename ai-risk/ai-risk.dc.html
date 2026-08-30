@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/tokens/acme.css">
+<link rel="stylesheet" href="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/styles.css">
+<script src="_ds/acme-design-system-739be177-5fe1-4acc-9faa-65671c99d370/_ds_bundle.js"></script>
+<style>
+:root{
+  --sans:"Styrene B","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --display:"Tiempos Headline",Georgia,ui-serif,serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --accent:#93422B; --accent-dark:#DDA588;
+  --type-hero:104px; --type-title:64px; --type-subtitle:44px; --type-body:34px;
+  --type-small:28px; --type-kicker:24px; --type-stat:120px; --type-numeral:300px;
+  --pad-top:96px; --pad-bottom:88px; --pad-x:120px;
+  --gap-title:48px; --gap-item:28px;
+}
+body{margin:0;background:#12100B;}
+a{color:#93422B;text-decoration:none;}
+a:hover{color:#75341F;}
+</style>
+</helmet>
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%">
+
+<section data-label="Title" data-screen-label="01 Title" data-speaker-notes="Frame the session: this is a shared-understanding briefing, not a budget ask, and not an argument against using AI. We'll spend twenty minutes on what changed when models started writing and running our code, how that risk reaches production, what it costs, and what a working program looks like." style="box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <x-import component-from-global-scope="ACMEDesignSystem_739be1.Wordmark" href="#" dc-props="{{ wordmarkLg }}" hint-size="200px,40px"></x-import>
+  <div style="display:flex;flex-direction:column;gap:32px;max-width:1400px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-dark);">Security briefing · August 2026</p>
+    <h1 style="margin:0;font:700 var(--type-hero)/1.02 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">AI-driven risk in the enterprise</h1>
+    <p style="margin:0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#A8A08B;max-width:1150px;text-wrap:pretty;">What changes when models write our code and agents run it, what it costs when it goes wrong, and what a working program looks like.</p>
+  </div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid #454034;padding-top:28px;">
+    <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#A8A08B;">Security &amp; platform engineering leadership</p>
+    <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#6B6554;">20 minutes</p>
+  </div>
+</section>
+
+<section data-label="Agenda" data-screen-label="02 Agenda" data-speaker-notes="Four parts. The first three build the picture; the fourth is what we do about it. Hold questions on tooling until part four — most of them are answered there." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Agenda</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">What we'll cover</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px 80px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">01</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">What actually changed</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Three new inputs into production, and why review capacity did not grow with them.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">02</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">How it reaches production</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Insecure by accident, adversarial by design, and the agents holding our credentials.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">03</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">What it costs</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Breach economics, shadow AI, and two regulatory clocks already running.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">04</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.2 var(--display);">What good looks like</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Five controls that do the work, and a first ninety days.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="01 Divider" data-screen-label="03 Divider 01" data-speaker-notes="Part one. Before we talk about threats, we need agreement on what is different. This is not a new category of vulnerability — it is a change in who writes the code, how fast it arrives, and who is holding the keys when it runs." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">01</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part one</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">What actually changed</h2>
+  </div>
+</section>
+
+<section data-label="Three new inputs" data-screen-label="04 New inputs" data-speaker-notes="Three things now enter production that did not exist in our threat model three years ago. Note the progression: the first writes code, the second acts on our behalf with our credentials, the third is a binary artefact we download and execute from a public hub. Each needs a different control." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Scope</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Three new inputs into production</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">01</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.15 var(--display);">Generated code</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Assistants now draft a material share of what we ship — including the dependency list. The model picks the package; nobody chose it.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:var(--accent);">02</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.15 var(--display);">Autonomous agents</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Agents read tickets, open pull requests and run commands — holding real tokens, on real repositories, at machine speed.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #93422B;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-small)/1 var(--mono);color:#93422B;">03</p>
+      <p style="margin:0;font:700 var(--type-subtitle)/1.15 var(--display);color:#93422B;">Models and tools</p>
+      <p style="margin:0;font:500 var(--type-small)/1.45 var(--sans);color:#454034;">Weights, datasets and MCP servers pulled from public hubs — executable artefacts, with far less provenance than a package.</p>
+    </div>
+  </div>
+  <p style="margin:auto 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">None of these are bad. All three bypass the review path we built for human-authored code.</p>
+</section>
+
+<section data-label="Package hallucination" data-screen-label="05 Hallucination" data-speaker-notes="This is the clearest measured example of a genuinely new failure mode. Researchers generated 576,000 code samples and checked every package the models recommended. One in five did not exist. Attackers register the invented names and wait — the industry calls it slopsquatting. Note the second bar: this is not a rare edge case, and the hallucinated names are stable enough across runs to be worth registering." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">New failure mode</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Models recommend packages that do not exist</h2>
+  <div style="display:grid;grid-template-columns:1080px 1fr;gap:88px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:40px;">
+      <div style="display:flex;align-items:center;gap:28px;">
+        <p style="margin:0;flex:0 0 260px;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Commercial models</p>
+        <div style="flex:0 0 auto;height:76px;width:130px;background:#5C5648;"></div>
+        <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);font-variant-numeric:tabular-nums;color:#5C5648;">5.2%</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:28px;">
+        <p style="margin:0;flex:0 0 260px;font:700 var(--type-small)/1.2 var(--sans);">Open-source models</p>
+        <div style="flex:0 0 auto;height:76px;width:543px;background:#B4573C;"></div>
+        <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);font-variant-numeric:tabular-nums;color:#93422B;">21.7%</p>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;max-width:900px;text-wrap:pretty;">Share of recommended packages that do not exist, across 576,000 generated code samples. Overall average: 19.7%.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">205,000</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">unique hallucinated package names observed</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">43%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">of them recurred in all ten repeat runs — predictable enough to pre-register</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #93422B;padding-top:24px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);color:#93422B;">Slopsquatting</p>
+        <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#454034;">register the invented name, wait for the install</p>
+      </div>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: Spracklen et al., "We Have a Package for You!" — USENIX Security 2025. 16 models, 576,000 samples.</p>
+</section>
+
+<section data-label="The review gap" data-screen-label="06 Review gap" data-speaker-notes="This is the structural problem behind everything else. Output scaled with the tooling; review capacity is still bounded by the number of engineers and hours. Research has also shown developers using assistants wrote less secure code while being more confident it was secure — so the reviewer is both busier and less suspicious. The bars are illustrative of the shape, not measured from our estate." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Blind spot</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Output scaled. Review did not.</h2>
+  <div style="display:grid;grid-template-columns:1fr 560px;gap:88px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Code produced per engineer, per week</p>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="height:72px;width:900px;background:#B4573C;"></div>
+          <p style="margin:0;font:700 var(--type-body)/1.2 var(--sans);color:#93422B;">Rising</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Hours available to review it</p>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div style="height:72px;width:200px;background:#5C5648;"></div>
+          <p style="margin:0;font:500 var(--type-body)/1.2 var(--sans);">Flat</p>
+        </div>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;max-width:900px;text-wrap:pretty;">Illustrative proportions. Substitute your own delivery metrics before presenting — the shape is the point, not the ratio.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:28px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">Three consequences</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">Approval becomes a formality — the diff is too large and arrives too often to read closely.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">Confidence rises as scrutiny falls — studies find assistant users trust generated code more than it deserves.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);color:#454034;">Provenance is lost — six months on, nobody can say which lines a model wrote, or why.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="02 Divider" data-screen-label="07 Divider 02" data-speaker-notes="Part two. Two categories of problem that need genuinely different defences, then the one that keeps me up at night: agents with credentials." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">02</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part two</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">How it reaches production</h2>
+  </div>
+</section>
+
+<section data-label="Two problems" data-screen-label="08 Accident vs design" data-speaker-notes="Most programs are built entirely for the left column — scanners, linters, SAST. The right column is an attacker treating the model as the delivery mechanism, and almost none of our existing controls look at it. Prompt injection sits at number one in the OWASP Top 10 for LLM applications precisely because there is still no complete fix." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Threat model</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Two problems, not one</h2>
+  <div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:0 64px;margin-top:var(--gap-title);">
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">&nbsp;</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-body)/1.3 var(--display);">Insecure by accident</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-body)/1.3 var(--display);">Adversarial by design</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">What it is</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">A model reproduces a weak pattern, a stale API, or a package that does not exist</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Instructions hidden in content the model reads — issues, docs, web pages, config files</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">How we find it</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">SAST, dependency scanning, code review — the tools we already run</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Egress monitoring, tool-call audit, provenance checks — mostly not deployed</p>
+
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">Who is targeted</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Nobody — it is a defect, distributed at scale</p>
+    <p style="margin:0;padding:28px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.4 var(--sans);">Us, specifically — the payload is written for our stack</p>
+
+    <p style="margin:0;padding:28px 0;font:500 var(--type-small)/1.4 var(--sans);color:#5C5648;">Maturity of defence</p>
+    <p style="margin:0;padding:28px 0;font:400 var(--type-small)/1.4 var(--sans);">Understood — existing controls mostly transfer</p>
+    <p style="margin:0;padding:28px 0;font:700 var(--type-small)/1.4 var(--sans);color:#93422B;">Unsolved — no complete mitigation for prompt injection</p>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Prompt injection is LLM01 — the top entry in the OWASP Top 10 for LLM Applications.</p>
+</section>
+
+<section data-label="Three incidents" data-screen-label="09 Incidents" data-speaker-notes="Three documented cases, chosen because they failed in three different ways. The Rules File Backdoor poisoned the developer's own configuration. EchoLeak needed no click at all — an email was enough. The Nx compromise is the one to dwell on: the malware invoked the developer's own AI CLI tools to help it find and exfiltrate secrets. That is the shape of things now." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Case studies</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Three incidents, three failure modes</h2>
+  <div style="display:grid;grid-template-columns:420px 1fr 1fr;gap:0 64px;margin-top:var(--gap-title);">
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">Incident</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">How it got in</p>
+    <p style="margin:0;padding:0 0 24px;border-bottom:2px solid #1B1911;font:700 var(--type-small)/1.3 var(--sans);color:#5C5648;">What it exposed</p>
+
+    <div style="padding:32px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">Rules File Backdoor</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2025 · assistant config</p>
+    </div>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">Invisible Unicode instructions hidden inside shared AI rules files, steering the assistant's output</p>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">The assistant's configuration is executable input, and it is not in anyone's review scope</p>
+
+    <div style="padding:32px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">EchoLeak</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2025 · CVE-2025-32711</p>
+    </div>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">A zero-click prompt injection in M365 Copilot: receiving the email was enough to leak context</p>
+    <p style="margin:0;padding:32px 0;border-bottom:1px solid #E0DBC9;font:400 var(--type-small)/1.45 var(--sans);">An assistant with broad read access becomes an exfiltration path with no user action</p>
+
+    <div style="padding:32px 0;">
+      <p style="margin:0;font:700 var(--type-body)/1.2 var(--display);">Nx "s1ngularity"</p>
+      <p style="margin:8px 0 0;font:400 var(--type-small)/1.3 var(--mono);color:#5C5648;">2025 · npm supply chain</p>
+    </div>
+    <p style="margin:0;padding:32px 0;font:400 var(--type-small)/1.45 var(--sans);">A compromised build pipeline shipped a post-install script to a widely used package</p>
+    <p style="margin:0;padding:32px 0;font:700 var(--type-small)/1.45 var(--sans);color:#93422B;">The payload drove the developer's own AI CLI tools to locate and exfiltrate credentials</p>
+  </div>
+</section>
+
+<section data-label="The agent problem" data-screen-label="10 Agents" data-speaker-notes="This is the slide to slow down on. We spent twenty years building the principle of least privilege for humans, then handed an agent a token that can read every repository because scoping it per task was inconvenient. The blast radius question is the one to ask in design review: if this agent is fully controlled by an attacker, what can it reach?" style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Privilege</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The agent holds the credentials</h2>
+  <div style="display:grid;grid-template-columns:1fr 700px;gap:96px;margin-top:var(--gap-title);align-items:center;">
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <p style="margin:0;font:700 200px/0.85 var(--display);letter-spacing:-0.04em;color:#93422B;">97%</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);max-width:640px;text-wrap:pretty;">of organisations that suffered an AI-related breach had no proper AI access controls in place.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:32px;">
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">An agent is a confused deputy by construction: it cannot reliably tell our instructions from instructions embedded in the data it reads.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">Non-human identities now outnumber human ones, and they rotate less, expire later, and are scoped more broadly.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:28px;color:#454034;">The design-review question is blast radius: if this agent were fully attacker-controlled, what could it reach before anyone noticed?</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: IBM Cost of a Data Breach Report 2025 (Ponemon Institute).</p>
+</section>
+
+<section data-label="Model supply chain" data-screen-label="11 Model supply chain" data-speaker-notes="The dependency conversation we had about npm and PyPI is now happening again for weights and tools, and the artefacts are worse: a serialised model can execute code on load, and an MCP server is a remote instruction source we wire directly into an agent. Same lesson, higher stakes, and the ecosystem is roughly where package registries were a decade ago." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Provenance</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Models and tools are dependencies too</h2>
+  <p style="margin:24px 0 0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#5C5648;max-width:1400px;text-wrap:pretty;">We download executable artefacts from public hubs, on trust, with less scrutiny than we give an npm package.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:64px;margin-top:56px;">
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">Weights</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Serialised model formats can execute code the moment they are loaded. Malicious models have been found published on public hubs.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">Datasets</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Fine-tuning data is rarely inventoried. Poisoning is cheap, persists in the weights, and survives every later evaluation.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #93422B;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);color:#93422B;">MCP servers and tools</p>
+      <p style="margin:0;font:500 var(--type-small)/1.45 var(--sans);color:#454034;">A tool description is untrusted text the agent obeys. A server can change its behaviour after approval — and usually nobody re-checks.</p>
+    </div>
+  </div>
+  <p style="margin:auto 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">The question is the same one we ask of any dependency: where did it come from, who can change it, and would we know if they did?</p>
+</section>
+
+<section data-label="Governance gap" data-screen-label="12 Governance" data-speaker-notes="Two thirds of organisations have no AI governance policy, and shadow AI is the expensive part — staff using unapproved tools with real company data, invisible to us until something leaks. This is the cheapest slide to act on: an inventory and an approved-tool list costs almost nothing." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Governance</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Most of it is happening unsupervised</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:96px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:40px;">
+      <div style="display:flex;align-items:flex-end;gap:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+          <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);color:#5C5648;">37%</p>
+          <div style="width:170px;height:180px;background:#5C5648;"></div>
+          <p style="margin:0;font:500 var(--type-small)/1.2 var(--sans);color:#5C5648;">Have a policy</p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+          <p style="margin:0;font:700 var(--type-subtitle)/1 var(--display);color:#93422B;">63%</p>
+          <div style="width:170px;height:310px;background:#B4573C;"></div>
+          <p style="margin:0;font:700 var(--type-small)/1.2 var(--sans);">Have none</p>
+        </div>
+      </div>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;max-width:620px;text-wrap:pretty;">Share of organisations with a policy governing AI use, or a process to detect unsanctioned tools.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:32px;">
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #93422B;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);color:#93422B;">+$670,000</p>
+        <p style="margin:0;font:500 var(--type-small)/1.4 var(--sans);color:#454034;">added to the average breach cost where shadow AI was involved</p>
+      </div>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:26px;color:#454034;">Staff paste customer data into unapproved tools because the approved path is slower.</p>
+      <p style="margin:0;font:400 var(--type-body)/1.4 var(--sans);border-top:2px solid #CFC8B2;padding-top:26px;color:#454034;">Generated code carries licence and IP questions no scanner is currently asking.</p>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: IBM Cost of a Data Breach Report 2025 (Ponemon Institute).</p>
+</section>
+
+<section data-label="03 Divider" data-screen-label="13 Divider 03" data-speaker-notes="Part three. Two costs: the breach, and the compliance clock that is already running whether or not we are ready." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">03</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part three</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">What it costs</h2>
+  </div>
+</section>
+
+<section data-label="Cost of inaction" data-screen-label="14 Cost" data-speaker-notes="IBM's 2025 figures. The headline global average is $4.44M. The AI-specific detail is what matters here: one in seven organisations reported a breach involving their AI models or applications, and in most of those cases the compromise spread beyond the first system. Note that the cost driver is detection and lost business, not fines." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Economics</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The cost of inaction</h2>
+  <div style="display:grid;grid-template-columns:820px 1fr;gap:96px;margin-top:var(--gap-title);align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <p style="margin:0;font:700 180px/0.85 var(--display);letter-spacing:-0.04em;color:#93422B;">$4.44M</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);">global average cost of a data breach — with the US average at $10.22M</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Driven by detection, escalation and lost business, not by fines.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:36px;">
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">13%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">of organisations reported a breach of their AI models or applications</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #CFC8B2;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">60%</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">of those led to data compromise; 31% caused operational disruption</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;border-top:2px solid #93422B;padding-top:26px;">
+        <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);color:#93422B;">+$670,000</p>
+        <p style="margin:0;font:400 var(--type-small)/1.4 var(--sans);color:#5C5648;">added to a breach where unsanctioned shadow AI was in play</p>
+      </div>
+    </div>
+  </div>
+  <p data-source="true" style="margin:auto 0 0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Source: IBM Cost of a Data Breach Report 2025 (Ponemon Institute).</p>
+</section>
+
+<section data-label="Regulatory clock" data-screen-label="15 Regulation" data-speaker-notes="Two clocks running at once now. The CRA reporting obligation is next month: 24 hours to an early warning for an actively exploited vulnerability. The AI Act's high-risk obligations land alongside it. Both assume we can answer one question quickly — what is in this system, and where does it run? Confirm these dates against current guidance before presenting; the AI Act timeline has been subject to amendment." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Compliance</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Two regulatory clocks</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;margin-top:56px;">
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">In force now</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">SEC disclosure</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Material cybersecurity incidents reported on Form 8-K within four business days.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">In force now</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">EU AI Act, GPAI</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Transparency, documentation and copyright obligations for general-purpose AI models.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #93422B;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#93422B;">11 Sep 2026</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);color:#93422B;">EU CRA, Article 14</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#454034;">Actively exploited vulnerabilities reported to ENISA and the national CSIRT: early warning in 24 hours, full notification in 72.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;border-top:2px solid #CFC8B2;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-small)/1.2 var(--mono);color:#5C5648;">11 Dec 2027</p>
+      <p style="margin:0;font:700 var(--type-body)/1.25 var(--display);">EU CRA, full application</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Vulnerability handling, SBOMs and conformity assessment for products on the EU market.</p>
+    </div>
+  </div>
+  <p style="margin:56px 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">Every one of these assumes we can answer a single question quickly: which of our systems uses this model, this tool, or this component?</p>
+</section>
+
+<section data-label="04 Divider" data-screen-label="16 Divider 04" data-speaker-notes="Part four. Nothing exotic here — five controls, and the order matters. Inventory first; everything else depends on it." style="box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:80px;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:italic 700 var(--type-numeral)/0.8 var(--display);color:var(--accent-dark);letter-spacing:-0.04em;">04</p>
+  <div style="display:flex;flex-direction:column;gap:24px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:#A8A08B;">Part four</p>
+    <h2 style="margin:0;font:700 88px/1.05 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">What good looks like</h2>
+  </div>
+</section>
+
+<section data-label="Five controls" data-screen-label="17 Controls" data-speaker-notes="Five controls. One is inventory, two is the privilege question, three closes the hallucination gap at the registry, four is the audit trail, five is the human gate on irreversible actions. Most organisations have partial coverage of one and nothing on two or five." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Controls</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">Five controls that matter</h2>
+  <div style="display:flex;flex-direction:column;gap:0;margin-top:48px;">
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">01</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">An inventory of every model, agent and tool</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">What is deployed, what it can reach, and who owns it — extending the SBOM to weights and MCP servers.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">02</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">Least privilege for non-human identities</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Scoped, short-lived, per-task credentials for agents — and an answerable blast-radius question for each one.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">03</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">A curated dependency path</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">An internal registry that resolves what a model suggests against packages that actually exist and are actually vetted.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;border-bottom:1px solid #E0DBC9;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">04</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">Logged prompts, tool calls and egress</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">If an agent acts, we need the trace — otherwise incident response has nothing to reconstruct.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 620px 1fr;gap:48px;align-items:baseline;padding:28px 0;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent);">05</p>
+      <p style="margin:0;font:700 var(--type-body)/1.3 var(--display);">A human gate on irreversible actions</p>
+      <p style="margin:0;font:400 var(--type-small)/1.45 var(--sans);color:#5C5648;">Production deploys, payments, data deletion, permission changes: an agent proposes, a person approves.</p>
+    </div>
+  </div>
+</section>
+
+<section data-label="First 90 days" data-screen-label="18 Plan" data-speaker-notes="A sequence that fits in existing capacity. Thirty days to see what we have, thirty to cut the privilege, thirty to wire the reporting path before the CRA date. Nothing here requires new tooling spend to start." style="box-sizing:border-box;display:flex;flex-direction:column;background:#F3F0E7;color:#1B1911;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);">Sequence</p>
+  <h2 style="margin:20px 0 0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.015em;">The first ninety days</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;margin-top:var(--gap-title);">
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #93422B;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 1–30</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">See the estate</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Inventory every model, agent and AI tool in use — sanctioned or not. Name one accountable owner for the programme.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 31–60</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">Cut the blast radius</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Re-scope agent credentials to least privilege. Put a human gate on irreversible actions. Publish one approved-tool path.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px;border-top:2px solid #CFC8B2;padding-top:32px;">
+      <p style="margin:0;font:700 var(--type-subtitle)/1.1 var(--display);">Days 61–90</p>
+      <p style="margin:0;font:500 var(--type-body)/1.3 var(--sans);">Close the loop</p>
+      <p style="margin:0;font:400 var(--type-small)/1.5 var(--sans);color:#5C5648;">Turn on tool-call and egress logging. Wire the CRA reporting path end to end. Report coverage to the board each quarter.</p>
+    </div>
+  </div>
+  <p style="margin:auto 0 0;font:500 var(--type-body)/1.4 var(--sans);color:#454034;max-width:1500px;text-wrap:pretty;">Two metrics tell us whether this is working: what share of AI systems are in the inventory, and what share of agent credentials are scoped and short-lived.</p>
+</section>
+
+<section data-label="Close" data-screen-label="19 Close" data-speaker-notes="Close on the three decisions, not on the fear. This is not an argument to slow down adoption — it is an argument to know what we have deployed. Ask for the owner in the room today; the rest can follow in writing next week." style="box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:#1B1911;color:#EBE7D9;font-family:var(--sans);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+  <div style="display:flex;flex-direction:column;gap:36px;">
+    <p style="margin:0;font:700 var(--type-kicker)/1.2 var(--sans);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-dark);">Next</p>
+    <h2 style="margin:0;font:700 var(--type-title)/1.08 var(--display);letter-spacing:-0.02em;color:#FCFBF7;">Where we go from here</h2>
+    <p style="margin:0;font:400 var(--type-subtitle)/1.35 var(--sans);color:#A8A08B;max-width:1300px;text-wrap:pretty;">Three decisions to take out of this room.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px;">
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">01</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">Who owns the AI system inventory</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">02</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">What an agent may do without a human approving it</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;border-top:2px solid #454034;padding-top:28px;">
+      <p style="margin:0;font:700 var(--type-body)/1 var(--mono);color:var(--accent-dark);">03</p>
+      <p style="margin:0;font:500 var(--type-body)/1.35 var(--sans);color:#EBE7D9;">What the approved path is, so shadow AI has an alternative</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid #454034;padding-top:28px;">
+    <x-import component-from-global-scope="ACMEDesignSystem_739be1.Wordmark" href="#" dc-props="{{ wordmarkSm }}" hint-size="160px,32px"></x-import>
+    <p data-source="true" style="margin:0;font:400 var(--type-kicker)/1.4 var(--sans);color:#6B6554;">Sources: USENIX Security 2025 · IBM Cost of a Data Breach 2025 · OWASP Top 10 for LLM Applications · EU CRA and AI Act</p>
+  </div>
+</section>
+
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#93422B&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#93422B&quot;,&quot;#B4573C&quot;,&quot;#75341F&quot;],&quot;section&quot;:&quot;Style&quot;},&quot;titleSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:64,&quot;min&quot;:52,&quot;max&quot;:80,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Style&quot;},&quot;showSources&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this.apply(); }
+  componentDidUpdate() { this.apply(); }
+  apply() {
+    const root = document.documentElement;
+    root.dataset.theme = 'light';
+    root.style.setProperty('--accent', this.props.accent ?? '#93422B');
+    root.style.setProperty('--type-title', (this.props.titleSize ?? 64) + 'px');
+    const show = this.props.showSources ?? true;
+    document.querySelectorAll('[data-source]').forEach(el => { el.style.display = show ? '' : 'none'; });
+  }
+  renderVals() {
+    return {
+      wordmarkLg: { style: { fontSize: '30px', color: '#FCFBF7', alignSelf: 'flex-start' } },
+      wordmarkSm: { style: { fontSize: '24px', color: '#FCFBF7', alignSelf: 'flex-start' } }
+    };
+  }
+}
+</script>
+</body>
+</html>
