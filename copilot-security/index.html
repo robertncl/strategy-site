@@ -3,36 +3,38 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="color-scheme" content="dark" />
+<meta name="color-scheme" content="light" />
 <meta name="description" content="A landscape and threat map for teams running GitHub Copilot's agentic surfaces: what AI gateways, MCP gateways, sandboxes, harnesses and GitHub-native controls each cover, and where the documented gaps sit." />
 <title>Controlling GitHub Copilot — AI Agent Security Report</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="../_acme/tokens.css" />
 <style>
 :root {
-  --color-bg: #161826;
-  --color-surface: #232532;
-  --color-text: #e9e9ed;
-  --color-accent: #9184d9;
-  --color-accent-2: #a7a1db;
-  --color-divider: color-mix(in srgb, #e9e9ed 16%, transparent);
+  /* ACME design system — report pattern: light Graphite page, Signal Red
+     for editorial marks (kickers, numerals), Blue for links. */
+  color-scheme: light;
+  --color-bg: var(--acme-color-canvas);
+  --color-surface: var(--acme-color-surface);
+  --color-text: var(--acme-color-text);
+  --color-accent: var(--acme-color-accent);
+  --color-accent-2: var(--acme-color-info);
+  --color-divider: var(--acme-color-border);
 
-  --color-neutral-100: #f3f5fe;
-  --color-neutral-800: #3f424d;
-  --color-neutral-900: #292b31;
+  --color-neutral-100: var(--acme-color-text);
+  --color-neutral-800: var(--acme-color-surface-hover);
+  --color-neutral-900: var(--acme-color-surface);
 
-  --color-accent-100: #f5f4ff;
-  --color-accent-200: #e7e5fe;
-  --color-accent-300: #d2cefd;
-  --color-accent-800: #423a6a;
+  /* Tags report status: strong / primary = success, partial / contested = warning. */
+  --color-accent-100: var(--acme-color-success-soft-text);
+  --color-accent-200: var(--acme-red-800);
+  --color-accent-300: var(--acme-color-accent);
+  --color-accent-800: var(--acme-color-success-soft);
 
-  --color-accent-2-100: #f5f4ff;
-  --color-accent-2-800: #423e5d;
+  --color-accent-2-100: var(--acme-color-warning-soft-text);
+  --color-accent-2-800: var(--acme-color-warning-soft);
 
-  --font-heading: "Inter", system-ui, sans-serif;
-  --font-heading-weight: 500;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-heading-weight: 600;
+  --font-body: var(--font-sans);
 
   --space-1: 2.8px;
   --space-2: 5.6px;
@@ -41,13 +43,13 @@
   --space-6: 16.8px;
   --space-8: 22.4px;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  --radius-sm: var(--acme-radius-sm);
+  --radius-md: var(--acme-radius-md);
+  --radius-lg: var(--acme-radius-lg);
 
-  --shadow-sm: 0 0 0 1px #3f424d;
-  --shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgba(0,0,0,0.55);
-  --shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgba(0,0,0,0.65);
+  --shadow-sm: 0 0 0 1px var(--acme-color-border), var(--acme-shadow-sm);
+  --shadow-md: 0 0 0 1px var(--acme-color-border-control), var(--acme-shadow-md);
+  --shadow-lg: 0 0 0 1px var(--acme-color-border), var(--acme-shadow-lg);
 }
 
 body {
@@ -65,21 +67,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 p { margin: 0 0 var(--space-3); }
 img { display: block; max-width: 100%; }
-code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+code { font-family: var(--font-mono); }
 :focus { outline: none; }
-:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
 ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
 
 html, body { background: var(--color-bg); color: var(--color-text); }
 body { text-wrap: pretty; }
-a { color: var(--color-accent-300); text-decoration: none; }
-a:hover { color: var(--color-accent-200); }
+a { color: var(--acme-color-link); text-decoration: none; }
+a:hover { color: var(--acme-color-link-hover); text-decoration: underline; }
 sup a { border-bottom: 0; }
 
 /* — cards — */
 .card {
   display: flex; flex-direction: column; gap: var(--space-2);
-  padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface);
+  padding: var(--space-3); border-radius: var(--acme-radius-lg); background: var(--acme-color-surface-raised);
+  border: 1px solid var(--acme-color-border); box-shadow: var(--acme-shadow-sm);
 }
 .card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
 .card-title {
@@ -94,10 +97,10 @@ sup a { border-bottom: 0; }
   letter-spacing: 0.02em; padding: 3px 10px;
   border-radius: calc(var(--radius-md) * 0.75);
 }
-.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); }
-.tag-accent-2 { background: var(--color-accent-2-800); color: var(--color-accent-2-100); }
-.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); }
-.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); border: 1px solid var(--acme-color-success-border); }
+.tag-accent-2 { background: var(--color-accent-2-800); color: var(--color-accent-2-100); border: 1px solid var(--acme-color-warning-border); }
+.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); border: 1px solid var(--acme-color-border); }
+.tag-outline { border: 1px solid var(--acme-color-danger-border); color: var(--acme-color-danger-soft-text); background: var(--acme-color-danger-soft); }
 
 /* — tables — */
 .table { width: 100%; border-collapse: collapse; font-size: 14px; }

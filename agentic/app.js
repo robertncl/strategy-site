@@ -181,35 +181,6 @@
 
   render();
 
-  /* ----------------------------------------------------------- THEME TOGGLE -- */
-  const root = document.documentElement;
-  const meta = document.querySelector('meta[name="color-scheme"]');
-  const themeBtn = document.getElementById("theme-toggle");
-  const mqDark = matchMedia("(prefers-color-scheme: dark)");
-
-  const effective = () =>
-    root.classList.contains("theme-dark") ? "dark"
-    : root.classList.contains("theme-light") ? "light"
-    : (mqDark.matches ? "dark" : "light");
-
-  function syncThemeBtn() {
-    if (themeBtn) themeBtn.setAttribute("aria-pressed", String(effective() === "dark"));
-  }
-  syncThemeBtn();
-
-  if (themeBtn) {
-    themeBtn.addEventListener("click", () => {
-      const next = effective() === "dark" ? "light" : "dark";
-      root.classList.remove("theme-light", "theme-dark");
-      root.classList.add("theme-" + next);
-      if (meta) meta.content = next;
-      try { localStorage.setItem("color-scheme", next); } catch (e) { /* storage may be blocked */ }
-      syncThemeBtn();
-    });
-  }
-  // React to OS theme change while following the system default
-  mqDark.addEventListener("change", syncThemeBtn);
-
   /* ------------------------------------------------------------- MOBILE NAV -- */
   const menuToggle = document.querySelector(".menu-toggle");
   const navList = document.getElementById("nav-list");

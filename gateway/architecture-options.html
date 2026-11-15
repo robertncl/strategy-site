@@ -3,26 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="color-scheme" content="light dark" />
+<meta name="color-scheme" content="light" />
 <meta name="description" content="Seven shortlisted AI gateways — Azure API Management AI Gateway (primary pick), LiteLLM, Portkey, Kong AI Gateway, TrueFoundry, Bifrost, and Cloudflare AI Gateway — compared against Entra ID access control, GitHub Copilot BYOK, and Azure AI Foundry model support." />
 <title>AI Gateway Architecture Options</title>
 <script src="https://unpkg.com/lucide/dist/umd/lucide.js"></script>
+<link rel="stylesheet" href="../_acme/tokens.css" />
 <style>
   :root{
-    --color-canvas:#F3F0E7;--color-surface:#EBE7D9;--color-surface-raised:#FCFBF7;
-    --color-border:#E0DBC9;--color-border-strong:#CFC8B2;
-    --color-text:#1B1911;--color-text-muted:#5C5648;--color-text-subtle:#6B6554;
-    --color-primary:#B4573C;--color-on-primary:#FCFBF7;--color-accent:#93422B;--color-info:#305875;
-    --font-sans:"Styrene B","Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
-    --font-display:"Tiempos Headline","Copernicus",Georgia,"Times New Roman",ui-serif,serif;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --color-canvas:#12100B;--color-surface:#1B1911;--color-surface-raised:#2C291F;
-      --color-border:#454034;--color-border-strong:#5C5648;
-      --color-text:#EBE7D9;--color-text-muted:#A8A08B;--color-text-subtle:#A8A08B;
-      --color-primary:#B4573C;--color-on-primary:#FCFBF7;--color-accent:#DDA588;--color-info:#8DB0C9;
-    }
+    color-scheme: light;
+    /* ACME design system v5 */
+    --color-canvas:var(--acme-color-canvas);--color-surface:var(--acme-color-surface);--color-surface-raised:var(--acme-color-surface-raised);
+    --color-border:var(--acme-color-border);--color-border-strong:var(--acme-color-border-control);
+    --color-text:var(--acme-color-text);--color-text-muted:var(--acme-color-text-muted);--color-text-subtle:var(--acme-color-text-subtle);
+    --color-primary:var(--acme-color-primary);--color-on-primary:var(--acme-color-on-primary);--color-accent:var(--acme-color-accent);--color-info:var(--acme-color-info);
+    --font-sans:"Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+    --font-display:var(--font-sans);
+    --font-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
   }
   *{box-sizing:border-box}
   body{
@@ -44,7 +40,7 @@
 
   <div style="width:32px;height:3px;background:var(--color-accent);margin-bottom:14px;"></div>
   <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.1em;color:var(--color-accent);margin-bottom:10px;">Architecture &middot; per-product</div>
-  <h1 style="font:700 36px/1.1 var(--font-display);letter-spacing:-0.01em;color:var(--color-text);margin:0 0 10px;">AI gateway architecture, by product</h1>
+  <h1 style="font:600 36px/1.1 var(--font-display);letter-spacing:-0.01em;color:var(--color-text);margin:0 0 10px;">AI gateway architecture, by product</h1>
   <div style="font:400 14.5px/1.55 var(--font-sans);color:var(--color-text-muted);max-width:960px;">Seven shortlisted gateways, each drawn against the same three requirements: Microsoft Entra ID access control, GitHub Copilot BYOK, and Azure AI Foundry models. APIM is the primary pick.</div>
 
   <div style="display:flex;gap:24px;align-items:center;margin-top:20px;flex-wrap:wrap;">
@@ -59,7 +55,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="shield" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Azure API Management · AI Gateway</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Azure API Management · AI Gateway</div>
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-on-primary);background:var(--color-primary);padding:4px 9px;border-radius:999px;">Primary pick</div>
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Azure PaaS · commercial</div>
     </div>
@@ -112,7 +108,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="layers" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">LiteLLM</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">LiteLLM</div>
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border-strong);padding:4px 9px;border-radius:999px;">If OSS control matters</div>
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Self-hosted · OSS + enterprise</div>
     </div>
@@ -165,7 +161,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="shield-check" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Portkey</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Portkey</div>
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border-strong);padding:4px 9px;border-radius:999px;">If buying, not building</div>
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">SaaS or self-hosted · Apache 2.0 + enterprise</div>
     </div>
@@ -218,7 +214,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="waypoints" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Kong AI Gateway</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Kong AI Gateway</div>
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border-strong);padding:4px 9px;border-radius:999px;">If Kong already fronts your APIs</div>
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Self-hosted / Konnect · OSS + enterprise</div>
     </div>
@@ -271,7 +267,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="boxes" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">TrueFoundry AI Gateway</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">TrueFoundry AI Gateway</div>
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border-strong);padding:4px 9px;border-radius:999px;">LLM + MCP + agents on AKS</div>
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Self-hosted (K8s) · commercial</div>
     </div>
@@ -324,7 +320,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="zap" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Bifrost (Maxim AI)</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Bifrost (Maxim AI)</div>
       
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Self-hosted (Go) · Apache 2.0 + enterprise</div>
     </div>
@@ -377,7 +373,7 @@
   <div style="padding:28px 0 8px;">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
       <i data-lucide="cloud" style="width:19px;height:19px;color:var(--color-text-subtle);"></i>
-      <div style="font:700 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Cloudflare AI Gateway</div>
+      <div style="font:600 20px var(--font-display);color:var(--color-text);letter-spacing:-0.01em;">Cloudflare AI Gateway</div>
       
       <div style="font:600 11px var(--font-sans);color:var(--color-text-subtle);background:var(--color-surface);border:1px solid var(--color-border);padding:4px 10px;border-radius:999px;">Edge SaaS · usage-based</div>
     </div>

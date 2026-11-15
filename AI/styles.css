@@ -6,32 +6,33 @@
    ============================================================ */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --bg:        #0e1116;
-  --bg-2:      #131820;
-  --panel:     rgba(233, 237, 242, .04);
-  --panel-2:   rgba(233, 237, 242, .07);
-  --stroke:    rgba(233, 237, 242, .09);
-  --stroke-2:  rgba(233, 237, 242, .18);
+  /* ACME design system: Graphite surfaces, ink, one Blue highlight. */
+  --bg:        var(--acme-color-canvas);
+  --bg-2:      var(--acme-color-surface);
+  --panel:     var(--acme-color-surface);
+  --panel-2:   var(--acme-color-surface-hover);
+  --stroke:    var(--acme-color-border);
+  --stroke-2:  var(--acme-color-border-control);
 
-  --ink:       #e9edf2;
-  --ink-soft:  #a3adba;
-  --ink-dim:   #67727f;
+  --ink:       var(--acme-color-text);
+  --ink-soft:  var(--acme-color-text-muted);
+  --ink-dim:   var(--acme-color-text-subtle);
 
-  /* Copper is the deck's voice; the four lane hues are chart-validated
-     against --bg-2 (CVD + contrast) — keep them, don't restyle. */
-  --copper:      #c97c39;
-  --copper-hot:  #e09a58;
-  --copper-dim:  rgba(201, 124, 57, .16);
-  --lane-local:      var(--copper);
-  --lane-managed:    #2aa07c;
-  --lane-serverless: #3987e5;
-  --lane-frontier:   #8579d1;
+  /* Copper was the deck's voice; ACME's editorial mark is Signal Red. */
+  --copper:      var(--acme-color-accent);
+  --copper-hot:  var(--acme-color-accent);
+  --copper-dim:  var(--acme-color-accent-soft);
+  /* Lanes differ in lightness, with Blue on the one we argue for (own it). */
+  --lane-local:      var(--acme-blue-600);
+  --lane-managed:    var(--acme-gray-900);
+  --lane-serverless: var(--acme-gray-600);
+  --lane-frontier:   var(--acme-gray-400);
 
-  --font-display: "Chakra Petch", "Avenir Next Condensed", "Arial Narrow", sans-serif;
-  --font-body:    "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
-  --font-mono:    "Spline Sans Mono", "Cascadia Code", ui-monospace, monospace;
+  --font-display: var(--font-sans);
+  --font-body:    var(--font-sans);
+  /* --font-mono comes from tokens.css (JetBrains Mono) */
 
   --wrap: 1080px;
 }
@@ -52,7 +53,8 @@ body {
 ::selection { background: var(--copper-dim); color: var(--copper-hot); }
 
 b, strong { font-weight: 700; color: var(--ink); }
-a { color: var(--copper-hot); }
+a { color: var(--acme-color-link); }
+a:hover { color: var(--acme-color-link-hover); }
 
 /* ---------- chrome: progress bar, topbar, dot rail ---------- */
 
@@ -146,7 +148,8 @@ h3 {
   font-family: var(--font-display); font-weight: 600;
   font-size: 1.05rem; letter-spacing: .01em;
 }
-.hl { color: var(--copper-hot); }
+/* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+.hl { color: inherit; }
 
 .lede {
   font-size: clamp(1.05rem, 1.8vw, 1.3rem); line-height: 1.55;
@@ -328,7 +331,7 @@ ul.plain li b { color: var(--ink); }
 .chart__grid { position: absolute; inset: 0 0 0 224px; pointer-events: none; }
 .chart__grid i {
   position: absolute; top: -6px; bottom: -6px; width: 1px;
-  background: rgba(233, 237, 242, .07);
+  background: rgba(21, 24, 29, .07);
 }
 .chart__axis {
   display: grid; grid-template-columns: 210px 1fr; gap: 14px; margin-top: 12px;
@@ -345,7 +348,7 @@ ul.plain li b { color: var(--ink); }
   background: var(--bg-2); border: 1px solid var(--stroke-2);
   padding: 10px 13px; font-size: .8rem; color: var(--ink-soft);
   pointer-events: none; opacity: 0; transition: opacity .12s;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, .5);
+  box-shadow: var(--acme-shadow-lg);
 }
 .tooltip.show { opacity: 1; }
 .tooltip b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 3px; }
@@ -413,3 +416,8 @@ ul.plain li b { color: var(--ink); }
   .chart__cat { font-size: .74rem; }
   .slide { padding-top: 84px; }
 }
+
+/* ── ACME design system overrides ── */
+#traces { display: none; }               /* no textures or decorative motion */
+h1, h2, h3 { font-weight: 600; letter-spacing: var(--acme-tracking-tight, -0.02em); }
+:focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
