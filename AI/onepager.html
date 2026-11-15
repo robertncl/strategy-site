@@ -206,7 +206,8 @@ h1 {
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.05; text-wrap: balance;
 }
-.hl { color: var(--copper-hot); }
+/* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+.hl { color: inherit; }
 .standfirst {
   margin-top: 16px; font-size: 1.12rem; line-height: 1.55;
   color: var(--ink-soft); max-width: 62ch;

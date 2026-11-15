@@ -818,7 +818,8 @@
 [data-r="C"] { --r-color: var(--acme-gray-500); }
 h1, h2, h3 { font-weight: 600; letter-spacing: var(--acme-tracking-tight, -0.02em); }
 :focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
-.grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--acme-color-accent); }
+/* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+.grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: inherit; }
 /* Signal Red is an editorial mark only (kickers, the brand glyph); never a control. */
 .kicker, .brand-mark, .footer-brand .brand-mark { color: var(--acme-color-accent); }
 .nav-list a.is-current { color: var(--acme-color-text); background: var(--acme-color-surface-hover); }

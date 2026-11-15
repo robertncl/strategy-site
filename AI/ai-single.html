@@ -291,7 +291,8 @@ h3 {
   font-family: var(--font-display); font-weight: 600;
   font-size: 1.05rem; letter-spacing: .01em;
 }
-.hl { color: var(--copper-hot); }
+/* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+.hl { color: inherit; }
 
 .lede {
   font-size: clamp(1.05rem, 1.8vw, 1.3rem); line-height: 1.55;

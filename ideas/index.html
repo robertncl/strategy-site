@@ -84,6 +84,8 @@
   .lede{font-size:clamp(16px,1.7vw,21px);line-height:1.5;color:var(--ink-soft);max-width:62ch;margin:14px 0 0;font-weight:400}
   p{margin:0}
   .accent{color:var(--accent-ink)}
+  /* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+  :is(h1,h2,h3) .accent{color:inherit}
   .warm{color:var(--warm)}
 
   /* ---- title slide ---- */
