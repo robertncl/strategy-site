@@ -622,3 +622,62 @@
     .ac-tools { display: none; }
   }
 }
+
+/* ── ACME design system ─────────────────────────────────────────────────
+   Unlayered, so it wins over every @layer above. ACME is light-only:
+   the semantic tokens point straight at ACME's, whatever theme is pinned. */
+:root, :root.theme-light, :root.theme-dark {
+  color-scheme: light;
+  --ink: var(--acme-color-text);
+  --muted: var(--acme-color-text-muted);
+  --bg: var(--acme-color-canvas);
+  --surface: var(--acme-color-surface-raised);
+  --surface-2: var(--acme-color-surface);
+  --raised: var(--acme-color-surface-raised);
+  --border: var(--acme-color-border);
+  --border-strong: var(--acme-color-border-control);
+  --brand: var(--acme-color-primary);          /* ink acts: primary buttons, active chips */
+  --brand-ink: var(--acme-color-on-primary);
+  --accent: var(--acme-color-data-highlight);
+  /* Autonomy climbs with risk: advise = success, propose = info, act = warning. */
+  --l1: var(--acme-color-success);
+  --l2: var(--acme-color-info);
+  --l3: var(--acme-color-warning);
+  --l1-soft: var(--acme-color-success-soft);
+  --l2-soft: var(--acme-color-info-soft);
+  --l3-soft: var(--acme-color-warning-soft);
+  --brand-soft: var(--acme-color-surface-hover);
+  --ring: var(--acme-color-focus);
+  --shadow-sm: var(--acme-shadow-sm);
+  --shadow-md: var(--acme-shadow-md);
+  --shadow-lg: var(--acme-shadow-lg);
+  --font-sans: "Inter", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --radius: var(--acme-radius-lg);
+  --radius-sm: var(--acme-radius-md);
+  --radius-lg: var(--acme-radius-xl);
+  accent-color: var(--acme-color-selected);
+}
+.theme-toggle { display: none !important; }
+.lvl-l1, .lvl-l2, .lvl-l3,
+:root.theme-dark .lvl-l2, :root.theme-dark .lvl-l3,
+:root:not(.theme-light) .lvl-l2, :root:not(.theme-light) .lvl-l3 { color: var(--acme-color-on-primary); }
+.hero-stats .count { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--acme-color-text); }
+.tick.no { color: var(--acme-color-danger); }
+[data-r="R"] { --r-color: var(--acme-gray-900); }
+[data-r="A"] { --r-color: var(--acme-blue-600); }
+[data-r="C"] { --r-color: var(--acme-gray-500); }
+h1, h2, h3 { font-weight: 600; letter-spacing: var(--acme-tracking-tight, -0.02em); }
+:focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
+.grad-text { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--acme-color-accent); }
+/* Signal Red is an editorial mark only (kickers, the brand glyph); never a control. */
+.kicker, .brand-mark, .footer-brand .brand-mark { color: var(--acme-color-accent); }
+.nav-list a.is-current { color: var(--acme-color-text); background: var(--acme-color-surface-hover); }
+.btn-primary:hover, .to-top:hover { background: var(--acme-color-primary-hover); }
+.link-btn { color: var(--acme-color-link); }
+.search-box:focus-within { border-color: var(--acme-color-focus); box-shadow: 0 0 0 3px var(--acme-color-selected-soft); }
+.scroll-progress span { background: var(--acme-color-text); }
+/* Flat, opaque surfaces: no glows, grid textures or translucent blur. */
+.hero-glow, .hero-grid, .flow-card::after { display: none; }
+.site-header { background: var(--acme-color-canvas); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.node--hub, [class*="node"][class*="hub"] { background: var(--acme-color-surface); }

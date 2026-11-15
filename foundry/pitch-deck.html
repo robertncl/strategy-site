@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="color-scheme" content="light dark" />
+<meta name="color-scheme" content="light" />
 <meta name="description" content="Presentation-style pitch deck: supplement GitHub Copilot with Azure AI Foundry models (DeepSeek, MiniMax, Kimi) to do more inside the same $30/developer/month AI budget." />
 <title>Stretch the $30 — Pitch Deck</title>
+<link rel="stylesheet" href="../_acme/tokens.css" />
 <style>
 /* ============================================================
    Stretch the $30 — pitch-deck rendition
@@ -14,31 +15,21 @@
    ============================================================ */
 
 :root{
-  --canvas:#F3F0E7;--surface:#EBE7D9;--surface-raised:#FCFBF7;
-  --border:#E0DBC9;--border-strong:#CFC8B2;
-  --text:#1B1911;--text-muted:#5C5648;--text-subtle:#6B6554;
-  --primary:#B4573C;--on-primary:#FCFBF7;--accent:#93422B;
-  --info:#305875;--info-soft:#EDF1F4;--info-soft-text:#274860;
-  --gray-0:#FCFBF7;--gray-100:#EBE7D9;--gray-400:#A8A08B;--gray-500:#6B6554;
-  --gray-950:#12100B;--clay-300:#DDA588;
-  --shadow-sm:0 1px 2px rgb(28 25 17 / 0.06);
-  --font-sans:"Styrene B","Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
-  --font-display:"Tiempos Headline","Copernicus",Georgia,"Times New Roman",ui-serif,serif;
+  color-scheme: light;
+  /* ACME design system v5: Graphite surfaces, ink acts, Signal Red marks. */
+  --canvas:var(--acme-color-canvas);--surface:var(--acme-color-surface);--surface-raised:var(--acme-color-surface-raised);
+  --border:var(--acme-color-border);--border-strong:var(--acme-color-border-control);
+  --text:var(--acme-color-text);--text-muted:var(--acme-color-text-muted);--text-subtle:var(--acme-color-text-subtle);
+  --primary:var(--acme-color-primary);--on-primary:var(--acme-color-on-primary);--accent:var(--acme-color-accent);
+  --info:var(--acme-color-info);--info-soft:var(--acme-color-info-soft);--info-soft-text:var(--acme-color-info-soft-text);
+  --gray-0:var(--acme-gray-0);--gray-100:var(--acme-gray-100);--gray-400:var(--acme-gray-400);--gray-500:var(--acme-gray-500);
+  --gray-950:var(--acme-gray-950);--clay-300:var(--acme-red-300);
+  --shadow-sm:var(--acme-shadow-sm);
+  --font-sans:"Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --font-display:var(--font-sans);
   --font-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
-  --r: 12px;
-  --ease: cubic-bezier(.22,.61,.36,1);
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --canvas:#12100B;--surface:#1B1911;--surface-raised:#2C291F;
-    --border:#454034;--border-strong:#5C5648;
-    --text:#EBE7D9;--text-muted:#A8A08B;--text-subtle:#A8A08B;
-    --primary:#B4573C;--on-primary:#FCFBF7;--accent:#DDA588;
-    --info:#8DB0C9;
-    --info-soft: color-mix(in oklab, #5C87A6 20%, #1B1911);
-    --info-soft-text: #8DB0C9;
-    --shadow-sm:0 1px 2px rgb(0 0 0 / 0.35);
-  }
+  --r: var(--acme-radius-xl);
+  --ease: cubic-bezier(.2,0,0,1);
 }
 
 * { box-sizing: border-box; }
@@ -88,7 +79,7 @@ body {
 }
 .slide__frame { flex:1; min-inline-size:0; display:flex; flex-direction:column; padding: 5cqi 6cqi; }
 .slide__kicker { font:700 1.8cqi/1.2 var(--font-sans); text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin:0 0 1.5cqi; }
-.slide__title { font:700 4cqi/1.15 var(--font-display); letter-spacing:-.02em; margin:0 0 2cqi; }
+.slide__title { font:600 4cqi/1.15 var(--font-display); letter-spacing:-.02em; margin:0 0 2cqi; }
 .slide--hero .slide__title { font-size:6cqi; margin-block-end:1cqi; }
 .slide__body { font-size:2.2cqi; line-height:1.5; color:var(--text-muted); max-inline-size:66cqi; margin:0; }
 .slide__bullets { margin:0; padding-inline-start:2.5cqi; display:grid; gap:1.5cqi; font-size:2.2cqi; line-height:1.35; max-inline-size:66cqi; }
@@ -135,7 +126,7 @@ body {
 /* ---------- STAT TILES ---------- */
 .fp-stats { display:flex; gap:1.6cqi; margin: 1cqi 0 1.8cqi; }
 .fp-stat { background: var(--surface-raised); border:1px solid var(--border); border-radius:var(--r); box-shadow: var(--shadow-sm); padding: 2.6cqi 2.8cqi; flex:1; }
-.fp-stat__num { font-family: var(--font-display); font-weight:700; font-size:5.2cqi; color: var(--text); line-height:1; font-variant-numeric: tabular-nums; }
+.fp-stat__num { font-family: var(--font-display); font-weight:600; font-size:5.2cqi; color: var(--text); line-height:1; font-variant-numeric: tabular-nums; }
 .fp-stat__label { font-size:1.7cqi; color: var(--text-muted); margin-top:.8cqi; }
 
 /* ---------- TABLE ---------- */
@@ -201,7 +192,7 @@ body {
   display: grid; place-items: center; transition: all .2s var(--ease);
   box-shadow: var(--shadow-sm);
 }
-.nav:hover { border-color: var(--primary); color: var(--primary); }
+.nav:hover { border-color: var(--border-strong); background: var(--surface); }
 .nav:disabled { opacity: .35; cursor: default; }
 .nav--prev { right: 72px; }
 .nav--next { right: 18px; }
@@ -281,7 +272,7 @@ body {
           </ul>
           <div class="card" style="flex:1; align-self:center;">
             <div class="card__body">
-              <p style="font-family: var(--font-display); font-weight:700; font-size:2.6cqi; color: var(--text); line-height:1.3; margin:0 0 1.4cqi;">One model tier for every task is the inefficiency.</p>
+              <p style="font-family: var(--font-display); font-weight:600; font-size:2.6cqi; color: var(--text); line-height:1.3; margin:0 0 1.4cqi;">One model tier for every task is the inefficiency.</p>
               <p style="font-size:1.7cqi; color: var(--text-muted); line-height:1.5; margin:0;">A premium frontier model answering &ldquo;rename this variable across the repo&rdquo; is top-rate pay for routine work.</p>
             </div>
           </div>

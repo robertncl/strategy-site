@@ -3,73 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <meta name="description" content="Nine agentic-AI ideas non-developers can build with GitHub Copilot across Microsoft 365 and Atlassian.">
+<link rel="stylesheet" href="../_acme/tokens.css">
 </head>
 <body>
 <title>Agentic AI You Can Build Yourself</title>
 
 <style>
+  /* ACME design system: light only. Graphite surfaces, ink acts,
+     Signal Red marks (eyebrows, numerals), status hues grade effort. */
   :root{
-    --paper:#F3F5F7;
-    --surface:#FFFFFF;
-    --surface-2:#EAEEF1;
-    --ink:#12161C;
-    --ink-soft:#3A434E;
-    --muted:#5C6873;
-    --line:#D3DAE0;
-    --line-soft:#E1E7EC;
-    --accent:#0E8C8C;
-    --accent-bright:#12A6A6;
-    --accent-ink:#0A6767;
-    --warm:#C77A2E;
-    --good:#2E8B6B;
-    --good-bg:#DCEFE7;
-    --mid:#B9812B;
-    --mid-bg:#F3E7CF;
-    --adv:#8C5AB0;
-    --adv-bg:#EAE0F2;
-    --shadow:0 1px 2px rgba(18,22,28,.06),0 10px 30px -12px rgba(18,22,28,.18);
+    color-scheme:light;
+    --paper:var(--acme-color-canvas);
+    --surface:var(--acme-color-surface-raised);
+    --surface-2:var(--acme-color-surface);
+    --ink:var(--acme-color-text);
+    --ink-soft:var(--acme-color-text-muted);
+    --muted:var(--acme-color-text-muted);
+    --line:var(--acme-color-border);
+    --line-soft:var(--acme-color-border);
+    --accent:var(--acme-color-accent);
+    --accent-bright:var(--acme-color-mark);
+    --accent-ink:var(--acme-color-accent);
+    --warm:var(--acme-color-accent);
+    --good:var(--acme-color-success);
+    --good-bg:var(--acme-color-success-soft);
+    --mid:var(--acme-color-warning);
+    --mid-bg:var(--acme-color-warning-soft);
+    --adv:var(--acme-color-info);
+    --adv-bg:var(--acme-color-info-soft);
+    --shadow:var(--acme-shadow-sm);
 
-    --sans:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
-    --mono:"Cascadia Code","Cascadia Mono","SF Mono",ui-monospace,"Roboto Mono",Consolas,monospace;
+    --sans:var(--font-sans);
+    --mono:var(--font-mono);
     --maxw:1120px;
   }
-  @media (prefers-color-scheme:dark){
-    :root{
-      --paper:#0D1117;
-      --surface:#161B22;
-      --surface-2:#1C232D;
-      --ink:#E9EEF2;
-      --ink-soft:#C2CBD4;
-      --muted:#8B97A3;
-      --line:#2A333E;
-      --line-soft:#232B34;
-      --accent:#2FC1C1;
-      --accent-bright:#48D6D6;
-      --accent-ink:#7FE3E3;
-      --warm:#E0A45E;
-      --good:#4FC79A;
-      --good-bg:#12352A;
-      --mid:#E0B662;
-      --mid-bg:#3A2F14;
-      --adv:#C39BE0;
-      --adv-bg:#2C2038;
-      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px -16px rgba(0,0,0,.6);
-    }
-  }
-  :root[data-theme="light"]{
-    --paper:#F3F5F7;--surface:#FFFFFF;--surface-2:#EAEEF1;--ink:#12161C;--ink-soft:#3A434E;
-    --muted:#5C6873;--line:#D3DAE0;--line-soft:#E1E7EC;--accent:#0E8C8C;--accent-bright:#12A6A6;
-    --accent-ink:#0A6767;--warm:#C77A2E;--good:#2E8B6B;--good-bg:#DCEFE7;--mid:#B9812B;
-    --mid-bg:#F3E7CF;--adv:#8C5AB0;--adv-bg:#EAE0F2;--shadow:0 1px 2px rgba(18,22,28,.06),0 10px 30px -12px rgba(18,22,28,.18);
-  }
-  :root[data-theme="dark"]{
-    --paper:#0D1117;--surface:#161B22;--surface-2:#1C232D;--ink:#E9EEF2;--ink-soft:#C2CBD4;
-    --muted:#8B97A3;--line:#2A333E;--line-soft:#232B34;--accent:#2FC1C1;--accent-bright:#48D6D6;
-    --accent-ink:#7FE3E3;--warm:#E0A45E;--good:#4FC79A;--good-bg:#12352A;--mid:#E0B662;
-    --mid-bg:#3A2F14;--adv:#C39BE0;--adv-bg:#2C2038;--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 40px -16px rgba(0,0,0,.6);
-  }
+  /* Ink acts: the one primary per view is Graphite 900, never a brand hue. */
+  .btn{border-radius:var(--acme-radius-md)}
+  .btn.primary{background:var(--acme-color-primary)!important;border-color:var(--acme-color-primary)!important;color:var(--acme-color-on-primary)!important}
+  .btn.primary:hover{background:var(--acme-color-primary-hover)!important}
+  #s0 canvas{display:none}
+  h1,h2{font-weight:600}
 
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -130,7 +105,7 @@
   .vs{display:flex;flex-direction:column;gap:14px}
   .vs-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .vs-card{border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;background:var(--surface);box-shadow:var(--shadow)}
-  .vs-card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+  .vs-card.on{border-color:var(--acme-color-border-strong);box-shadow:var(--acme-shadow-md)}
   .vs-card h4{margin:0 0 6px;font-size:15px;letter-spacing:-.01em}
   .vs-card .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   .vs-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.45;margin-top:8px}
@@ -151,9 +126,9 @@
   .stack .k{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
   .stack ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
   .stack li{font-size:13px;padding:6px 11px;border-radius:8px;background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line-soft)}
-  .stack.hero{grid-column:1/-1;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow);background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,var(--surface)),var(--surface))}
-  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block}
-  .dot.blue{background:#2C6FE0}.dot.navy{background:#1B4CA8}
+  .stack.hero{grid-column:1/-1;border-color:var(--acme-color-border-control);box-shadow:var(--acme-shadow-md);background:var(--acme-color-surface)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--acme-color-text);display:inline-block}
+  .dot.blue{background:var(--acme-blue-600)}.dot.navy{background:var(--acme-gray-900)}
 
   /* ---- idea grid ---- */
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -164,7 +139,7 @@
     padding:15px 15px 13px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow);
     transition:transform .18s ease,border-color .18s ease;
   }
-  .card:hover{transform:translateY(-3px);border-color:var(--accent)}
+  .card:hover{border-color:var(--acme-color-border-control);box-shadow:var(--acme-shadow-md)}
   .card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
   .card h4{margin:0;font-size:15.5px;letter-spacing:-.012em;line-height:1.2}
   .card p{font-size:12.8px;color:var(--muted);line-height:1.42;flex:1}
@@ -214,7 +189,6 @@
   .close-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
   .btn{font-family:var(--mono);font-size:13px;letter-spacing:.02em;padding:11px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  :root[data-theme="dark"] .btn.primary,@media (prefers-color-scheme:dark){}
   .stat-row{display:flex;gap:clamp(20px,5vw,64px);margin-top:30px;flex-wrap:wrap}
   .stat .v{font-size:clamp(30px,4.4vw,50px);font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
   .stat .v .warm{color:var(--warm)}
@@ -227,15 +201,15 @@
   .brand-tag b{color:var(--accent-ink)}
   .dots{display:flex;gap:7px;align-items:center}
   .dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:background .2s,transform .2s}
-  .dots button.on{background:var(--accent);transform:scale(1.35)}
+  .dots button.on{background:var(--acme-color-text);transform:scale(1.35)}
   .nav-r{display:flex;align-items:center;gap:12px}
   .counter{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.05em}
   .counter b{color:var(--ink)}
   .arrows{display:flex;gap:6px}
   .arrows button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center}
-  .arrows button:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .arrows button:hover{border-color:var(--acme-color-border-strong);background:var(--acme-color-surface)}
   .arrows button:disabled{opacity:.35;cursor:default}
-  .progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:30;transition:width .5s ease}
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--acme-color-text);z-index:30;transition:width .5s ease}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   @media (max-width:640px){.brand-tag{display:none}}
 </style>

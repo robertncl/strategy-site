@@ -3,24 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Declare support for both light and dark themes (FOUC mitigation) -->
-  <meta name="color-scheme" content="light dark">
+  <!-- ACME design system is light-only -->
+  <meta name="color-scheme" content="light">
   <meta name="description" content="DevSecOps Agentic Automation — a coordinated team of governed AI agents that triage findings, review code, secure the supply chain, watch cloud posture and assemble compliance evidence across Azure, GitHub, Veracode, SonarQube, Nexus, Prisma Cloud, Jira and Confluence. Sequenced by autonomy: Advise → Propose → Act-with-approval.">
   <meta name="robots" content="noindex">
   <title>DevSecOps Agentic Automation — Programme Plan</title>
 
-  <!-- Pin user-chosen theme + flag JS before first paint (avoids theme flash & reveal-flash) -->
-  <script>
-    {
-      document.documentElement.classList.add("js");
-      const stored = localStorage.getItem("color-scheme");
-      if (stored === "light" || stored === "dark") {
-        document.documentElement.classList.add("theme-" + stored);
-        document.querySelector('meta[name="color-scheme"]').content = stored;
-      }
-    }
-  </script>
+  <!-- Flag JS before first paint (avoids reveal-flash) -->
+  <script>document.documentElement.classList.add("js");</script>
 
+  <link rel="stylesheet" href="../_acme/tokens.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -57,15 +49,6 @@
         </ul>
       </nav>
 
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle light / dark theme">
-        <span class="visually-hidden">Toggle light or dark theme</span>
-        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
-        </svg>
-      </button>
     </div>
     <div class="scroll-progress" aria-hidden="true"><span id="scroll-bar"></span></div>
   </header>

@@ -1,0 +1,776 @@
+/* ==========================================================================
+   ACME Corp Design Language — components/bundle.css
+   Joined from tokens/acme.css (v5.1.0, robertncl/DLS@b56be90); fonts are
+   self-hosted via tokens.css @font-face. Colours, spacing, radii, shadows and
+   font stacks live in tokens.json (compiled to tokens.css, which loads first);
+   this file holds what tokens.json cannot: the type scale, tracking, motion,
+   base styles, components, slide + doc patterns.
+   ACME Corp is a fictional company; this file is a fixture for testing
+   design tooling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens tokens.json cannot hold
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Font stacks come from tokens.json type.families. One family (Inter):
+     --acme-font-display is kept as an alias of the sans stack. */
+  --acme-font-sans: var(--font-sans);
+  --acme-font-display: var(--acme-font-sans);
+  --acme-font-mono: var(--font-mono);
+  --acme-text-xs: 0.75rem;
+  --acme-text-sm: 0.875rem;
+  --acme-text-md: 1rem;
+  --acme-text-lg: 1.125rem;
+  --acme-text-xl: 1.25rem;
+  --acme-text-2xl: 1.5rem;
+  --acme-text-3xl: 1.875rem;
+  --acme-text-4xl: 2.25rem;
+  --acme-text-5xl: 3rem;
+  --acme-leading-tight: 1.2;
+  --acme-leading-snug: 1.35;
+  --acme-leading-normal: 1.5;
+  --acme-leading-relaxed: 1.65;
+  --acme-tracking-tight: -0.02em;
+  --acme-tracking-snug: -0.011em;
+  --acme-tracking-caps: 0.06em;
+
+  /* Motion — calm and precise; nothing overshoots */
+  --acme-duration-fast: 100ms;
+  --acme-duration-base: 150ms;
+  --acme-duration-slow: 250ms;
+  --acme-duration-deliberate: 400ms;
+  --acme-ease-out: cubic-bezier(0.2, 0.8, 0.4, 1);
+  --acme-ease-in-out: cubic-bezier(0.45, 0, 0.25, 1);
+
+  /* Checked controls take the interaction blue. */
+  accent-color: var(--acme-color-selected);
+}
+/* Light theme only, like the source: no dark theme, no data-theme switch.
+   The one dark surface is the deck bookend (.acme-slide--dark), which pins
+   its own colours. */
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--acme-font-sans);
+  font-size: var(--acme-text-md);
+  line-height: var(--acme-leading-normal);
+  color: var(--acme-color-text);
+  background: var(--acme-color-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--acme-font-display);
+  line-height: var(--acme-leading-tight);
+  margin: 0 0 var(--acme-space-3);
+  font-weight: 600;
+  text-wrap: balance;
+}
+h1 { font-size: var(--acme-text-4xl); letter-spacing: var(--acme-tracking-tight); }
+h2 { font-size: var(--acme-text-3xl); letter-spacing: var(--acme-tracking-tight); }
+h3 { font-size: var(--acme-text-xl); letter-spacing: var(--acme-tracking-snug); }
+h4 { font-size: var(--acme-text-lg); letter-spacing: var(--acme-tracking-snug); }
+
+p { margin: 0 0 var(--acme-space-4); text-wrap: pretty; }
+
+a {
+  color: var(--acme-color-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--acme-duration-fast) var(--acme-ease-out);
+}
+a:hover { color: var(--acme-color-link-hover); }
+
+code, pre {
+  font-family: var(--acme-font-mono);
+  font-size: 0.9em;
+}
+
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--acme-color-focus);
+  outline-offset: 2px;
+}
+
+/* Visually hidden but announced: table captions, icon-button labels. */
+.acme-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Wordmark
+   -------------------------------------------------------------------------- */
+.acme-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--acme-font-sans);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acme-color-text);
+  text-decoration: none;
+}
+.acme-wordmark__mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 0.3em;
+  background: var(--acme-color-mark);
+  color: var(--acme-color-on-primary);
+  letter-spacing: 0;
+}
+/* On a dark ground inside a light page (footers, dark slides): white
+   letters, and the mark lifts to red-500 so it stays a bright 3:1+ shape
+   against Graphite 950 (4.4:1). */
+.acme-wordmark--on-dark { color: var(--acme-gray-0); }
+.acme-wordmark--on-dark .acme-wordmark__mark { background: var(--acme-red-500); }
+
+/* --------------------------------------------------------------------------
+   4. Buttons
+   -------------------------------------------------------------------------- */
+.acme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--acme-space-2);
+  min-height: 2.5rem;
+  padding: 0 var(--acme-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--acme-radius-md);
+  font: 500 var(--acme-text-sm) / 1 var(--acme-font-sans);
+  letter-spacing: var(--acme-tracking-snug);
+  color: var(--acme-color-text);
+  background: transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--acme-duration-base) var(--acme-ease-out),
+    border-color var(--acme-duration-base) var(--acme-ease-out),
+    color var(--acme-duration-base) var(--acme-ease-out),
+    box-shadow var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-btn--primary {
+  background: var(--acme-color-primary);
+  color: var(--acme-color-on-primary);
+  box-shadow: var(--acme-shadow-sm);
+}
+.acme-btn--primary:hover { background: var(--acme-color-primary-hover); }
+.acme-btn--primary:active { background: var(--acme-color-primary-active); }
+.acme-btn--secondary {
+  background: var(--acme-color-surface-raised);
+  border-color: var(--acme-color-border-control);
+  box-shadow: var(--acme-shadow-sm);
+}
+.acme-btn--secondary:hover { background: var(--acme-color-surface); border-color: var(--acme-color-border-strong); }
+.acme-btn--secondary:active { background: var(--acme-color-surface-hover); }
+.acme-btn--ghost { color: var(--acme-color-text-muted); }
+.acme-btn--ghost:hover {
+  background: var(--acme-color-surface-hover);
+  color: var(--acme-color-text);
+}
+.acme-btn--danger {
+  background: var(--acme-color-danger-emphasis);
+  color: var(--acme-color-on-primary);
+  box-shadow: var(--acme-shadow-sm);
+}
+.acme-btn--danger:hover { background: var(--acme-color-danger-emphasis-hover); }
+.acme-btn--sm { min-height: 2rem; padding: 0 var(--acme-space-3); font-size: var(--acme-text-xs); }
+.acme-btn--lg { min-height: 3rem; padding: 0 var(--acme-space-5); font-size: var(--acme-text-md); }
+.acme-btn--icon { inline-size: 2rem; padding: 0; }
+/* Disabled: readable, not faded — surface fill, subtle ink (4.9:1), no shadow.
+   Local deviation: the repo fades to 45% opacity. */
+.acme-btn:disabled,
+.acme-btn:disabled:hover,
+.acme-btn:disabled:active {
+  background: var(--acme-color-surface);
+  border-color: var(--acme-color-border);
+  color: var(--acme-color-text-subtle);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   5. Forms
+   -------------------------------------------------------------------------- */
+.acme-field { display: grid; gap: var(--acme-space-2); }
+.acme-label {
+  font-size: var(--acme-text-sm);
+  font-weight: 500;
+}
+.acme-label__optional {
+  font-weight: 400;
+  color: var(--acme-color-text-subtle);
+}
+.acme-input {
+  min-height: 2.5rem;
+  padding: 0 var(--acme-space-3);
+  border: 1px solid var(--acme-color-border-strong);
+  border-radius: var(--acme-radius-md);
+  font: 400 var(--acme-text-sm) / var(--acme-leading-normal) var(--acme-font-sans);
+  color: var(--acme-color-text);
+  background: var(--acme-color-surface-raised);
+  box-shadow: var(--acme-shadow-sm);
+  transition: border-color var(--acme-duration-base) var(--acme-ease-out);
+}
+textarea.acme-input { padding: var(--acme-space-2) var(--acme-space-3); min-height: 5rem; resize: vertical; }
+.acme-input:hover { border-color: var(--acme-color-text-subtle); }
+.acme-input::placeholder { color: var(--acme-color-text-subtle); }
+.acme-input[aria-invalid="true"] { border-color: var(--acme-color-danger); }
+.acme-input:disabled { background: var(--acme-color-surface); border-color: var(--acme-color-border); color: var(--acme-color-text-subtle); box-shadow: none; cursor: not-allowed; }
+.acme-help { font-size: var(--acme-text-xs); color: var(--acme-color-text-muted); margin: 0; }
+.acme-error {
+  font-size: var(--acme-text-xs);
+  font-weight: 500;
+  color: var(--acme-color-danger);
+  margin: 0;
+}
+
+.acme-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--acme-space-2);
+  font-size: var(--acme-text-sm);
+}
+.acme-choice input {
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin: 0.125rem 0 0;
+  flex: none;
+}
+
+.acme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--acme-space-2);
+  font-size: var(--acme-text-sm);
+}
+.acme-switch input {
+  appearance: none;
+  position: relative;
+  inline-size: 2.25rem;
+  block-size: 1.25rem;
+  flex: none;
+  margin: 0;
+  border: none;
+  border-radius: var(--acme-radius-full);
+  background: var(--acme-color-border-strong);
+  cursor: pointer;
+  transition: background-color var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-switch input::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: var(--acme-radius-full);
+  background: var(--acme-gray-0);
+  box-shadow: var(--acme-shadow-sm);
+  transition: translate var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-switch input:checked { background: var(--acme-color-selected); }
+.acme-switch input:checked::before { translate: 1rem 0; }
+
+/* --------------------------------------------------------------------------
+   6. Card
+   -------------------------------------------------------------------------- */
+.acme-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--acme-color-border);
+  border-radius: var(--acme-radius-lg);
+  background: var(--acme-color-surface-raised);
+  box-shadow: var(--acme-shadow-sm);
+  overflow: hidden;
+}
+.acme-card--interactive {
+  transition:
+    border-color var(--acme-duration-base) var(--acme-ease-out),
+    box-shadow var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-card--interactive:hover {
+  border-color: var(--acme-color-border-control);
+  box-shadow: var(--acme-shadow-md);
+}
+.acme-card__media {
+  aspect-ratio: 16 / 9;
+  background: var(--acme-color-surface);
+  border-block-end: 1px solid var(--acme-color-border);
+  display: grid;
+  place-items: center;
+  color: var(--acme-color-text-subtle);
+}
+.acme-card__body { padding: var(--acme-space-5); flex: 1; }
+.acme-card__title {
+  font-size: var(--acme-text-md);
+  font-weight: 600;
+  letter-spacing: var(--acme-tracking-snug);
+  margin-block-end: var(--acme-space-1);
+}
+.acme-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--acme-space-2);
+  padding: var(--acme-space-3) var(--acme-space-5);
+  border-block-start: 1px solid var(--acme-color-border);
+  background: var(--acme-color-surface);
+}
+
+/* --------------------------------------------------------------------------
+   7. Badge
+   -------------------------------------------------------------------------- */
+.acme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--acme-space-1);
+  padding: 0.0625rem var(--acme-space-2);
+  border: 1px solid var(--acme-color-border);
+  border-radius: var(--acme-radius-sm);
+  font: 500 var(--acme-text-xs) / var(--acme-leading-normal) var(--acme-font-sans);
+  white-space: nowrap;
+  background: var(--acme-color-surface-hover);
+  color: var(--acme-color-text-muted);
+}
+.acme-status-icon { flex: none; }
+.acme-badge--success { background: var(--acme-color-success-soft); color: var(--acme-color-success-soft-text); border-color: var(--acme-color-success-border); }
+.acme-badge--warning { background: var(--acme-color-warning-soft); color: var(--acme-color-warning-soft-text); border-color: var(--acme-color-warning-border); }
+.acme-badge--danger  { background: var(--acme-color-danger-soft);  color: var(--acme-color-danger-soft-text);  border-color: var(--acme-color-danger-border); }
+.acme-badge--info    { background: var(--acme-color-info-soft);    color: var(--acme-color-info-soft-text);    border-color: var(--acme-color-info-border); }
+
+/* --------------------------------------------------------------------------
+   8. Alert
+   -------------------------------------------------------------------------- */
+/* Tinted panel with a matching hairline; the leading icon takes the status
+   hue, the title stays in ink. */
+.acme-alert {
+  display: flex;
+  gap: var(--acme-space-3);
+  padding: var(--acme-space-4);
+  border: 1px solid var(--acme-color-info-border);
+  border-radius: var(--acme-radius-lg);
+  background: var(--acme-color-info-soft);
+  font-size: var(--acme-text-sm);
+  --acme-alert-icon: var(--acme-color-info);
+}
+.acme-alert > svg:first-child,
+.acme-alert__icon { display: flex; color: var(--acme-alert-icon); flex: none; margin-block-start: 0.0625rem; }
+.acme-alert__title { font-weight: 600; margin-block-end: var(--acme-space-1); }
+.acme-alert p { margin: 0; }
+.acme-alert p + p { margin-block-start: var(--acme-space-1); color: var(--acme-color-text-muted); }
+.acme-alert--success { border-color: var(--acme-color-success-border); background: var(--acme-color-success-soft); --acme-alert-icon: var(--acme-color-success); }
+.acme-alert--warning { border-color: var(--acme-color-warning-border); background: var(--acme-color-warning-soft); --acme-alert-icon: var(--acme-color-warning); }
+.acme-alert--danger  { border-color: var(--acme-color-danger-border);  background: var(--acme-color-danger-soft);  --acme-alert-icon: var(--acme-color-danger); }
+
+/* --------------------------------------------------------------------------
+   9. Table
+   -------------------------------------------------------------------------- */
+.acme-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--acme-text-sm);
+}
+.acme-table th {
+  text-align: start;
+  font-size: var(--acme-text-xs);
+  font-weight: 500;
+  color: var(--acme-color-text-muted);
+  padding: var(--acme-space-2) var(--acme-space-3);
+  background: var(--acme-color-surface);
+  border-block: 1px solid var(--acme-color-border);
+  white-space: nowrap;
+}
+.acme-table td {
+  padding: var(--acme-space-3);
+  border-block-end: 1px solid var(--acme-color-border);
+}
+.acme-table tbody tr { transition: background-color var(--acme-duration-fast) var(--acme-ease-out); }
+.acme-table tbody tr:hover { background: var(--acme-color-surface); }
+.acme-table .acme-table__num { text-align: end; font-variant-numeric: tabular-nums; }
+
+/* The sorted column header steps up to ink; the arrow glyph in the markup
+   carries the direction. Selected rows take the interaction tint. */
+.acme-table th:is([aria-sort="ascending"], [aria-sort="descending"]) {
+  color: var(--acme-color-text);
+  font-weight: 600;
+}
+.acme-table tbody tr[aria-selected="true"],
+.acme-table tbody tr[aria-selected="true"]:hover {
+  background: var(--acme-color-selected-soft);
+}
+
+/* --------------------------------------------------------------------------
+   10. Tabs
+   -------------------------------------------------------------------------- */
+/* Underline tabs: a hairline baseline across the set; the selected tab
+   carries a 2 px ink indicator that sits on the baseline. */
+.acme-tabs {
+  display: flex;
+  gap: var(--acme-space-4);
+  border-block-end: 1px solid var(--acme-color-border);
+}
+.acme-tab {
+  padding: var(--acme-space-2) 0;
+  border: none;
+  border-block-end: 2px solid transparent;
+  margin-block-end: -1px;
+  background: none;
+  font: 500 var(--acme-text-sm) / var(--acme-leading-normal) var(--acme-font-sans);
+  color: var(--acme-color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--acme-duration-base) var(--acme-ease-out),
+    color var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-tab:hover { color: var(--acme-color-text); }
+.acme-tab[aria-selected="true"] {
+  border-block-end-color: var(--acme-color-text);
+  color: var(--acme-color-text);
+}
+.acme-tab__count {
+  margin-inline-start: var(--acme-space-1);
+  padding: 0 0.375rem;
+  border-radius: var(--acme-radius-full);
+  background: var(--acme-color-surface-hover);
+  font-size: var(--acme-text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--acme-color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   11. Top bar & breadcrumbs
+   -------------------------------------------------------------------------- */
+/* Structural app bar: full-width, opaque, capped by a hairline — it frames
+   the page instead of floating over it. May be position: sticky. */
+.acme-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--acme-space-6);
+  min-block-size: 3.5rem;
+  padding: var(--acme-space-2) var(--acme-space-5);
+  background: var(--acme-color-canvas);
+  border-block-end: 1px solid var(--acme-color-border);
+  color: var(--acme-color-text);
+}
+.acme-topbar__nav { display: flex; gap: var(--acme-space-1); }
+.acme-topbar__actions { display: flex; align-items: center; gap: var(--acme-space-2); margin-inline-start: auto; }
+.acme-topbar__link {
+  padding: var(--acme-space-1) var(--acme-space-3);
+  border-radius: var(--acme-radius-md);
+  color: var(--acme-color-text-muted);
+  font-size: var(--acme-text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--acme-duration-base) var(--acme-ease-out),
+    color var(--acme-duration-base) var(--acme-ease-out);
+}
+.acme-topbar__link:hover { color: var(--acme-color-text); background: var(--acme-color-surface); }
+.acme-topbar__link[aria-current="page"] {
+  background: var(--acme-color-surface-hover);
+  color: var(--acme-color-text);
+}
+
+.acme-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--acme-space-2);
+  font-size: var(--acme-text-sm);
+  color: var(--acme-color-text-subtle);
+}
+.acme-breadcrumbs a { color: var(--acme-color-text-muted); text-decoration: none; }
+.acme-breadcrumbs a:hover { color: var(--acme-color-text); text-decoration: underline; }
+.acme-breadcrumbs [aria-current="page"] { color: var(--acme-color-text); font-weight: 500; }
+
+/* --------------------------------------------------------------------------
+   12. Modal
+   -------------------------------------------------------------------------- */
+.acme-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--acme-space-5);
+  background: var(--acme-color-scrim);
+}
+.acme-modal {
+  inline-size: min(28rem, 100%);
+  border: 1px solid var(--acme-color-border);
+  border-radius: var(--acme-radius-xl);
+  background: var(--acme-color-surface-raised);
+  box-shadow: var(--acme-shadow-lg);
+  overflow: hidden;
+}
+.acme-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--acme-space-4);
+  padding: var(--acme-space-5) var(--acme-space-6) 0;
+}
+.acme-modal__title { font-size: var(--acme-text-lg); margin: 0; }
+.acme-modal__body { padding: var(--acme-space-2) var(--acme-space-6) var(--acme-space-5); color: var(--acme-color-text-muted); font-size: var(--acme-text-sm); }
+.acme-modal__body p:last-child { margin: 0; }
+.acme-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--acme-space-2);
+  padding: var(--acme-space-4) var(--acme-space-6);
+  border-block-start: 1px solid var(--acme-color-border);
+  background: var(--acme-color-surface);
+}
+
+/* --------------------------------------------------------------------------
+   13. Presentation slides
+   Slide type is sized in cqi so a slide renders correctly at any width
+   (thumbnail, editor, projector). cqi on the container itself would resolve
+   against an ancestor, so the padding lives on a required inner __frame.
+   -------------------------------------------------------------------------- */
+.acme-slide {
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  overflow: hidden;
+  background: var(--acme-color-canvas);
+  color: var(--acme-color-text);
+}
+.acme-slide__frame {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5cqi 6cqi;
+}
+.acme-slide .acme-wordmark { font-size: 2cqi; }
+.acme-slide__kicker {
+  font: 600 1.6cqi/1.2 var(--acme-font-sans);
+  text-transform: uppercase;
+  letter-spacing: var(--acme-tracking-caps);
+  color: var(--acme-color-accent);
+  margin: 0 0 1.5cqi;
+}
+.acme-slide__title {
+  font: 600 4cqi/1.12 var(--acme-font-display);
+  letter-spacing: -0.025em;
+  margin: 0 0 2cqi;
+  text-wrap: balance;
+}
+.acme-slide--hero .acme-slide__title { font-size: 6cqi; letter-spacing: -0.03em; margin-block-end: 1.5cqi; }
+.acme-slide__meta {
+  font-size: 1.8cqi;
+  color: var(--acme-color-text-muted);
+  margin: 0;
+}
+.acme-slide__body {
+  font-size: 2.2cqi;
+  line-height: var(--acme-leading-normal);
+  color: var(--acme-color-text-muted);
+  max-inline-size: 66cqi;
+  margin: 0;
+}
+.acme-slide__bullets {
+  margin: 0;
+  padding-inline-start: 2.5cqi;
+  display: grid;
+  gap: 1.5cqi;
+  font-size: 2.2cqi;
+  line-height: var(--acme-leading-snug);
+  max-inline-size: 66cqi;
+}
+.acme-slide__bullets li::marker { color: var(--acme-color-accent); }
+.acme-slide__footer {
+  margin-block-start: auto;
+  padding-block-start: 2cqi;
+  display: flex;
+  align-items: center;
+  gap: 2cqi;
+  font-size: 1.4cqi;
+  color: var(--acme-color-text-subtle);
+}
+.acme-slide__footer .acme-wordmark { font-size: 1.4cqi; }
+.acme-slide__footer-num { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+
+/* Dark bookends (title, section & closing) keep a deep Graphite ground —
+   the one dark surface in a light-only system. Nothing on it may key off a
+   light-page token, hence the pinned accent: the page's red-700 would sit at
+   ~2.4:1 here, while red-300 clears 8.5:1. The wordmark mark lifts to
+   red-500 so it stays a bright, 3:1+ shape on the dark ground. */
+.acme-slide--dark {
+  background: var(--acme-gray-950);
+  color: var(--acme-gray-100);
+}
+.acme-slide--dark :is(.acme-slide__meta, .acme-slide__body) { color: var(--acme-gray-300); }
+.acme-slide--dark .acme-slide__footer { color: var(--acme-gray-400); }
+.acme-slide--dark .acme-wordmark { color: var(--acme-gray-0); }
+.acme-slide--dark .acme-wordmark__mark { background: var(--acme-red-500); }
+.acme-slide--dark .acme-slide__kicker { color: var(--acme-red-300); }
+.acme-slide--dark .acme-slide__bullets li::marker { color: var(--acme-red-300); }
+.acme-slide--dark.acme-slide--section .acme-slide__num,
+.acme-slide--dark .acme-slide__num { color: var(--acme-red-300); }
+
+/* Section divider — pairs with .acme-slide--dark in markup. The oversized
+   numeral is the divider's signal; it takes the pinned Signal Red accent as
+   the one bright brand moment in the deck. */
+.acme-slide--section .acme-slide__num {
+  font: 600 12cqi/1 var(--acme-font-display);
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--acme-color-accent);
+  margin: 0 0 1.5cqi;
+}
+.acme-slide--section .acme-slide__title { margin: 0; }
+
+/* Data slide chart — value carries data, not hue */
+.acme-slide__chart {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 1.5cqi;
+  border-block-end: 1px solid var(--acme-color-border-strong);
+}
+.acme-slide__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.8cqi;
+}
+.acme-slide__bar {
+  inline-size: 68%;
+  background: var(--acme-color-data);
+  border-radius: min(4px, 0.4cqi) min(4px, 0.4cqi) 0 0;
+}
+.acme-slide__bar--highlight { background: var(--acme-color-data-highlight); }
+.acme-slide__bar-label {
+  font: 600 1.6cqi/1 var(--acme-font-sans);
+  font-variant-numeric: tabular-nums;
+}
+.acme-slide__ticks {
+  display: flex;
+  gap: 1.5cqi;
+  padding-block-start: 0.8cqi;
+  font-size: 1.4cqi;
+  color: var(--acme-color-text-subtle);
+}
+.acme-slide__ticks span { flex: 1; text-align: center; }
+
+/* --------------------------------------------------------------------------
+   14. Report document
+   Long-form styles. Signal Red appears in exactly three places, all via
+   --acme-color-accent: the cover rule, heading numerals, and the callout
+   accent. Accent is a brand mark, never an action — it is a separate token
+   from --acme-color-primary for that reason.
+   -------------------------------------------------------------------------- */
+.acme-doc {
+  max-inline-size: 65ch;
+  font-size: var(--acme-text-md);
+  line-height: var(--acme-leading-relaxed);
+  counter-reset: doc-h2 doc-fig;
+}
+.acme-doc h2 {
+  counter-increment: doc-h2;
+  counter-reset: doc-h3;
+  font-size: var(--acme-text-2xl);
+  margin-block: var(--acme-space-8) var(--acme-space-3);
+}
+.acme-doc h3 {
+  counter-increment: doc-h3;
+  font-size: var(--acme-text-lg);
+  margin-block: var(--acme-space-6) var(--acme-space-2);
+}
+.acme-doc h2::before { content: counter(doc-h2) "\2002"; color: var(--acme-color-accent); font-variant-numeric: tabular-nums; }
+.acme-doc h3::before { content: counter(doc-h2) "." counter(doc-h3) "\2002"; color: var(--acme-color-accent); font-variant-numeric: tabular-nums; }
+
+.acme-doc-kicker {
+  font: 600 var(--acme-text-xs)/1.2 var(--acme-font-sans);
+  text-transform: uppercase;
+  letter-spacing: var(--acme-tracking-caps);
+  color: var(--acme-color-accent);
+  margin: 0 0 var(--acme-space-2);
+}
+.acme-doc-rule {
+  inline-size: var(--acme-space-12);
+  block-size: 3px;
+  border: none;
+  background: var(--acme-color-accent);
+  margin: var(--acme-space-4) 0;
+}
+.acme-doc-meta {
+  font-size: var(--acme-text-sm);
+  color: var(--acme-color-text-muted);
+  margin: 0;
+}
+
+.acme-callout {
+  border: 1px solid var(--acme-color-border);
+  border-inline-start: 3px solid var(--acme-color-accent);
+  border-radius: 0 var(--acme-radius-md) var(--acme-radius-md) 0;
+  background: var(--acme-color-surface);
+  padding: var(--acme-space-4) var(--acme-space-5);
+  margin: var(--acme-space-6) 0;
+}
+.acme-callout__label {
+  font: 600 var(--acme-text-xs)/1.2 var(--acme-font-sans);
+  text-transform: uppercase;
+  letter-spacing: var(--acme-tracking-caps);
+  color: var(--acme-color-accent);
+  margin: 0 0 var(--acme-space-1);
+}
+.acme-callout p:last-child { margin: 0; }
+
+.acme-figure { margin: var(--acme-space-6) 0; }
+.acme-figure figcaption {
+  font-size: var(--acme-text-xs);
+  color: var(--acme-color-text-muted);
+  margin-block-start: var(--acme-space-2);
+}
+.acme-figure figcaption::before {
+  counter-increment: doc-fig;
+  content: "Figure " counter(doc-fig) " — ";
+  font-weight: 600;
+  color: var(--acme-color-text);
+}
+
+.acme-doc-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--acme-space-4);
+  border-block-start: 1px solid var(--acme-color-border);
+  padding-block-start: var(--acme-space-2);
+  font-size: var(--acme-text-xs);
+  color: var(--acme-color-text-subtle);
+}
+
+@media print {
+  * { box-shadow: none !important; }
+  .acme-figure, .acme-callout, .acme-card, table { break-inside: avoid; }
+  .acme-doc { max-inline-size: none; }
+}

@@ -17,3 +17,14 @@ Briefs and decks on agentic AI and the platforms it runs on — GitHub Copilot, 
 | **Secure CDE for Agentic AI** — strategic investment proposal | [CDE/](CDE/index.html) | [single](CDE/cde-single.html) |
 | **Secure by Default** — Chainguard for the enterprise | [chainguard/](chainguard/index.html) | [single](chainguard/chainguard-single.html) |
 | **AI-Driven Risk in the Enterprise** — a security briefing on generated code, autonomous agents, the model supply chain, and the five controls that matter | [ai-risk/](ai-risk/index.html) | — |
+
+## Design system
+
+Every page is styled with the **ACME design system** (v5.1: Graphite surfaces, ink primary actions, Blue for interaction and chart highlights, Signal Red as the editorial mark, Inter and JetBrains Mono). Its tokens, base stylesheet and self-hosted fonts live in [`_acme/`](_acme/); decks link `_acme/tokens.css` before their own stylesheet. The system is light-only.
+
+The `*-single.html` files are self-contained builds of their decks (tokens, CSS, JS and fonts inlined; they work offline). After editing a deck, rebuild its single:
+
+```bash
+python3 tools/build_singles.py            # all decks
+python3 tools/build_singles.py AI CDE     # just these
+```
