@@ -1,0 +1,88 @@
+/* Modernist design system: generated from tokens.json (Modernist v1).
+   Swiss style: one grotesque (Archivo), black rules instead of shadows,
+   square corners, Blue for action and orientation only, the warm data-1..6
+   ramp for severity only, red for danger only. Light only.
+   Variables are prefixed --m- so they never collide with a page's own names. */
+
+:root {
+  color-scheme: light;
+
+  --m-paper: #ffffff;
+  --m-paper-2: #f1f1ef;
+  --m-rule: #cfcfcb;
+  --m-rule-strong: var(--m-ink);
+  --m-ink: #111111;
+  --m-ink-2: #454542;
+  --m-ink-3: #6a6a66;
+  --m-blue: #1e40d8;
+  --m-blue-hover: #1631a8;
+  --m-blue-soft: #e6ebfc;
+  --m-on-blue: var(--m-paper);
+  --m-red: #b3170d;
+  --m-data-1: var(--m-paper);
+  --m-data-1-ink: var(--m-ink);
+  --m-data-2: #f6d21c;
+  --m-data-2-ink: var(--m-ink);
+  --m-data-3: #f08c1e;
+  --m-data-3-ink: var(--m-ink);
+  --m-data-4: #dc2a1e;
+  --m-data-4-ink: var(--m-paper);
+  --m-data-5: #8a1410;
+  --m-data-5-ink: var(--m-paper);
+  --m-data-6: var(--m-ink);
+  --m-data-6-ink: var(--m-paper);
+  --m-data-line: var(--m-ink);
+  --m-data-highlight: var(--m-blue);
+
+  --m-font-sans: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --m-font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* generic names the pages already use */
+  --font-sans: var(--m-font-sans);
+  --font-display: var(--m-font-sans);
+  --font-mono: var(--m-font-mono);
+
+  --m-display-size: 72px; --m-display-leading: 0.95; --m-display-weight: 800; --m-display-tracking: -0.03em;
+  --m-figure-size: 96px; --m-figure-leading: 0.9; --m-figure-weight: 700; --m-figure-tracking: -0.04em;
+  --m-heading-1-size: 44px; --m-heading-1-leading: 1; --m-heading-1-weight: 700; --m-heading-1-tracking: -0.02em;
+  --m-heading-2-size: 28px; --m-heading-2-leading: 1.1; --m-heading-2-weight: 700; --m-heading-2-tracking: -0.01em;
+  --m-heading-3-size: 18px; --m-heading-3-leading: 1.25; --m-heading-3-weight: 700; --m-heading-3-tracking: 0;
+  --m-body-size: 16px; --m-body-leading: 1.5; --m-body-weight: 400; --m-body-tracking: 0;
+  --m-small-size: 14px; --m-small-leading: 1.45; --m-small-weight: 400; --m-small-tracking: 0;
+  --m-label-size: 12px; --m-label-leading: 1.2; --m-label-weight: 600; --m-label-tracking: 0.08em;
+  --m-mono-size: 13px; --m-mono-leading: 1.4; --m-mono-weight: 400; --m-mono-tracking: 0;
+
+  --m-space-1: 4px;
+  --m-space-2: 8px;
+  --m-space-3: 16px;
+  --m-space-4: 24px;
+  --m-space-5: 32px;
+  --m-space-6: 48px;
+  --m-space-7: 64px;
+  --m-space-8: 96px;
+  --m-radius-none: 0px;
+  --m-radius-hair: 2px;
+  --m-radius-circle: 50%;
+  --m-stroke-hair: 1px;
+  --m-stroke-rule: 2px;
+  --m-stroke-alert: 4px;
+  --m-stroke-bar: 8px;
+  --m-grid-max: 1280px;
+  --m-grid-columns: 12;
+  --m-grid-gutter: 24px;
+}
+
+.m-display { font-family: var(--m-font-sans); font-size: var(--m-display-size); line-height: var(--m-display-leading); font-weight: var(--m-display-weight); letter-spacing: var(--m-display-tracking); }
+.m-figure { font-family: var(--m-font-sans); font-size: var(--m-figure-size); line-height: var(--m-figure-leading); font-weight: var(--m-figure-weight); letter-spacing: var(--m-figure-tracking); font-variant-numeric: tabular-nums; }
+.m-heading-1 { font-family: var(--m-font-sans); font-size: var(--m-heading-1-size); line-height: var(--m-heading-1-leading); font-weight: var(--m-heading-1-weight); letter-spacing: var(--m-heading-1-tracking); }
+.m-heading-2 { font-family: var(--m-font-sans); font-size: var(--m-heading-2-size); line-height: var(--m-heading-2-leading); font-weight: var(--m-heading-2-weight); letter-spacing: var(--m-heading-2-tracking); }
+.m-heading-3 { font-family: var(--m-font-sans); font-size: var(--m-heading-3-size); line-height: var(--m-heading-3-leading); font-weight: var(--m-heading-3-weight); letter-spacing: var(--m-heading-3-tracking); }
+.m-body { font-family: var(--m-font-sans); font-size: var(--m-body-size); line-height: var(--m-body-leading); font-weight: var(--m-body-weight); letter-spacing: var(--m-body-tracking); }
+.m-small { font-family: var(--m-font-sans); font-size: var(--m-small-size); line-height: var(--m-small-leading); font-weight: var(--m-small-weight); letter-spacing: var(--m-small-tracking); }
+.m-label { font-family: var(--m-font-sans); font-size: var(--m-label-size); line-height: var(--m-label-leading); font-weight: var(--m-label-weight); letter-spacing: var(--m-label-tracking); text-transform: uppercase; }
+.m-mono { font-family: var(--m-font-mono); font-size: var(--m-mono-size); line-height: var(--m-mono-leading); font-weight: var(--m-mono-weight); letter-spacing: var(--m-mono-tracking); }
+
+/* Archivo (variable, 400-800) and JetBrains Mono, self-hosted. Both SIL OFL 1.1. */
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-latin-ext.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-latin.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }

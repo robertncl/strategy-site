@@ -20,7 +20,7 @@ Briefs and decks on agentic AI and the platforms it runs on — GitHub Copilot, 
 
 ## Design system
 
-Every page is styled with the **ACME design system** (v5.1: Graphite surfaces, ink primary actions, Blue for interaction and chart highlights, Signal Red as the editorial mark, Inter and JetBrains Mono). Its tokens, base stylesheet and self-hosted fonts live in [`_acme/`](_acme/); decks link `_acme/tokens.css` before their own stylesheet. The system is light-only.
+Every page is styled with the **Modernist design system**: Swiss style, black on white, one grotesque (Archivo) with JetBrains Mono for codes, black rules instead of shadows, square corners, Blue only for action and orientation, the warm `data-1`→`data-6` ramp only for severity, and red only for danger. Its `tokens.json`, the `tokens.css` generated from it (variables prefixed `--m-`), and the self-hosted fonts live in [`_modernist/`](_modernist/); pages link `_modernist/tokens.css` before their own styles. The system is light-only.
 
 The `*-single.html` files are self-contained builds of their decks (tokens, CSS, JS and fonts inlined; they work offline). After editing a deck, rebuild its single:
 

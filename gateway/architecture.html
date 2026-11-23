@@ -6,32 +6,32 @@
 <meta name="color-scheme" content="light" />
 <meta name="description" content="Architecture diagram: Azure API Management fronts every Azure OpenAI call behind one centralized gateway, while Azure API Center governs what gets published without sitting in the request path." />
 <title>Centralized AI Gateway — Architecture</title>
-<link rel="stylesheet" href="../_acme/tokens.css" />
+<link rel="stylesheet" href="../_modernist/tokens.css" />
 <script src="https://unpkg.com/lucide/dist/umd/lucide.js"></script>
 <style>
   :root{
     color-scheme: light;
-    /* ACME design system v5 (light only). This diagram was drawn on a dark
+    /* Modernist design system (light only). This diagram was drawn on a dark
        ground and names its steps by that scale, so each step is remapped to
-       the ACME token that plays the same role on a light page:
+       the Modernist token that plays the same role on a light page:
        950 = page, 900 = panel, 800/700 = hairlines, 600-400 = secondary text,
        100/50 = primary text. Blue marks the request path and the gateway;
        red is only the editorial kicker. */
-    --gray-950:var(--acme-color-canvas);
-    --gray-900:var(--acme-color-surface);
-    --gray-800:var(--acme-color-border);
-    --gray-700:var(--acme-color-border-control);
-    --gray-600:var(--acme-color-border-strong);
-    --gray-500:var(--acme-color-text-subtle);
-    --gray-400:var(--acme-color-text-muted);
-    --gray-100:var(--acme-color-text);
-    --gray-50:var(--acme-color-text);
-    --red-400:var(--acme-color-accent);
-    --red-600:var(--acme-color-selected);   /* the gateway: the diagram's one highlight */
-    --blue-300:var(--acme-blue-700);
-    --blue-400:var(--acme-blue-600);
-    --blue-500:var(--acme-blue-600);
-    --font-sans:"Inter","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+    --gray-950:var(--m-paper);
+    --gray-900:var(--m-paper-2);
+    --gray-800:var(--m-rule);
+    --gray-700:var(--m-rule);
+    --gray-600:var(--m-ink);
+    --gray-500:var(--m-ink-3);
+    --gray-400:var(--m-ink-2);
+    --gray-100:var(--m-ink);
+    --gray-50:var(--m-ink);
+    --red-400:var(--m-ink);
+    --red-600:var(--m-blue);   /* the gateway: the diagram's one highlight */
+    --blue-300:var(--m-blue);
+    --blue-400:var(--m-blue);
+    --blue-500:var(--m-blue);
+    --font-sans:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
     --font-display:var(--font-sans);
   }
   *{box-sizing:border-box}
@@ -61,7 +61,7 @@
       <div style="font:500 12px var(--font-sans);color:var(--gray-400);">Design-time governance flow</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:13px;height:13px;background:var(--red-600);border-radius:3px;"></div>
+      <div style="width:13px;height:13px;background:var(--red-600);border-radius:0;"></div>
       <div style="font:500 12px var(--font-sans);color:var(--gray-400);">Centralized gateway &mdash; the one path all AI traffic takes</div>
     </div>
   </div>
@@ -71,21 +71,21 @@
   <!-- CONSUMERS -->
   <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-500);text-align:center;margin-bottom:14px;">Consumers</div>
   <div style="display:flex;justify-content:center;gap:14px;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="app-window" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Web &amp; mobile apps</div>
       </div>
       <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Customer-facing chat and search UIs &middot; REST/SSE</div>
     </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="message-square" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Internal copilot services</div>
       </div>
       <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">Line-of-business assistants &middot; streaming completions</div>
     </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="workflow" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Batch &amp; data pipelines</div>
@@ -103,7 +103,7 @@
 
   <!-- ENTRA ID -->
   <div style="display:flex;justify-content:center;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="font:700 10px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--blue-300);margin-bottom:2px;">Identity</div>
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="shield-check" style="width:16px;height:16px;color:var(--blue-400);"></i>
@@ -127,7 +127,7 @@
     <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">
       <div style="font:700 9.5px/1.2 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-500);margin-bottom:10px;text-align:center;">Governance &middot; design-time</div>
 
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:none;">
         <div style="display:flex;align-items:center;gap:6px;">
           <i data-lucide="file-code" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
           <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">API spec authored</div>
@@ -141,7 +141,7 @@
         <div style="width:2px;height:12px;background:var(--gray-600);"></div>
       </div>
 
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:none;">
         <div style="display:flex;align-items:center;gap:6px;">
           <i data-lucide="layout-grid" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
           <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">Azure API Center</div>
@@ -157,7 +157,7 @@
         <div style="width:2px;height:12px;background:var(--gray-600);"></div>
       </div>
 
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:10px 11px;display:flex;flex-direction:column;gap:4px;box-shadow:none;">
         <div style="display:flex;align-items:center;gap:6px;">
           <i data-lucide="git-branch" style="width:13px;height:13px;color:var(--blue-400);flex-shrink:0;"></i>
           <div style="font:700 11.5px var(--font-sans);color:var(--gray-50);">CI/CD pipeline</div>
@@ -176,36 +176,36 @@
     </div>
 
     <!-- APIM CENTER BOX -->
-    <div style="flex:1;max-width:392px;background:var(--gray-900);border:2px solid var(--red-600);border-radius:14px;padding:14px 16px;box-shadow:0 4px 16px rgba(16,24,40,0.12);">
+    <div style="flex:1;max-width:392px;background:var(--gray-900);border:2px solid var(--red-600);border-radius:0;padding:14px 16px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <i data-lucide="shield" style="width:17px;height:17px;color:var(--blue-400);flex-shrink:0;"></i>
         <div style="font:600 16px var(--font-display);color:var(--gray-50);letter-spacing:-0.01em;">Azure API Management</div>
       </div>
-      <div style="font:700 9px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 8px;border-radius:999px;white-space:nowrap;display:inline-block;margin-bottom:8px;">Runtime &middot; centralized gateway</div>
+      <div style="font:700 9px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:#fff;background:var(--red-600);padding:4px 8px;border-radius:0;white-space:nowrap;display:inline-block;margin-bottom:8px;">Runtime &middot; centralized gateway</div>
       <div style="font:400 11.5px var(--font-sans);color:var(--gray-400);margin-bottom:12px;">Single ingress for all Azure OpenAI traffic</div>
 
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="gauge" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Rate limiting &amp; quota</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Per-subscription token &amp; request caps</div>
         </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shuffle" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Load balancing &amp; failover</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Weighted routing + health probes across regions</div>
         </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="zap" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Semantic caching</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Reuses responses for near-duplicate prompts</div>
         </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="shield-alert" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Content safety &amp; redaction</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Filters unsafe content &amp; PII in and out</div>
         </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="receipt" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Usage metering &amp; chargeback</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Meters tokens per team &amp; cost center</div>
         </div>
-        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
+        <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:0;padding:9px 10px;display:flex;flex-direction:column;gap:3px;">
           <div style="display:flex;align-items:center;gap:7px;"><i data-lucide="key" style="width:12px;height:12px;color:var(--blue-400);flex-shrink:0;"></i><div style="font:700 11px var(--font-sans);color:var(--gray-100);">Auth &amp; policy enforcement</div></div>
           <div style="font:400 10px/1.3 var(--font-sans);color:var(--gray-400);">Validates Entra ID tokens &amp; subscription keys</div>
         </div>
@@ -224,7 +224,7 @@
     <!-- MONITORING STACK -->
     <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">
       <div style="font:700 9.5px/1.2 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--gray-500);margin-bottom:10px;text-align:center;">Observability</div>
-      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+      <div style="width:100%;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:16px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:none;">
         <div style="display:flex;align-items:center;gap:8px;">
           <i data-lucide="activity" style="width:16px;height:16px;color:var(--blue-400);"></i>
           <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Monitoring &amp; observability</div>
@@ -247,21 +247,21 @@
   <!-- BACKENDS -->
   <div style="font:700 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-500);text-align:center;margin-bottom:14px;">Model backends &middot; Azure OpenAI</div>
   <div style="display:flex;justify-content:center;gap:14px;">
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">East US &mdash; primary</div>
       </div>
       <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">gpt-4o &middot; gpt-4o-mini &middot; text-embedding-3-large</div>
     </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">Sweden Central &mdash; secondary</div>
       </div>
       <div style="font:400 12.5px/1.4 var(--font-sans);color:var(--gray-400);">gpt-4o &middot; gpt-4o-mini</div>
     </div>
-    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,24,40,0.08);">
+    <div style="width:225px;background:var(--gray-900);border:1px solid var(--gray-700);border-radius:0;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:none;">
       <div style="display:flex;align-items:center;gap:8px;">
         <i data-lucide="server" style="width:16px;height:16px;color:var(--blue-400);"></i>
         <div style="font:700 14px var(--font-sans);color:var(--gray-50);">West US &mdash; tertiary / failover</div>

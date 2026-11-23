@@ -8,27 +8,27 @@
 :root {
   color-scheme: light;
 
-  /* ACME design system: Graphite surfaces, ink, one Blue highlight. */
-  --bg:        var(--acme-color-canvas);
-  --bg-2:      var(--acme-color-surface);
-  --panel:     var(--acme-color-surface);
-  --panel-2:   var(--acme-color-surface-hover);
-  --stroke:    var(--acme-color-border);
-  --stroke-2:  var(--acme-color-border-control);
+  /* Modernist design system: black on white, one Blue for action, the takeaway in Blue. */
+  --bg:        var(--m-paper);
+  --bg-2:      var(--m-paper-2);
+  --panel:     var(--m-paper-2);
+  --panel-2:   var(--m-paper-2);
+  --stroke:    var(--m-rule);
+  --stroke-2:  var(--m-rule);
 
-  --ink:       var(--acme-color-text);
-  --ink-soft:  var(--acme-color-text-muted);
-  --ink-dim:   var(--acme-color-text-subtle);
+  --ink:       var(--m-ink);
+  --ink-soft:  var(--m-ink-2);
+  --ink-dim:   var(--m-ink-3);
 
-  /* Copper was the deck's voice; ACME's editorial mark is Signal Red. */
-  --copper:      var(--acme-color-accent);
-  --copper-hot:  var(--acme-color-accent);
-  --copper-dim:  var(--acme-color-accent-soft);
+  /* Copper was the deck's voice; Modernist marks kickers and numerals in ink. */
+  --copper:      var(--m-ink);
+  --copper-hot:  var(--m-ink);
+  --copper-dim:  var(--m-paper-2);
   /* Lanes differ in lightness, with Blue on the one we argue for (own it). */
-  --lane-local:      var(--acme-blue-600);
-  --lane-managed:    var(--acme-gray-900);
-  --lane-serverless: var(--acme-gray-600);
-  --lane-frontier:   var(--acme-gray-400);
+  --lane-local:      var(--m-blue);
+  --lane-managed:    var(--m-ink);
+  --lane-serverless: var(--m-ink-2);
+  --lane-frontier:   var(--m-ink-3);
 
   --font-display: var(--font-sans);
   --font-body:    var(--font-sans);
@@ -53,8 +53,8 @@ body {
 ::selection { background: var(--copper-dim); color: var(--copper-hot); }
 
 b, strong { font-weight: 700; color: var(--ink); }
-a { color: var(--acme-color-link); }
-a:hover { color: var(--acme-color-link-hover); }
+a { color: var(--m-blue); }
+a:hover { color: var(--m-blue-hover); }
 
 /* ---------- chrome: progress bar, topbar, dot rail ---------- */
 
@@ -148,7 +148,7 @@ h3 {
   font-family: var(--font-display); font-weight: 600;
   font-size: 1.05rem; letter-spacing: .01em;
 }
-/* Headline emphasis takes the heading's own colour (ink; light on dark bookends) — ACME keeps red for kickers and numerals. */
+/* Headline emphasis takes the heading's own colour (ink; light on dark slides). Modernist keeps colour for action, data and danger. */
 .hl { color: inherit; }
 
 .lede {
@@ -314,7 +314,7 @@ ul.plain li b { color: var(--ink); }
 .chart__bar {
   position: absolute; inset: 1px auto 1px 0;
   width: calc(var(--v) / 8 * 100%); min-width: 3px;
-  background: var(--c); border-radius: 0 4px 4px 0;
+  background: var(--c); border-radius: 0;
   cursor: default;
 }
 .chart__val {
@@ -348,7 +348,7 @@ ul.plain li b { color: var(--ink); }
   background: var(--bg-2); border: 1px solid var(--stroke-2);
   padding: 10px 13px; font-size: .8rem; color: var(--ink-soft);
   pointer-events: none; opacity: 0; transition: opacity .12s;
-  box-shadow: var(--acme-shadow-lg);
+  box-shadow: none;
 }
 .tooltip.show { opacity: 1; }
 .tooltip b { display: block; color: var(--ink); font-size: .85rem; margin-bottom: 3px; }
@@ -417,7 +417,7 @@ ul.plain li b { color: var(--ink); }
   .slide { padding-top: 84px; }
 }
 
-/* ── ACME design system overrides ── */
+/* ── Modernist design system overrides ── */
 #traces { display: none; }               /* no textures or decorative motion */
-h1, h2, h3 { font-weight: 600; letter-spacing: var(--acme-tracking-tight, -0.02em); }
-:focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+:focus-visible { outline: 2px solid var(--m-blue); outline-offset: 2px; }
