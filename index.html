@@ -6,151 +6,199 @@
 <meta name="color-scheme" content="light">
 <meta name="description" content="Strategy briefs and decks on agentic AI, secure development environments, and platform choices — across GitHub Copilot, Microsoft 365, Azure, and Atlassian.">
 <title>Strategy site — briefs and decks</title>
-<link rel="stylesheet" href="_acme/tokens.css">
-<link rel="stylesheet" href="_acme/bundle.css">
+<link rel="stylesheet" href="_modernist/tokens.css">
 <style>
-  .acme-btn{text-decoration:none}
-  .wrap{max-width:1200px;margin-inline:auto;padding-inline:var(--acme-space-6)}
-  .topbar{border-bottom:1px solid var(--acme-color-border);background:var(--acme-color-canvas)}
-  .topbar .wrap{min-height:56px;display:flex;flex-wrap:wrap;align-items:center;gap:var(--acme-space-2) var(--acme-space-6)}
-  .topbar nav{display:flex;flex-wrap:wrap;gap:var(--acme-space-1)}
-  .hero{padding-block:var(--acme-space-16) var(--acme-space-12);display:flex;flex-direction:column;gap:var(--acme-space-4)}
-  .kicker{margin:0;font-size:var(--acme-text-xs);font-weight:600;letter-spacing:var(--acme-tracking-caps);text-transform:uppercase;color:var(--acme-color-accent)}
-  .hero h1{margin:0;max-width:22ch;font-size:clamp(2rem,5vw,var(--acme-text-5xl));line-height:1.15;text-wrap:balance}
-  .lede{margin:0;max-width:64ch;font-size:var(--acme-text-xl);letter-spacing:var(--acme-tracking-snug);color:var(--acme-color-text-muted)}
-  .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--acme-space-3);padding-top:var(--acme-space-2)}
-  .meta{font-size:var(--acme-text-xs);color:var(--acme-color-text-subtle)}
-  .section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--acme-space-2);padding-bottom:var(--acme-space-4);margin-bottom:var(--acme-space-6);border-bottom:1px solid var(--acme-color-border)}
-  .section-head h2{margin:0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:var(--acme-space-6);padding-bottom:var(--acme-space-16)}
-  .acme-card{position:relative}
-  .acme-card__body{display:flex;flex-direction:column;gap:var(--acme-space-2)}
-  .cat{margin:0;font-size:var(--acme-text-xs);font-weight:600;letter-spacing:var(--acme-tracking-caps);text-transform:uppercase;color:var(--acme-color-text-subtle)}
-  .acme-card__title{margin:0}
-  .acme-card__title a{color:inherit;text-decoration:none}
-  .acme-card__title a::after{content:"";position:absolute;inset:0;border-radius:inherit}
-  .desc{margin:0;font-size:var(--acme-text-sm);color:var(--acme-color-text-muted);flex:1}
-  .links{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:0 var(--acme-space-4);font-size:var(--acme-text-sm);font-weight:500}
-  .links a{display:inline-flex;align-items:center;min-height:44px}
-  footer{border-top:1px solid var(--acme-color-border);background:var(--acme-color-surface)}
-  footer .wrap{padding-block:var(--acme-space-8);display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--acme-space-3);font-size:var(--acme-text-xs);color:var(--acme-color-text-muted)}
+  /* Modernist: a flush-left 12-column grid, black rules instead of boxes,
+     square corners, one Blue for action. */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--m-paper);color:var(--m-ink);font-family:var(--m-font-sans);font-size:var(--m-body-size);line-height:var(--m-body-leading);-webkit-font-smoothing:antialiased;border-top:var(--m-stroke-bar) solid var(--m-ink)}
+  a{color:var(--m-blue)}
+  a:hover{color:var(--m-blue-hover)}
+  :focus-visible{outline:2px solid var(--m-blue);outline-offset:2px;border-radius:var(--m-radius-hair)}
+  .wrap{max-width:var(--m-grid-max);margin-inline:auto;padding-inline:var(--m-space-5)}
+  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--m-grid-gutter)}
+  @media (max-width:760px){
+    .wrap{padding-inline:var(--m-space-3)}
+    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .grid>*{grid-column:1/-1 !important}
+  }
+
+  /* header: product name, then the destinations, on a 2px base rule */
+  header{border-bottom:var(--m-stroke-rule) solid var(--m-rule-strong)}
+  header .wrap{min-height:64px;display:flex;flex-wrap:wrap;align-items:center;gap:var(--m-space-2) var(--m-space-5)}
+  .name{font-weight:800;font-size:20px;letter-spacing:-0.02em;color:var(--m-ink);text-decoration:none}
+  .name:hover{color:var(--m-ink)}
+  nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--m-space-3)}
+  nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--m-ink);text-decoration:none;font-weight:600;font-size:var(--m-small-size)}
+  nav a:hover{color:var(--m-blue)}
+  nav a[aria-current="page"]{color:var(--m-blue);box-shadow:inset 0 -2px 0 var(--m-blue)}
+
+  /* hero: one display statement, flush left */
+  .hero{padding-block:var(--m-space-8) var(--m-space-7)}
+  .hero .label{grid-column:1/-1;margin:0 0 var(--m-space-3);color:var(--m-ink-3)}
+  .hero h1{grid-column:1/10;margin:0;font-size:clamp(44px,7vw,var(--m-display-size));line-height:var(--m-display-leading);font-weight:var(--m-display-weight);letter-spacing:var(--m-display-tracking);text-wrap:balance}
+  .hero p.lede{grid-column:1/8;margin:var(--m-space-4) 0 0;font-size:20px;line-height:1.45;color:var(--m-ink-2);max-width:65ch}
+  .actions{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:var(--m-space-3);margin-top:var(--m-space-5)}
+  .btn{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--m-space-3);border:var(--m-stroke-rule) solid var(--m-ink);background:var(--m-paper);color:var(--m-ink);font-weight:600;text-decoration:none;border-radius:var(--m-radius-none)}
+  .btn:hover{background:var(--m-ink);color:var(--m-paper)}
+  .btn--primary{background:var(--m-blue);border-color:var(--m-blue);color:var(--m-on-blue)}
+  .btn--primary:hover{background:var(--m-blue-hover);border-color:var(--m-blue-hover);color:var(--m-on-blue)}
+  .meta{font-size:var(--m-small-size);color:var(--m-ink-3);font-variant-numeric:tabular-nums}
+
+  /* sections open with a 2px ink rule; rows are 1px hairlines */
+  .section{border-top:var(--m-stroke-rule) solid var(--m-rule-strong);padding-top:var(--m-space-3)}
+  .section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--m-space-2);margin-bottom:var(--m-space-4)}
+  .section-head h2{margin:0;font-size:var(--m-heading-2-size);line-height:var(--m-heading-2-leading);font-weight:var(--m-heading-2-weight);letter-spacing:var(--m-heading-2-tracking)}
+  ol.topics{list-style:none;margin:0 0 var(--m-space-8);padding:0}
+  ol.topics>li{padding-block:var(--m-space-4);border-top:var(--m-stroke-hair) solid var(--m-rule);align-items:start;row-gap:var(--m-space-2)}
+  ol.topics>li:last-child{border-bottom:var(--m-stroke-hair) solid var(--m-rule)}
+  ol.topics>li:hover{background:var(--m-paper-2)}
+  .num{grid-column:1/2;font-family:var(--m-font-mono);font-size:var(--m-mono-size);color:var(--m-ink-3);font-variant-numeric:tabular-nums;padding-top:4px}
+  .cat{grid-column:2/4;margin:0;color:var(--m-ink-3);padding-top:4px}
+  .body{grid-column:4/10}
+  .body h3{margin:0 0 var(--m-space-1);font-size:22px;line-height:1.15;font-weight:700;letter-spacing:-0.01em}
+  .body h3 a{color:var(--m-ink);text-decoration:none}
+  .body h3 a:hover{color:var(--m-blue);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .body p{margin:0;color:var(--m-ink-2);max-width:65ch}
+  .links{grid-column:10/13;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;align-items:flex-start;font-size:var(--m-small-size);font-weight:600}
+  .links a{display:inline-flex;align-items:center;min-height:32px}
+  @media (max-width:760px){.links{flex-direction:row;flex-wrap:wrap;gap:0 var(--m-space-3)}.links a{min-height:44px}}
+
+  footer{border-top:var(--m-stroke-rule) solid var(--m-rule-strong)}
+  footer .wrap{padding-block:var(--m-space-4) var(--m-space-6);display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--m-space-2);font-size:var(--m-small-size);color:var(--m-ink-2)}
+  footer p{margin:0}
 </style>
 </head>
 <body>
-<header class="topbar">
+<header>
   <div class="wrap">
-    <a class="acme-wordmark" href="index.html"><span class="acme-wordmark__mark" aria-hidden="true">A</span>ACME</a>
+    <a class="name" href="index.html">Strategy site</a>
     <nav aria-label="Primary">
-      <a class="acme-topbar__link" href="index.html" aria-current="page">All topics</a>
-      <a class="acme-topbar__link" href="#topics">Decks</a>
-      <a class="acme-topbar__link" href="#about">About</a>
+      <ul>
+        <li><a href="index.html" aria-current="page">All topics</a></li>
+        <li><a href="#topics">Decks</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
     </nav>
   </div>
 </header>
 
 <main>
-  <section class="wrap hero">
-    <p class="kicker">Strategy site</p>
-    <h1>Briefs and decks on agentic AI and the platforms it runs on.</h1>
-    <p class="lede">A working library of proposals and presentations spanning GitHub Copilot, Microsoft 365, Azure and Atlassian. Each entry links to its full deck, and to a single-scroll version where one exists.</p>
-    <div class="hero-actions">
-      <a class="acme-btn acme-btn--primary" href="#topics">Browse 11 topics</a>
+  <section class="wrap grid hero" aria-labelledby="hero-h">
+    <p class="label m-label">Briefs and decks</p>
+    <h1 id="hero-h">Agentic AI and the platforms it runs on.</h1>
+    <p class="lede">A working library of proposals and presentations across GitHub Copilot, Microsoft 365, Azure and Atlassian. Each entry links to its full deck, and to a single-page version where one exists.</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="#topics">Browse 11 topics</a>
       <span class="meta">Updated continuously</span>
     </div>
   </section>
 
   <section id="topics" class="wrap" aria-labelledby="topics-h">
-    <div class="section-head">
-      <h2 id="topics-h">Topics</h2>
-      <span class="acme-badge">11 decks</span>
-    </div>
-    <div class="grid">
+    <div class="section">
+      <div class="section-head">
+        <h2 id="topics-h">Topics</h2>
+        <span class="meta">11 decks</span>
+      </div>
+      <ol class="topics">
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Ideas · non-developers</p>
-        <h3 class="acme-card__title"><a href="ideas/index.html">Agentic AI you can build yourself</a></h3>
-        <p class="desc">Nine agent ideas non-developers can build with GitHub Copilot across M365 and Atlassian, graded by effort, with a worked example and a 30-day start path.</p>
-        <div class="links"><a href="ideas/index.html">Open deck</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">01</span>
+          <p class="cat m-label">Non-developers</p>
+          <div class="body"><h3><a href="ideas/index.html">Agentic AI you can build yourself</a></h3>
+            <p>Nine agent ideas non-developers can build with GitHub Copilot across M365 and Atlassian, graded by effort, with a worked example and a 30-day start path.</p></div>
+          <ul class="links"><li><a href="ideas/index.html">Open deck</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">AI · open weights</p>
-        <h3 class="acme-card__title"><a href="AI/index.html">Own the weights</a></h3>
-        <p class="desc">Running open-weight AI on Azure AI Foundry and local hardware: the case for controlling your own models.</p>
-        <div class="links"><a href="AI/index.html">Open deck</a><a href="AI/ai-single.html">Single page</a><a href="AI/onepager.html">One-page brief</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">02</span>
+          <p class="cat m-label">Open weights</p>
+          <div class="body"><h3><a href="AI/index.html">Own the weights</a></h3>
+            <p>Running open-weight AI on Azure AI Foundry and local hardware: the case for controlling your own models.</p></div>
+          <ul class="links"><li><a href="AI/index.html">Open deck</a></li><li><a href="AI/ai-single.html">Single page</a></li><li><a href="AI/onepager.html">One-page brief</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Foundry · cost</p>
-        <h3 class="acme-card__title"><a href="foundry/index.html">Stretch the $30</a></h3>
-        <p class="desc">Getting maximum value from Copilot and Azure AI Foundry on a tight per-seat budget.</p>
-        <div class="links"><a href="foundry/index.html">Open deck</a><a href="foundry/foundry-single.html">Single page</a><a href="foundry/pitch-deck.html">Pitch deck</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">03</span>
+          <p class="cat m-label">Cost</p>
+          <div class="body"><h3><a href="foundry/index.html">Stretch the $30</a></h3>
+            <p>Getting maximum value from Copilot and Azure AI Foundry on a tight per-seat budget.</p></div>
+          <ul class="links"><li><a href="foundry/index.html">Open deck</a></li><li><a href="foundry/foundry-single.html">Single page</a></li><li><a href="foundry/pitch-deck.html">Pitch deck</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Copilot security · research</p>
-        <h3 class="acme-card__title"><a href="copilot-security/index.html">Controlling GitHub Copilot</a></h3>
-        <p class="desc">A landscape and threat map: what AI gateways, MCP gateways, sandboxes, GitHub-native policy and agent harnesses each cover, and where the documented gaps sit.</p>
-        <div class="links"><a href="copilot-security/index.html">Read report</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">04</span>
+          <p class="cat m-label">Research</p>
+          <div class="body"><h3><a href="copilot-security/index.html">Controlling GitHub Copilot</a></h3>
+            <p>A landscape and threat map: what AI gateways, MCP gateways, sandboxes, GitHub-native policy and agent harnesses each cover, and where the documented gaps sit.</p></div>
+          <ul class="links"><li><a href="copilot-security/index.html">Read report</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Copilot sandbox · controls</p>
-        <h3 class="acme-card__title"><a href="copilot-sandbox/index.html">What controls hold when autopilot is on</a></h3>
-        <p class="desc">Which guardrails actually hold when Copilot is left to act: a look at controls for agentic coding.</p>
-        <div class="links"><a href="copilot-sandbox/index.html">Open deck</a><a href="copilot-sandbox/copilot-sandbox-single.html">Single page</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">05</span>
+          <p class="cat m-label">Controls</p>
+          <div class="body"><h3><a href="copilot-sandbox/index.html">What controls hold when autopilot is on</a></h3>
+            <p>Which guardrails actually hold when Copilot is left to act: a look at controls for agentic coding.</p></div>
+          <ul class="links"><li><a href="copilot-sandbox/index.html">Open deck</a></li><li><a href="copilot-sandbox/copilot-sandbox-single.html">Single page</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Sandbox · platforms</p>
-        <h3 class="acme-card__title"><a href="sandbox/index.html">Sandboxes for agentic AI</a></h3>
-        <p class="desc">Comparing safe build environments across Copilot, Copilot Studio and Azure AI Foundry.</p>
-        <div class="links"><a href="sandbox/index.html">Open deck</a><a href="sandbox/sandbox-single.html">Single page</a><a href="sandbox/email.html">Email</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">06</span>
+          <p class="cat m-label">Platforms</p>
+          <div class="body"><h3><a href="sandbox/index.html">Sandboxes for agentic AI</a></h3>
+            <p>Comparing safe build environments across Copilot, Copilot Studio and Azure AI Foundry.</p></div>
+          <ul class="links"><li><a href="sandbox/index.html">Open deck</a></li><li><a href="sandbox/sandbox-single.html">Single page</a></li><li><a href="sandbox/email.html">Email</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Agentic · devsecops</p>
-        <h3 class="acme-card__title"><a href="agentic/index.html">DevSecOps agentic automation</a></h3>
-        <p class="desc">A programme plan for weaving agentic automation through the DevSecOps lifecycle.</p>
-        <div class="links"><a href="agentic/index.html">Open deck</a><a href="agentic/agentic-single.html">Single page</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">07</span>
+          <p class="cat m-label">DevSecOps</p>
+          <div class="body"><h3><a href="agentic/index.html">DevSecOps agentic automation</a></h3>
+            <p>A programme plan for weaving agentic automation through the DevSecOps lifecycle.</p></div>
+          <ul class="links"><li><a href="agentic/index.html">Open deck</a></li><li><a href="agentic/agentic-single.html">Single page</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">CDE · investment</p>
-        <h3 class="acme-card__title"><a href="CDE/index.html">Secure CDE for agentic AI</a></h3>
-        <p class="desc">A strategic investment proposal for a secure cloud development environment built for agentic work.</p>
-        <div class="links"><a href="CDE/index.html">Open deck</a><a href="CDE/cde-single.html">Single page</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">08</span>
+          <p class="cat m-label">Investment</p>
+          <div class="body"><h3><a href="CDE/index.html">Secure CDE for agentic AI</a></h3>
+            <p>A strategic investment proposal for a secure cloud development environment built for agentic work.</p></div>
+          <ul class="links"><li><a href="CDE/index.html">Open deck</a></li><li><a href="CDE/cde-single.html">Single page</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Gateway · market</p>
-        <h3 class="acme-card__title"><a href="gateway/index.html">Choosing an AI gateway</a></h3>
-        <p class="desc">The 2026 AI gateway market: top products scored against Entra ID access control, GitHub Copilot BYOK and Azure AI Foundry models.</p>
-        <div class="links"><a href="gateway/index.html">Open deck</a><a href="gateway/architecture.html">Architecture diagram</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">09</span>
+          <p class="cat m-label">Market</p>
+          <div class="body"><h3><a href="gateway/index.html">Choosing an AI gateway</a></h3>
+            <p>The 2026 AI gateway market: top products scored against Entra ID access control, GitHub Copilot BYOK and Azure AI Foundry models.</p></div>
+          <ul class="links"><li><a href="gateway/index.html">Open deck</a></li><li><a href="gateway/architecture.html">Architecture diagram</a></li><li><a href="gateway/architecture-options.html">Architecture options</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">Chainguard · supply chain</p>
-        <h3 class="acme-card__title"><a href="chainguard/index.html">Secure by default</a></h3>
-        <p class="desc">Adopting Chainguard across the enterprise to harden the software supply chain from the base image up.</p>
-        <div class="links"><a href="chainguard/index.html">Open deck</a><a href="chainguard/chainguard-single.html">Single page</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">10</span>
+          <p class="cat m-label">Supply chain</p>
+          <div class="body"><h3><a href="chainguard/index.html">Secure by default</a></h3>
+            <p>Adopting Chainguard across the enterprise to harden the software supply chain from the base image up.</p></div>
+          <ul class="links"><li><a href="chainguard/index.html">Open deck</a></li><li><a href="chainguard/chainguard-single.html">Single page</a></li></ul>
+        </li>
 
-      <article class="acme-card acme-card--interactive"><div class="acme-card__body">
-        <p class="cat">AI risk · briefing</p>
-        <h3 class="acme-card__title"><a href="ai-risk/index.html">AI-driven risk in the enterprise</a></h3>
-        <p class="desc">What changes when models write our code and agents run it: hallucinated dependencies, prompt injection, over-privileged agents, and the five controls that hold.</p>
-        <div class="links"><a href="ai-risk/index.html">Open deck</a></div>
-      </div></article>
+        <li class="grid">
+          <span class="num" aria-hidden="true">11</span>
+          <p class="cat m-label">Security briefing</p>
+          <div class="body"><h3><a href="ai-risk/index.html">AI-driven risk in the enterprise</a></h3>
+            <p>What changes when models write our code and agents run it: hallucinated dependencies, prompt injection, over-privileged agents, and the five controls that hold.</p></div>
+          <ul class="links"><li><a href="ai-risk/index.html">Open deck</a></li></ul>
+        </li>
 
+      </ol>
     </div>
   </section>
 </main>
 
 <footer id="about">
   <div class="wrap">
-    <p style="margin:0">Strategy site · GitHub Copilot, Microsoft 365, Azure and Atlassian</p>
-    <p style="margin:0">11 topics · updated continuously</p>
+    <p>Strategy site · GitHub Copilot, Microsoft 365, Azure and Atlassian</p>
+    <p>11 topics · updated continuously</p>
   </div>
 </footer>
 </body>

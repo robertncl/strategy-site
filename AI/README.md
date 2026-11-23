@@ -18,7 +18,7 @@ on **Azure AI Foundry** (serverless + managed compute) and **local hardware** to
 Open `index.html` in a browser, or serve the folder with any static server.
 Regenerate `ai-single.html` after editing the source files with
 `python3 tools/build_singles.py AI` (from the repo root): it re-inlines the
-ACME tokens, `styles.css` and `app.js`, and embeds the fonts as data URIs.
+Modernist tokens, `styles.css` and `app.js`, and embeds the fonts as data URIs.
 
 All cost figures in the deck are labeled illustrative — directional planning
 numbers, not quotes.

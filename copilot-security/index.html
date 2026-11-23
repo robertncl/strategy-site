@@ -6,31 +6,31 @@
 <meta name="color-scheme" content="light" />
 <meta name="description" content="A landscape and threat map for teams running GitHub Copilot's agentic surfaces: what AI gateways, MCP gateways, sandboxes, harnesses and GitHub-native controls each cover, and where the documented gaps sit." />
 <title>Controlling GitHub Copilot — AI Agent Security Report</title>
-<link rel="stylesheet" href="../_acme/tokens.css" />
+<link rel="stylesheet" href="../_modernist/tokens.css" />
 <style>
 :root {
-  /* ACME design system — report pattern: light Graphite page, Signal Red
+  /* Modernist design system — report pattern: black on white, ink
      for editorial marks (kickers, numerals), Blue for links. */
   color-scheme: light;
-  --color-bg: var(--acme-color-canvas);
-  --color-surface: var(--acme-color-surface);
-  --color-text: var(--acme-color-text);
-  --color-accent: var(--acme-color-accent);
-  --color-accent-2: var(--acme-color-info);
-  --color-divider: var(--acme-color-border);
+  --color-bg: var(--m-paper);
+  --color-surface: var(--m-paper-2);
+  --color-text: var(--m-ink);
+  --color-accent: var(--m-ink);
+  --color-accent-2: var(--m-blue);
+  --color-divider: var(--m-rule);
 
-  --color-neutral-100: var(--acme-color-text);
-  --color-neutral-800: var(--acme-color-surface-hover);
-  --color-neutral-900: var(--acme-color-surface);
+  --color-neutral-100: var(--m-ink);
+  --color-neutral-800: var(--m-paper-2);
+  --color-neutral-900: var(--m-paper-2);
 
   /* Tags report status: strong / primary = success, partial / contested = warning. */
-  --color-accent-100: var(--acme-color-success-soft-text);
-  --color-accent-200: var(--acme-red-800);
-  --color-accent-300: var(--acme-color-accent);
-  --color-accent-800: var(--acme-color-success-soft);
+  --color-accent-100: var(--m-paper);
+  --color-accent-200: var(--m-ink);
+  --color-accent-300: var(--m-ink);
+  --color-accent-800: var(--m-ink);
 
-  --color-accent-2-100: var(--acme-color-warning-soft-text);
-  --color-accent-2-800: var(--acme-color-warning-soft);
+  --color-accent-2-100: var(--m-data-2-ink);
+  --color-accent-2-800: var(--m-data-2);
 
   --font-heading: var(--font-sans);
   --font-heading-weight: 600;
@@ -43,13 +43,13 @@
   --space-6: 16.8px;
   --space-8: 22.4px;
 
-  --radius-sm: var(--acme-radius-sm);
-  --radius-md: var(--acme-radius-md);
-  --radius-lg: var(--acme-radius-lg);
+  --radius-sm: var(--m-radius-none);
+  --radius-md: var(--m-radius-none);
+  --radius-lg: var(--m-radius-none);
 
-  --shadow-sm: 0 0 0 1px var(--acme-color-border), var(--acme-shadow-sm);
-  --shadow-md: 0 0 0 1px var(--acme-color-border-control), var(--acme-shadow-md);
-  --shadow-lg: 0 0 0 1px var(--acme-color-border), var(--acme-shadow-lg);
+  --shadow-sm: 0 0 0 1px var(--m-rule), 0 0 #0000;
+  --shadow-md: 0 0 0 1px var(--m-rule), 0 0 #0000;
+  --shadow-lg: 0 0 0 1px var(--m-rule), 0 0 #0000;
 }
 
 body {
@@ -69,20 +69,20 @@ p { margin: 0 0 var(--space-3); }
 img { display: block; max-width: 100%; }
 code { font-family: var(--font-mono); }
 :focus { outline: none; }
-:focus-visible { outline: 2px solid var(--acme-color-focus); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--m-blue); outline-offset: 2px; }
 ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
 
 html, body { background: var(--color-bg); color: var(--color-text); }
 body { text-wrap: pretty; }
-a { color: var(--acme-color-link); text-decoration: none; }
-a:hover { color: var(--acme-color-link-hover); text-decoration: underline; }
+a { color: var(--m-blue); text-decoration: none; }
+a:hover { color: var(--m-blue-hover); text-decoration: underline; }
 sup a { border-bottom: 0; }
 
 /* — cards — */
 .card {
   display: flex; flex-direction: column; gap: var(--space-2);
-  padding: var(--space-3); border-radius: var(--acme-radius-lg); background: var(--acme-color-surface-raised);
-  border: 1px solid var(--acme-color-border); box-shadow: var(--acme-shadow-sm);
+  padding: var(--space-3); border-radius: var(--m-radius-none); background: var(--m-paper);
+  border: 1px solid var(--m-rule); box-shadow: none;
 }
 .card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); }
 .card-title {
@@ -95,12 +95,13 @@ sup a { border-bottom: 0; }
 .tag {
   display: inline-flex; align-items: center; font-size: 11px;
   letter-spacing: 0.02em; padding: 3px 10px;
-  border-radius: calc(var(--radius-md) * 0.75);
+  border-radius: 0;
 }
-.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); border: 1px solid var(--acme-color-success-border); }
-.tag-accent-2 { background: var(--color-accent-2-800); color: var(--color-accent-2-100); border: 1px solid var(--acme-color-warning-border); }
-.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); border: 1px solid var(--acme-color-border); }
-.tag-outline { border: 1px solid var(--acme-color-danger-border); color: var(--acme-color-danger-soft-text); background: var(--acme-color-danger-soft); }
+/* Coverage reads as weight: primary / established = solid ink, partial = data-2, none = a well. */
+.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); border: 1px solid var(--m-ink); }
+.tag-accent-2 { background: var(--color-accent-2-800); color: var(--color-accent-2-100); border: 1px solid var(--m-ink); }
+.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); border: 1px solid var(--m-rule); }
+.tag-outline { border: 1px solid var(--m-red); color: var(--m-red); background: var(--m-paper); }
 
 /* — tables — */
 .table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -363,25 +364,25 @@ sup a { border-bottom: 0; }
     <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">&ldquo;Gateway, sandbox, harness&rdquo; is not a stack in which the outer layer contains the inner one. Each intercepts a different unit of traffic, and a control can only enforce policy on traffic it sees. An LLM gateway's unit is a model call; an MCP gateway's is a tool call; a sandbox's is a syscall and a packet; a harness's is a step in the agent loop.<sup><a href="#s23">24</a><a href="#s21">,21</a></sup></p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
-      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+      <div style="padding:var(--space-6);border-radius:0;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Model plane</div>
         <div style="font-size:17px">LLM gateway</div>
         <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees prompts, completions, tokens, spend. Enforces routing, budgets, redaction, jailbreak filters.</div>
         <div style="font-size:12px;color:var(--color-accent-300)">Blind to: what the agent then does locally</div>
       </div>
-      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+      <div style="padding:var(--space-6);border-radius:0;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Tool plane</div>
         <div style="font-size:17px">MCP gateway</div>
         <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees tool invocations. Enforces per-tool RBAC, identity propagation, allowlists, immutable audit.</div>
         <div style="font-size:12px;color:var(--color-accent-300)">Blind to: shell commands and file writes</div>
       </div>
-      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+      <div style="padding:var(--space-6);border-radius:0;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Execution plane</div>
         <div style="font-size:17px">Sandbox</div>
         <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees syscalls, filesystem, egress. Enforces the blast radius when generated code runs.</div>
         <div style="font-size:12px;color:var(--color-accent-300)">Blind to: intent &mdash; a hijacked agent inside a perfect sandbox still acts</div>
       </div>
-      <div style="padding:var(--space-6);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
+      <div style="padding:var(--space-6);border-radius:0;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px">
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Decision plane</div>
         <div style="font-size:17px">Harness</div>
         <div style="font-size:13px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Sees the loop: context assembly, tool exposure, approvals, hooks. The only layer that can refuse before an action exists.</div>
@@ -435,7 +436,7 @@ sup a { border-bottom: 0; }
     <div style="display:flex;flex-direction:column;gap:16px;padding-top:8px">
       <h3 style="font-size:22px;margin:0">The agent firewall, and its four documented edges</h3>
       <p style="margin:0;font-size:16px;line-height:1.65;color:color-mix(in srgb, var(--color-text) 82%, transparent)">Internet access is limited by default, with a recommended allowlist covering OS package repositories, container registries, language package registries, certificate authorities and Playwright browser downloads. Blocked requests surface as a warning on the pull request showing the address and the command that tried it.<sup><a href="#s1">1</a><a href="#s5">,5</a></sup> As of April 2026, organization owners can set <em>Enable firewall</em>, <em>Recommended allowlist</em> and <em>Allow repository custom rules</em> at org level and maintain an org custom allowlist that repositories cannot delete from &mdash; and each of those three settings defaults to &ldquo;Let repositories decide.&rdquo;<sup><a href="#s4">4</a><a href="#s1">,1</a></sup></p>
-      <div style="padding:var(--space-8);border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px">
+      <div style="padding:var(--space-8);border-radius:0;background:var(--color-surface);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px">
         <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">From GitHub's own limitations section</div>
         <div style="display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 85%, transparent)">
           <div>&mdash; Applies only to processes the agent starts via its Bash tool. Not MCP servers. Not configured setup steps.</div>

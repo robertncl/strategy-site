@@ -8,8 +8,8 @@ The argument is deliberately *not* "slow down AI adoption". It is "know what we 
 scope what it can reach".
 
 Built with **[Claude Design](https://claude.ai/design)** as a `.dc.html` deck: HTML slides driven by
-a small runtime (`support.js` + `deck-stage.js`) and the ACME design system tokens/components under
-`_ds/`.
+a small runtime (`support.js` + `deck-stage.js`) and the site's Modernist design system tokens
+(`../_modernist/tokens.css`).
 
 ## Run it
 
@@ -75,8 +75,7 @@ labelled as such on-slide — substitute your own delivery metrics before presen
   the topic follows this repo's `index.html`-as-entry-point convention.
 - `support.js` — the generated `.dc.html` runtime (parses the `<x-dc>` template, applies props)
 - `deck-stage.js` — the reusable `<deck-stage>` web component (keyboard nav, speaker notes, auto-scaling)
-- `_ds/acme-design-system-*/` — the ACME design system this deck is built on: tokens (`tokens/acme.css`,
-  `tokens/fonts.css`) and a small React component bundle (`_ds_bundle.js`)
+- `../_modernist/tokens.css` — the Modernist design system tokens and fonts shared by the whole site
 
 ## Editable knobs
 

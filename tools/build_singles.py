@@ -2,14 +2,14 @@
 """Rebuild the self-contained "single" HTML file for each deck.
 
 A single is its deck's index.html with every local stylesheet and script
-inlined, and the ACME design system's fonts embedded as data URIs, so it
+inlined, and the Modernist design system's fonts embedded as data URIs, so it
 works offline as one file (email it, open it from a USB stick).
 
     python3 tools/build_singles.py            # rebuild all singles
     python3 tools/build_singles.py AI CDE     # rebuild just these decks
 
 Run it after editing a deck's index.html, styles.css or app.js, or after
-updating _acme/.
+updating _modernist/.
 """
 import base64
 import re
